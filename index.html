@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cabinet Médical</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f5f0e8;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .wrap { text-align: center; max-width: 480px; width: 100%; }
+    .icon { font-size: 64px; margin-bottom: 16px; }
+    h1 { font-family: 'Playfair Display', serif; color: #1a2639; font-size: 28px; margin-bottom: 8px; }
+    p { color: #8a9bb0; font-size: 14px; margin-bottom: 36px; }
+    .cards { display: flex; flex-direction: column; gap: 14px; }
+    a {
+      display: block; padding: 18px 24px;
+      background: white; border-radius: 14px;
+      border: 1.5px solid #ddd6c8;
+      text-decoration: none; color: #1a2639;
+      font-size: 16px; font-weight: 600;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(26,38,57,0.05);
+    }
+    a:hover { border-color: #2a7f7f; color: #2a7f7f; transform: translateY(-2px); }
+    a .sub { font-size: 12px; color: #8a9bb0; font-weight: 400; margin-top: 3px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="icon">🏥</div>
+    <h1>Cabinet Médical</h1>
+    <p>Système de gestion de la file d'attente</p>
+    <div class="cards">
+      <a href="patient.html">
+        🙋 Inscription patient
+        <div class="sub">S'inscrire dans la file d'attente du jour</div>
+      </a>
+      <a href="assistante.html">
+        👩‍⚕️ Espace assistante
+        <div class="sub">Gérer la liste des patients</div>
+      </a>
+      <a href="medecin.html">
+        👨‍⚕️ Espace médecin
+        <div class="sub">Tableau de bord et paramètres</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

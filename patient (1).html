@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription - Cabinet Médical</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --white: #ffffff;
+      --deep: #1a2639;
+      --teal: #2a7f7f;
+      --teal-light: #3aa3a3;
+      --gold: #c9a84c;
+      --red: #c0392b;
+      --gray: #8a9bb0;
+      --border: #ddd6c8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--cream);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      padding: 40px 20px 20px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .header .icon {
+      width: 70px; height: 70px;
+      background: var(--teal);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 32px;
+    }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      color: var(--deep);
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+    .header .subtitle {
+      color: var(--gray);
+      font-size: 14px;
+    }
+    .lang-toggle {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 16px 0;
+    }
+    .lang-btn {
+      padding: 6px 18px;
+      border-radius: 20px;
+      border: 1.5px solid var(--teal);
+      background: transparent;
+      color: var(--teal);
+      font-family: 'Cairo', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--teal);
+      color: white;
+    }
+    .card {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 32px 28px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 4px 24px rgba(26,38,57,0.08);
+      border: 1px solid var(--border);
+    }
+    .closed-banner {
+      background: #fdf2f2;
+      border: 1.5px solid #f5c6cb;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: var(--red);
+      font-size: 15px;
+      font-weight: 600;
+      display: none;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      color: var(--deep);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 15px;
+      color: var(--deep);
+      background: var(--cream);
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--teal);
+      background: white;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 8px;
+    }
+    .btn:hover { background: var(--teal-light); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { background: var(--gray); cursor: not-allowed; }
+    .success-card {
+      text-align: center;
+      display: none;
+    }
+    .success-card .number-badge {
+      width: 100px; height: 100px;
+      background: linear-gradient(135deg, var(--teal), var(--teal-light));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 42px;
+      font-weight: 700;
+      color: white;
+      font-family: 'Playfair Display', serif;
+      box-shadow: 0 8px 24px rgba(42,127,127,0.3);
+    }
+    .success-card h2 {
+      color: var(--deep);
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .success-card p {
+      color: var(--gray);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .info-box {
+      background: #f0fafa;
+      border: 1px solid #b2dfdb;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--teal);
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .error-msg {
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+    .loading { opacity: 0.6; pointer-events: none; }
+    .queue-info {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .queue-stat {
+      flex: 1;
+      background: var(--cream);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+    .queue-stat .val {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--teal);
+      font-family: 'Playfair Display', serif;
+    }
+    .queue-stat .lbl {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="icon">🏥</div>
+  <h1 id="title">Cabinet Médical</h1>
+  <p class="subtitle" id="subtitle">Inscription en ligne • اليوم</p>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('fr')">Français</button>
+    <button class="lang-btn" onclick="setLang('ar')">العربية</button>
+  </div>
+</div>
+
+<div class="card" id="mainCard">
+  <div class="closed-banner" id="closedBanner">
+    🚫 <span id="closedText">Les inscriptions sont fermées pour aujourd'hui.</span>
+  </div>
+
+  <div id="formSection">
+    <div class="info-box" id="infoBox">
+      📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.
+    </div>
+
+    <div class="queue-info">
+      <div class="queue-stat">
+        <div class="val" id="totalCount">—</div>
+        <div class="lbl" id="totalLabel">Inscrits aujourd'hui</div>
+      </div>
+      <div class="queue-stat">
+        <div class="val" id="limitCount">—</div>
+        <div class="lbl" id="limitLabel">Places max</div>
+      </div>
+    </div>
+
+    <br/>
+
+    <div class="form-group">
+      <label id="nomLabel">Nom</label>
+      <input type="text" id="nom" placeholder="Votre nom" autocomplete="off"/>
+      <div class="error-msg" id="nomErr">Ce champ est requis.</div>
+    </div>
+    <div class="form-group">
+      <label id="prenomLabel">Prénom</label>
+      <input type="text" id="prenom" placeholder="Votre prénom" autocomplete="off"/>
+      <div class="error-msg" id="prenomErr">Ce champ est requis.</div>
+    </div>
+    <div class="form-group">
+      <label id="telLabel">Numéro de téléphone</label>
+      <input type="tel" id="telephone" placeholder="0xxxxxxxxx" autocomplete="off"/>
+      <div class="error-msg" id="telErr">Ce champ est requis.</div>
+    </div>
+    <button class="btn" id="submitBtn" onclick="inscrire()">
+      <span id="submitText">S'inscrire</span>
+    </button>
+  </div>
+
+  <div class="success-card" id="successCard">
+    <div class="number-badge" id="myNumber">1</div>
+    <h2 id="successTitle">Vous êtes inscrit(e) !</h2>
+    <p id="successMsg">Votre numéro dans la file d'attente est affiché ci-dessus.</p>
+    <div class="info-box" id="successInfo">
+      Présentez-vous au cabinet avec ce numéro. Merci de votre confiance.
+    </div>
+    <button class="btn" onclick="reset()">
+      <span id="newRegText">Nouvelle inscription</span>
+    </button>
+  </div>
+</div>
+
+<div class="footer">
+  <span id="footerText">© Cabinet Médical — Inscription quotidienne</span>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
+
+  const translations = {
+    fr: {
+      title: 'Cabinet Médical',
+      subtitle: "Inscription en ligne • Aujourd'hui",
+      infoBox: '📋 Inscrivez-vous pour obtenir votre numéro dans la file d\'attente.',
+      totalLabel: 'Inscrits aujourd\'hui',
+      limitLabel: 'Places max',
+      nomLabel: 'Nom',
+      prenomLabel: 'Prénom',
+      telLabel: 'Numéro de téléphone',
+      nomPlaceholder: 'Votre nom',
+      prenomPlaceholder: 'Votre prénom',
+      telPlaceholder: '0xxxxxxxxx',
+      submitText: 'S\'inscrire',
+      successTitle: 'Vous êtes inscrit(e) !',
+      successMsg: 'Votre numéro dans la file d\'attente est affiché ci-dessus.',
+      successInfo: 'Présentez-vous au cabinet avec ce numéro. Merci de votre confiance.',
+      newRegText: 'Nouvelle inscription',
+      closedText: 'Les inscriptions sont fermées pour aujourd\'hui.',
+      footerText: '© Cabinet Médical — Inscription quotidienne',
+      errRequired: 'Ce champ est requis.',
+      errLimit: 'Désolé, la limite de patients est atteinte pour aujourd\'hui.',
+      errClosed: 'Les inscriptions sont fermées.',
+    },
+    ar: {
+      title: 'العيادة الطبية',
+      subtitle: 'تسجيل عبر الإنترنت • اليوم',
+      infoBox: '📋 سجّل نفسك للحصول على رقمك في قائمة الانتظار.',
+      totalLabel: 'المسجّلون اليوم',
+      limitLabel: 'الحد الأقصى',
+      nomLabel: 'اللقب',
+      prenomLabel: 'الاسم',
+      telLabel: 'رقم الهاتف',
+      nomPlaceholder: 'لقبك',
+      prenomPlaceholder: 'اسمك',
+      telPlaceholder: '0xxxxxxxxx',
+      submitText: 'تسجيل',
+      successTitle: 'تم تسجيلك بنجاح !',
+      successMsg: 'رقمك في قائمة الانتظار معروض أعلاه.',
+      successInfo: 'احضر إلى العيادة بهذا الرقم. شكراً لثقتك.',
+      newRegText: 'تسجيل جديد',
+      closedText: 'التسجيل مغلق لهذا اليوم.',
+      footerText: '© العيادة الطبية — التسجيل اليومي',
+      errRequired: 'هذا الحقل مطلوب.',
+      errLimit: 'عذراً، تم الوصول إلى الحد الأقصى للمرضى اليوم.',
+      errClosed: 'التسجيل مغلق.',
+    }
+  };
+
+  let lang = 'fr';
+  let parametres = { limite_patients: 40, ouvert: true };
+  let totalToday = 0;
+
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    document.documentElement.lang = l === 'ar' ? 'ar' : 'fr';
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+    applyTranslations();
+  }
+
+  function applyTranslations() {
+    const t = translations[lang];
+    document.getElementById('title').textContent = t.title;
+    document.getElementById('subtitle').textContent = t.subtitle;
+    document.getElementById('infoBox').textContent = t.infoBox;
+    document.getElementById('totalLabel').textContent = t.totalLabel;
+    document.getElementById('limitLabel').textContent = t.limitLabel;
+    document.getElementById('nomLabel').textContent = t.nomLabel;
+    document.getElementById('prenomLabel').textContent = t.prenomLabel;
+    document.getElementById('telLabel').textContent = t.telLabel;
+    document.getElementById('nom').placeholder = t.nomPlaceholder;
+    document.getElementById('prenom').placeholder = t.prenomPlaceholder;
+    document.getElementById('telephone').placeholder = t.telPlaceholder;
+    document.getElementById('submitText').textContent = t.submitText;
+    document.getElementById('successTitle').textContent = t.successTitle;
+    document.getElementById('successMsg').textContent = t.successMsg;
+    document.getElementById('successInfo').textContent = t.successInfo;
+    document.getElementById('newRegText').textContent = t.newRegText;
+    document.getElementById('closedText').textContent = t.closedText;
+    document.getElementById('footerText').textContent = t.footerText;
+    document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
+  }
+
+  async function fetchData() {
+    const today = new Date().toISOString().split('T')[0];
+    const [paramRes, countRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=id`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
+      })
+    ]);
+    const params = await paramRes.json();
+    if (params.length > 0) parametres = params[0];
+    const countHeader = countRes.headers.get('content-range');
+    totalToday = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
+
+    document.getElementById('totalCount').textContent = totalToday;
+    document.getElementById('limitCount').textContent = parametres.limite_patients || '∞';
+
+    const closed = !parametres.ouvert || (parametres.limite_patients && totalToday >= parametres.limite_patients);
+    document.getElementById('closedBanner').style.display = closed ? 'block' : 'none';
+    document.getElementById('formSection').style.opacity = closed ? '0.4' : '1';
+    document.getElementById('submitBtn').disabled = closed;
+  }
+
+  async function inscrire() {
+    const t = translations[lang];
+    const nom = document.getElementById('nom').value.trim();
+    const prenom = document.getElementById('prenom').value.trim();
+    const telephone = document.getElementById('telephone').value.trim();
+    let valid = true;
+
+    const nomErr = document.getElementById('nomErr');
+    const prenomErr = document.getElementById('prenomErr');
+    const telErr = document.getElementById('telErr');
+
+    if (nomErr) nomErr.style.display = 'none';
+    if (prenomErr) prenomErr.style.display = 'none';
+    if (telErr) telErr.style.display = 'none';
+
+    if (!nom) { if (nomErr) nomErr.style.display = 'block'; valid = false; }
+    if (!prenom) { if (prenomErr) prenomErr.style.display = 'block'; valid = false; }
+    if (!telephone) { if (telErr) telErr.style.display = 'block'; valid = false; }
+    if (!valid) return;
+
+    if (!parametres.ouvert) { alert(t.errClosed); return; }
+
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitText').textContent = '...';
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // Get next position
+    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=id`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
+    });
+    const countHeader = countRes.headers.get('content-range');
+    const currentCount = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
+
+    if (parametres.limite_patients && currentCount >= parametres.limite_patients) {
+      alert(t.errLimit);
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('submitText').textContent = t.submitText;
+      return;
+    }
+
+    const position = currentCount + 1;
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today })
+    });
+
+    if (res.ok) {
+      document.getElementById('myNumber').textContent = position;
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('successCard').style.display = 'block';
+    } else {
+      alert('Erreur. Veuillez réessayer.');
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('submitText').textContent = t.submitText;
+    }
+  }
+
+  function reset() {
+    document.getElementById('nom').value = '';
+    document.getElementById('prenom').value = '';
+    document.getElementById('telephone').value = '';
+    document.getElementById('formSection').style.display = 'block';
+    document.getElementById('successCard').style.display = 'none';
+    document.getElementById('submitBtn').disabled = false;
+    fetchData();
+  }
+
+  fetchData();
+  setInterval(fetchData, 30000);
+</script>
+</body>
+</html>

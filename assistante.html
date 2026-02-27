@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assistante — Cabinet Médical</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream: #f5f0e8;
+      --white: #ffffff;
+      --deep: #1a2639;
+      --teal: #2a7f7f;
+      --teal-light: #3aa3a3;
+      --gold: #c9a84c;
+      --red: #c0392b;
+      --green: #27ae60;
+      --gray: #8a9bb0;
+      --border: #ddd6c8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Cairo', sans-serif; background: var(--cream); min-height: 100vh; }
+
+    /* LOGIN */
+    .login-wrap {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: white;
+      border-radius: 18px;
+      padding: 40px 32px;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 4px 24px rgba(26,38,57,0.10);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .login-card .icon { font-size: 48px; margin-bottom: 12px; }
+    .login-card h2 { font-family: 'Playfair Display', serif; color: var(--deep); font-size: 22px; margin-bottom: 6px; }
+    .login-card p { color: var(--gray); font-size: 13px; margin-bottom: 24px; }
+    .login-card input {
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Cairo', sans-serif; font-size: 15px;
+      color: var(--deep); background: var(--cream);
+      margin-bottom: 14px; outline: none;
+    }
+    .login-card input:focus { border-color: var(--teal); background: white; }
+    .btn {
+      width: 100%; padding: 13px;
+      background: var(--teal); color: white;
+      border: none; border-radius: 10px;
+      font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn:hover { background: var(--teal-light); }
+    .btn.danger { background: var(--red); }
+    .btn.danger:hover { background: #e74c3c; }
+    .btn.sm { width: auto; padding: 7px 16px; font-size: 13px; border-radius: 8px; }
+    .error-login { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
+
+    /* DASHBOARD */
+    .dashboard { display: none; }
+    .topbar {
+      background: var(--deep);
+      color: white;
+      padding: 16px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar h1 { font-family: 'Playfair Display', serif; font-size: 20px; }
+    .topbar .meta { font-size: 13px; color: var(--gray); }
+    .logout-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white; padding: 7px 16px;
+      border-radius: 8px; cursor: pointer;
+      font-family: 'Cairo', sans-serif; font-size: 13px;
+    }
+    .stats-row {
+      display: flex; gap: 16px;
+      padding: 20px 28px 0;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: white; border-radius: 12px;
+      padding: 18px 22px; flex: 1; min-width: 140px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(26,38,57,0.05);
+    }
+    .stat-card .val { font-size: 32px; font-weight: 700; color: var(--teal); font-family: 'Playfair Display', serif; }
+    .stat-card .lbl { font-size: 12px; color: var(--gray); margin-top: 2px; }
+    .content { padding: 20px 28px; }
+    .section-title {
+      font-size: 16px; font-weight: 700; color: var(--deep);
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .refresh-btn {
+      background: none; border: 1.5px solid var(--teal); color: var(--teal);
+      border-radius: 8px; padding: 5px 14px; font-size: 12px;
+      cursor: pointer; font-family: 'Cairo', sans-serif;
+    }
+    .list-wrap {
+      background: white; border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(26,38,57,0.05);
+    }
+    .list-header {
+      display: grid; grid-template-columns: 60px 1fr 1fr 140px 100px;
+      padding: 12px 20px;
+      background: #f8f6f2;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px; font-weight: 700; color: var(--gray);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .list-item {
+      display: grid; grid-template-columns: 60px 1fr 1fr 140px 100px;
+      padding: 14px 20px;
+      border-bottom: 1px solid #f0ece4;
+      align-items: center;
+      transition: background 0.15s;
+    }
+    .list-item:hover { background: #fdfaf6; }
+    .list-item:last-child { border-bottom: none; }
+    .num-badge {
+      width: 36px; height: 36px;
+      background: var(--teal); color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px;
+      font-family: 'Playfair Display', serif;
+    }
+    .name-col { font-weight: 600; color: var(--deep); font-size: 14px; }
+    .tel-col { color: var(--gray); font-size: 13px; }
+    .time-col { color: var(--gray); font-size: 12px; }
+    .actions-col { display: flex; gap: 6px; justify-content: flex-end; }
+    .del-btn {
+      background: none; border: 1.5px solid #e0aea8; color: var(--red);
+      border-radius: 7px; padding: 5px 10px; font-size: 12px;
+      cursor: pointer; font-family: 'Cairo', sans-serif;
+      transition: all 0.15s;
+    }
+    .del-btn:hover { background: var(--red); color: white; border-color: var(--red); }
+    .empty-state {
+      text-align: center; padding: 48px 20px; color: var(--gray);
+    }
+    .empty-state .ico { font-size: 48px; margin-bottom: 12px; }
+    .live-dot {
+      width: 8px; height: 8px; background: var(--green);
+      border-radius: 50%; display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; } 50% { opacity:0.3; }
+    }
+    @media (max-width: 600px) {
+      .list-header, .list-item { grid-template-columns: 50px 1fr 100px; }
+      .list-header .col-tel, .list-item .tel-col,
+      .list-header .col-time, .list-item .time-col { display: none; }
+      .stats-row { flex-direction: column; }
+      .topbar { padding: 12px 16px; }
+      .content { padding: 16px; }
+      .stats-row { padding: 16px 16px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="icon">👩‍⚕️</div>
+    <h2>Espace Assistante</h2>
+    <p>Connectez-vous pour gérer la liste des patients</p>
+    <input type="password" id="pwdInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')login()"/>
+    <button class="btn" onclick="login()">Se connecter</button>
+    <div class="error-login" id="loginErr">Mot de passe incorrect.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="topbar">
+    <div>
+      <h1>🏥 Liste des patients</h1>
+      <div class="meta" id="dateDisplay"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span><span class="live-dot"></span> <span style="font-size:12px;color:#8a9bb0;margin-left:4px;">Temps réel</span></span>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="val" id="statTotal">0</div>
+      <div class="lbl">Inscrits aujourd'hui</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statLimit">—</div>
+      <div class="lbl">Places max</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statRemaining">—</div>
+      <div class="lbl">Places restantes</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="section-title">
+      📋 File d'attente du jour
+      <button class="refresh-btn" onclick="loadList()">↻ Actualiser</button>
+    </div>
+    <div class="list-wrap">
+      <div class="list-header">
+        <span>#</span>
+        <span>Nom & Prénom</span>
+        <span class="col-tel">Téléphone</span>
+        <span class="col-time">Heure d'inscription</span>
+        <span style="text-align:right">Action</span>
+      </div>
+      <div id="listBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
+  let refreshInterval;
+
+  async function login() {
+    const pwd = document.getElementById('pwdInput').value;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const data = await res.json();
+    if (data.length > 0 && data[0].mot_de_passe === pwd) {
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      setDate();
+      loadList();
+      refreshInterval = setInterval(loadList, 15000);
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }
+
+  function logout() {
+    clearInterval(refreshInterval);
+    document.getElementById('loginWrap').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('pwdInput').value = '';
+    document.getElementById('loginErr').style.display = 'none';
+  }
+
+  function setDate() {
+    const now = new Date();
+    document.getElementById('dateDisplay').textContent = now.toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
+
+  async function loadList() {
+    const today = new Date().toISOString().split('T')[0];
+    const [listRes, paramRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&order=position.asc`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+      })
+    ]);
+    const list = await listRes.json();
+    const params = await paramRes.json();
+    const param = params[0] || {};
+
+    document.getElementById('statTotal').textContent = list.length;
+    document.getElementById('statLimit').textContent = param.limite_patients || '∞';
+    const rem = param.limite_patients ? Math.max(0, param.limite_patients - list.length) : '∞';
+    document.getElementById('statRemaining').textContent = rem;
+
+    const body = document.getElementById('listBody');
+    if (list.length === 0) {
+      body.innerHTML = `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit pour aujourd'hui.</p></div>`;
+      return;
+    }
+    body.innerHTML = list.map(p => {
+      const time = new Date(p.created_at).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+      return `<div class="list-item">
+        <div><div class="num-badge">${p.position}</div></div>
+        <div class="name-col">${p.nom} ${p.prenom}</div>
+        <div class="tel-col">${p.telephone}</div>
+        <div class="time-col">${time}</div>
+        <div class="actions-col">
+          <button class="del-btn" onclick="supprimer(${p.id})">Supprimer</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function supprimer(id) {
+    if (!confirm('Supprimer ce patient de la liste ?')) return;
+    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    loadList();
+  }
+
+  document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+</script>
+</body>
+</html>
