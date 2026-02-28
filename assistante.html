@@ -316,10 +316,32 @@
   }
 
   async function appelConsultation(id, position) {
-    await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours' }) }),
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: position }) })
-    ]);
+    // Récupérer le numéro en cours actuel
+    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const params = await paramRes.json();
+    const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
+
+    // Toujours mettre le patient en consultation
+    const updates = [
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ statut: 'en_cours' })
+      })
+    ];
+
+    // Mettre à jour numero_en_cours SEULEMENT si le numéro appelé est plus grand
+    if (position > numeroActuel) {
+      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
+        method: 'PATCH',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numero_en_cours: position })
+      }));
+    }
+
+    await Promise.all(updates);
     loadList();
   }
 
