@@ -96,6 +96,10 @@
     .alert-banner { border-radius: 10px; padding: 12px 14px; text-align: center; font-size: 13px; font-weight: 600; margin-top: 12px; display: none; }
     .alert-ready { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
     .alert-soon { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
+    .notice-box { background: #fff5f5; border: 2px solid #feb2b2; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+    .notice-title { color: var(--red); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .notice-sub { color: var(--gray-700); font-size: 12px; line-height: 1.5; }
+    .notice-sub strong { color: var(--red); }
     .reset-btn { width: 100%; padding: 12px; background: var(--gray-100); color: var(--gray-700); border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
     .reset-btn:hover { background: var(--gray-200); }
     .footer { margin-top: 32px; color: var(--gray-400); font-size: 12px; }
@@ -181,6 +185,12 @@
       <div class="alert-banner alert-soon" id="soonBanner">⏰ Encore quelques patients avant vous.</div>
     </div>
     <div class="info-note" id="successInfo">Présentez-vous au cabinet avec ce numéro.</div>
+
+    <div class="notice-box">
+      <div class="notice-title" id="noticeTitle">⚠️ Présentez-vous 3 numéros avant le vôtre !</div>
+      <div class="notice-sub" id="noticeSub">Exemple : si votre numéro est <strong>6</strong>, soyez au cabinet quand le numéro <strong>3</strong> est appelé.</div>
+    </div>
+
     <button class="reset-btn" onclick="reset()"><span id="newRegText">Nouvelle inscription</span></button>
   </div>
 </div>
@@ -202,6 +212,8 @@
       successTitle: 'Vous êtes inscrit(e) !', successMsg: "Votre numéro dans la file d'attente",
       successInfo: 'Présentez-vous au cabinet avec ce numéro.',
       newRegText: 'Nouvelle inscription',
+      noticeTitle: '⚠️ Présentez-vous 3 numéros avant le vôtre !',
+      noticeSub: 'Exemple : si votre numéro est 6, soyez au cabinet quand le numéro 3 est appelé.',
       closedText: "Les inscriptions sont fermées pour aujourd'hui.",
       errRequired: 'Ce champ est requis.',
       errLimit: "Désolé, la limite de patients est atteinte pour aujourd'hui.",
@@ -221,6 +233,8 @@
       successTitle: 'تم تسجيلك بنجاح !', successMsg: 'رقمك في قائمة الانتظار',
       successInfo: 'احضر إلى العيادة بهذا الرقم.',
       newRegText: 'تسجيل جديد',
+      noticeTitle: '⚠️ احضر قبل 3 أرقام من رقمك !',
+      noticeSub: 'مثال: إذا كان رقمك 6، كن في العيادة عند استدعاء الرقم 3.',
       closedText: 'التسجيل مغلق لهذا اليوم.',
       errRequired: 'هذا الحقل مطلوب.',
       errLimit: 'عذراً، تم الوصول إلى الحد الأقصى للمرضى اليوم.',
@@ -269,6 +283,8 @@
     document.getElementById('suiviAheadLabel').textContent = t.suiviAheadLabel;
     document.getElementById('readyBanner').textContent = t.ready;
     document.getElementById('soonBanner').textContent = t.soon;
+    document.getElementById('noticeTitle').textContent = t.noticeTitle;
+    document.getElementById('noticeSub').innerHTML = t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>');
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
   }
 
