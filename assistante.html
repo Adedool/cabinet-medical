@@ -315,7 +315,24 @@
   }
 
   async function finConsultation(id) {
+    const today = new Date().toISOString().split('T')[0];
     await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'termine' }) });
+
+    // Vérifier s'il reste des patients non terminés
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&statut=neq.termine&statut=neq.absent&select=id`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
+    });
+    const countHeader = res.headers.get('content-range');
+    const remaining = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
+
+    // Si plus personne, on remet le numéro en cours à 0
+    if (remaining === 0) {
+      await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
+        method: 'PATCH',
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numero_en_cours: 0 })
+      });
+    }
     loadList();
   }
 
