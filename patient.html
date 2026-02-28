@@ -7,32 +7,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --blue: #1a56db;
-      --blue-dark: #1341b0;
-      --blue-light: #e8f0fe;
-      --blue-mid: #3b82f6;
-      --white: #ffffff;
-      --gray-50: #f8fafc;
-      --gray-100: #f1f5f9;
-      --gray-200: #e2e8f0;
-      --gray-300: #cbd5e1;
-      --gray-400: #94a3b8;
-      --gray-500: #64748b;
-      --gray-700: #334155;
-      --gray-900: #0f172a;
-      --green: #16a34a;
-      --orange: #ea580c;
-      --red: #dc2626;
+      --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
+      --white: #ffffff; --gray-50: #f8fafc; --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0; --gray-300: #cbd5e1; --gray-400: #94a3b8;
+      --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
+      --green: #16a34a; --orange: #ea580c; --red: #dc2626;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 0 40px; }
 
     /* TOPBAR */
-    .topbar { width: 100%; background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar { width: 100%; background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
     .logo { font-family: 'DM Sans', sans-serif; font-size: 22px; font-weight: 700; color: var(--blue); letter-spacing: -0.5px; }
     .logo span { color: var(--gray-900); }
-    .lang-toggle { display: flex; gap: 6px; }
-    .lang-btn { padding: 5px 14px; border-radius: 8px; border: 1.5px solid var(--gray-200); background: transparent; color: var(--gray-500); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .topbar-right { display: flex; align-items: center; gap: 6px; }
+
+    /* ICONES STAFF — discrètes */
+    .staff-icons { display: flex; gap: 4px; }
+    .staff-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.15s;
+      cursor: pointer;
+      position: relative;
+    }
+    .staff-icon:hover { background: var(--blue-light); border-color: var(--blue); }
+    .staff-icon .tooltip {
+      position: absolute; top: 38px; right: 0;
+      background: var(--gray-900); color: white;
+      font-size: 11px; font-weight: 500;
+      padding: 4px 8px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    .staff-icon:hover .tooltip { opacity: 1; }
+
+    .lang-toggle { display: flex; gap: 5px; margin-left: 8px; }
+    .lang-btn { padding: 5px 12px; border-radius: 8px; border: 1.5px solid var(--gray-200); background: transparent; color: var(--gray-500); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
     .lang-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
 
     /* LIVE BANNER */
@@ -48,26 +64,22 @@
 
     /* CARD */
     .card { background: var(--white); border-radius: 16px; padding: 28px; max-width: 480px; width: calc(100% - 32px); margin: 16px auto 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); }
-
     .closed-banner { background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 10px; padding: 14px 16px; color: var(--red); font-size: 14px; font-weight: 500; display: none; margin-bottom: 20px; }
-
     .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
     .form-group { margin-bottom: 16px; }
-    .form-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--gray-900); background: var(--gray-50); outline: none; transition: border-color 0.15s, background 0.15s; }
+    .form-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--gray-900); background: var(--gray-50); outline: none; transition: border-color 0.15s; }
     .form-input:focus { border-color: var(--blue); background: var(--white); }
     .error-msg { color: var(--red); font-size: 12px; margin-top: 4px; display: none; }
-
     .submit-btn { width: 100%; padding: 13px; background: var(--blue); color: white; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; margin-top: 4px; }
     .submit-btn:hover { background: var(--blue-dark); }
     .submit-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+    .info-note { background: var(--blue-light); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--blue-dark); margin-bottom: 16px; font-weight: 500; }
 
     /* SUCCESS */
     .success-card { text-align: center; display: none; }
     .number-circle { width: 110px; height: 110px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'DM Sans', sans-serif; font-size: 48px; font-weight: 700; color: white; box-shadow: 0 8px 32px rgba(26,86,219,0.3); }
     .success-title { font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
     .success-sub { font-size: 14px; color: var(--gray-500); margin-bottom: 24px; }
-
-    /* SUIVI */
     .suivi-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
     .suivi-title { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 14px; }
     .suivi-row { display: flex; gap: 10px; }
@@ -84,25 +96,35 @@
     .alert-banner { border-radius: 10px; padding: 12px 14px; text-align: center; font-size: 13px; font-weight: 600; margin-top: 12px; display: none; }
     .alert-ready { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
     .alert-soon { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
-
-    .info-note { background: var(--blue-light); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--blue-dark); margin-bottom: 16px; font-weight: 500; }
-    .reset-btn { width: 100%; padding: 12px; background: var(--gray-100); color: var(--gray-700); border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .reset-btn { width: 100%; padding: 12px; background: var(--gray-100); color: var(--gray-700); border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
     .reset-btn:hover { background: var(--gray-200); }
-
-    .footer { margin-top: 32px; color: var(--gray-400); font-size: 12px; text-align: center; }
+    .footer { margin-top: 32px; color: var(--gray-400); font-size: 12px; }
   </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="logo">Rend<span>z</span></div>
-  <div class="lang-toggle">
-    <button class="lang-btn active" onclick="setLang('fr', this)">FR</button>
-    <button class="lang-btn" onclick="setLang('ar', this)">ع</button>
+  <div class="topbar-right">
+    <!-- Icônes staff discrètes -->
+    <div class="staff-icons">
+      <a class="staff-icon" href="assistante.html">
+        👩‍⚕️
+        <span class="tooltip">Espace Assistante</span>
+      </a>
+      <a class="staff-icon" href="medecin.html">
+        👨‍⚕️
+        <span class="tooltip">Espace Médecin</span>
+      </a>
+    </div>
+    <!-- Langue -->
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('fr', this)">FR</button>
+      <button class="lang-btn" onclick="setLang('ar', this)">ع</button>
+    </div>
   </div>
 </div>
 
-<!-- LIVE BANNER -->
 <div class="live-banner">
   <div class="left">
     <div class="live-label"><span class="live-dot"></span> <span id="liveLabel">Numéro en cours</span></div>
@@ -118,7 +140,6 @@
 <div class="card">
   <div class="closed-banner" id="closedBanner">🚫 <span id="closedText">Les inscriptions sont fermées pour aujourd'hui.</span></div>
 
-  <!-- FORMULAIRE -->
   <div id="formSection">
     <div class="info-note" id="infoBox">📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.</div>
     <div class="form-group">
@@ -141,7 +162,6 @@
     </button>
   </div>
 
-  <!-- SUCCÈS -->
   <div class="success-card" id="successCard">
     <div class="number-circle" id="myNumber">1</div>
     <div class="success-title" id="successTitle">Vous êtes inscrit(e) !</div>
@@ -215,7 +235,6 @@
   let lang = 'fr';
   let parametres = {};
   let myPosition = null;
-  let suiviInterval = null;
 
   function setLang(l, btn) {
     lang = l;
@@ -336,7 +355,6 @@
 
   function reset() {
     myPosition = null;
-    if (suiviInterval) clearInterval(suiviInterval);
     document.getElementById('nom').value = '';
     document.getElementById('prenom').value = '';
     document.getElementById('telephone').value = '';
