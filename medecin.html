@@ -217,7 +217,7 @@
     const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
-      sessionStorage.setItem('rendz_medecin', 'true');
+      localStorage.setItem('rendz_medecin', 'true');
       showDashboard();
     } else { document.getElementById('loginErr').style.display = 'block'; }
   }
@@ -231,14 +231,14 @@
 
   function logout() {
     clearInterval(refreshInterval);
-    sessionStorage.removeItem('rendz_medecin');
+    localStorage.removeItem('rendz_medecin');
     document.getElementById('loginWrap').style.display = 'flex';
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('pwdInput').value = '';
   }
 
   // Restaurer la session si déjà connecté
-  if (sessionStorage.getItem('rendz_medecin')) showDashboard();
+  if (localStorage.getItem('rendz_medecin')) showDashboard();
 
   function switchTab(name, el) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));

@@ -215,20 +215,29 @@
     const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
-      document.getElementById('loginWrap').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      setDate(); loadList();
-      refreshInterval = setInterval(loadList, 15000);
+      localStorage.setItem('rendz_assistante', 'true');
+      showDashboard();
     } else { document.getElementById('loginErr').style.display = 'block'; }
+  }
+
+  function showDashboard() {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    setDate(); loadList();
+    refreshInterval = setInterval(loadList, 15000);
   }
 
   function logout() {
     clearInterval(refreshInterval);
+    localStorage.removeItem('rendz_assistante');
     document.getElementById('loginWrap').style.display = 'flex';
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('pwdInput').value = '';
     document.getElementById('loginErr').style.display = 'none';
   }
+
+  // Restaurer la session si déjà connecté
+  if (localStorage.getItem('rendz_assistante')) showDashboard();
 
   function setDate() {
     document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
@@ -315,18 +324,21 @@
   }
 
   async function finConsultation(id) {
-    const today = new Date().toISOString().split('T')[0];
-    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'termine' }) });
-
-    // Vérifier s'il reste des patients non terminés
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&statut=neq.termine&statut=neq.absent&select=id`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
+    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ statut: 'termine' })
     });
-    const countHeader = res.headers.get('content-range');
-    const remaining = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
 
-    // Si plus personne, on remet le numéro en cours à 0
-    if (remaining === 0) {
+    // Vérifier s'il reste des patients actifs (pas terminés, pas absents)
+    const today = new Date().toISOString().split('T')[0];
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=id,statut`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const tous = await res.json();
+    const restants = tous.filter(p => p.statut !== 'termine' && p.statut !== 'absent' && p.id !== id);
+
+    if (restants.length === 0) {
       await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
         method: 'PATCH',
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
