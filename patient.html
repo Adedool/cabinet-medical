@@ -93,7 +93,19 @@
     .progress-bar { background: var(--gray-200); border-radius: 10px; height: 6px; overflow: hidden; }
     .progress-fill { height: 100%; background: var(--blue); border-radius: 10px; transition: width 0.5s ease; }
     .progress-label { font-size: 12px; color: var(--gray-500); margin-top: 6px; text-align: center; }
-    .alert-banner { border-radius: 10px; padding: 12px 14px; text-align: center; font-size: 13px; font-weight: 600; margin-top: 12px; display: none; }
+    /* CERCLE DE PROGRESSION */
+    .progress-wrap { margin-top: 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .circle-container { position: relative; width: 100px; height: 100px; }
+    .circle-bg { fill: none; stroke: var(--gray-200); stroke-width: 8; }
+    .circle-fill { fill: none; stroke: var(--blue); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 251.2; stroke-dashoffset: 251.2; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .circle-fill.urgent { stroke: var(--orange); }
+    .circle-fill.almost { stroke: var(--green); }
+    .circle-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .circle-pct { font-family: 'DM Sans', sans-serif; font-size: 22px; font-weight: 700; color: var(--blue); line-height: 1; }
+    .circle-pct.urgent { color: var(--orange); }
+    .circle-pct.almost { color: var(--green); }
+    .circle-sub { font-size: 10px; color: var(--gray-500); font-weight: 500; margin-top: 2px; }
+    .progress-label { font-size: 12px; color: var(--gray-500); text-align: center; font-weight: 500; }
     .alert-ready { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
     .alert-soon { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
     .notice-box { background: #fff5f5; border: 2px solid #feb2b2; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
@@ -175,7 +187,16 @@
         <div class="suivi-stat"><div class="suivi-val ahead" id="suiviAhead">—</div><div class="suivi-lbl" id="suiviAheadLabel">Avant moi</div></div>
       </div>
       <div class="progress-wrap">
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="circle-container">
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <circle class="circle-bg" cx="50" cy="50" r="40"/>
+            <circle class="circle-fill" id="circleFill" cx="50" cy="50" r="40"/>
+          </svg>
+          <div class="circle-text">
+            <div class="circle-pct" id="circlePct">0%</div>
+            <div class="circle-sub" id="circleSub">écoulé</div>
+          </div>
+        </div>
         <div class="progress-label" id="progressLabel">Calcul en cours...</div>
       </div>
       <div class="alert-banner alert-ready" id="readyBanner">🟢 C'est bientôt votre tour ! Rendez-vous au cabinet.</div>
@@ -309,9 +330,37 @@
     document.getElementById('suiviCurrent').textContent = numEnCours || '—';
     document.getElementById('suiviMine').textContent = myPosition;
     document.getElementById('suiviAhead').textContent = ahead;
+
     const progress = myPosition > 0 ? Math.min(100, Math.round((numEnCours / myPosition) * 100)) : 0;
-    document.getElementById('progressFill').style.width = progress + '%';
-    document.getElementById('progressLabel').textContent = `${progress}% de la file écoulée`;
+
+    // Animer le cercle SVG
+    const circle = document.getElementById('circleFill');
+    const pct = document.getElementById('circlePct');
+    const circumference = 251.2;
+    const offset = circumference - (progress / 100) * circumference;
+    circle.style.strokeDashoffset = offset;
+    pct.textContent = progress + '%';
+
+    // Couleur selon urgence
+    circle.className = 'circle-fill';
+    pct.className = 'circle-pct';
+    if (ahead <= 2 && numEnCours > 0) {
+      circle.classList.add('almost');
+      pct.classList.add('almost');
+    } else if (ahead <= 5 && numEnCours > 0) {
+      circle.classList.add('urgent');
+      pct.classList.add('urgent');
+    }
+
+    // Label
+    if (numEnCours === 0) {
+      document.getElementById('progressLabel').textContent = 'En attente du début des consultations';
+    } else if (ahead === 0) {
+      document.getElementById('progressLabel').textContent = "C'est votre tour !";
+    } else {
+      document.getElementById('progressLabel').textContent = `${ahead} patient${ahead > 1 ? 's' : ''} avant vous`;
+    }
+
     document.getElementById('readyBanner').style.display = ahead <= 2 && numEnCours > 0 ? 'block' : 'none';
     document.getElementById('soonBanner').style.display = ahead > 2 && ahead <= 5 ? 'block' : 'none';
   }
