@@ -310,6 +310,7 @@
   let lang = 'fr';
   let parametres = {};
   let myPosition = null;
+  const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
 
   function setLang(l, btn) {
     lang = l;
@@ -383,8 +384,8 @@
   async function fetchLive() {
     const today = new Date().toISOString().split('T')[0];
     const [paramRes, countRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } })
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } })
     ]);
     const params = await paramRes.json();
     if (params.length > 0) parametres = params[0];
@@ -477,7 +478,7 @@
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('submitText').textContent = '...';
     const today = new Date().toISOString().split('T')[0];
-    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=id`, {
+    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, {
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
     });
     const countHeader = countRes.headers.get('content-range');
@@ -492,7 +493,7 @@
     const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-      body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today })
+      body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today, cabinet_id: cabinetId })
     });
     if (res.ok) {
       myPosition = position;

@@ -275,14 +275,15 @@
   const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   let refreshInterval;
+  const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
   const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };
 
   async function login() {
     const pwd = document.getElementById('pwdInput').value;
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin&cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
-      localStorage.setItem('rendz_medecin', 'true');
+      localStorage.setItem(`rendz_medecin_${cabinetId}`, 'true');
       showDashboard();
     } else { document.getElementById('loginErr').style.display = 'block'; }
   }
@@ -296,14 +297,13 @@
 
   function logout() {
     clearInterval(refreshInterval);
-    localStorage.removeItem('rendz_medecin');
+    localStorage.removeItem(`rendz_medecin_${cabinetId}`);
     document.getElementById('loginWrap').style.display = 'flex';
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('pwdInput').value = '';
   }
 
-  // Restaurer la session si déjà connecté
-  if (localStorage.getItem('rendz_medecin')) showDashboard();
+  if (localStorage.getItem(`rendz_medecin_${cabinetId}`)) showDashboard();
 
   function switchTab(name, el) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -315,7 +315,7 @@
   async function loadAll() { await loadParams(); await loadList(); }
 
   async function loadParams() {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const data = await res.json();
     if (data.length > 0) {
       document.getElementById('toggleOuvert').checked = data[0].ouvert;
@@ -342,11 +342,7 @@
       horaires_ar: document.getElementById('horairesAr').value.trim(),
       message_patients_ar: document.getElementById('messagePatientsArInput').value.trim(),
     };
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
-      method: 'PATCH',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, {
     const n = document.getElementById('cabinetNote');
     n.style.display = 'block';
     setTimeout(() => n.style.display = 'none', 2500);
@@ -355,8 +351,8 @@
   async function loadList() {
     const today = new Date().toISOString().split('T')[0];
     const [listRes, paramRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&order=position.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
     ]);
     const list = await listRes.json();
     const params = (await paramRes.json())[0] || {};
@@ -396,7 +392,7 @@
   async function saveParams() {
     const ouvert = document.getElementById('toggleOuvert').checked;
     const limite = parseInt(document.getElementById('limiteInput').value) || 0;
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ ouvert, limite_patients: limite }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ ouvert, limite_patients: limite }) });
     const n = document.getElementById('saveNote');
     n.style.display = 'block';
     setTimeout(() => n.style.display = 'none', 2500);
@@ -408,8 +404,8 @@
   async function confirmClear() {
     closeModal();
     const today = new Date().toISOString().split('T')[0];
-    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: 0 }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: 0 }) });
     loadList();
   }
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
@@ -418,7 +414,7 @@
     const inputId = role === 'medecin' ? 'newPwdMed' : 'newPwdAss';
     const newPwd = document.getElementById(inputId).value.trim();
     if (!newPwd) { alert('Entrez un nouveau mot de passe.'); return; }
-    await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ mot_de_passe: newPwd }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}&cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ mot_de_passe: newPwd }) });
     document.getElementById(inputId).value = '';
     const n = document.getElementById('pwdNote');
     n.style.display = 'block';
