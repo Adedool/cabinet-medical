@@ -143,10 +143,53 @@
 
     @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .manual-form { position: static; } }
     @media (max-width: 640px) {
-      .list-header, .list-item { grid-template-columns: 42px 1fr 170px; }
-      .list-header span:nth-child(3), .list-item .status-col { display: none; }
-      .stats-row { gap: 8px; } .content, .topbar { padding-left: 16px; padding-right: 16px; }
-      .stats-row { padding: 14px 16px 0; } .consult-bar, .no-consult { padding-left: 16px; padding-right: 16px; }
+      .content, .topbar { padding-left: 16px; padding-right: 16px; }
+      .stats-row { gap: 8px; padding: 14px 16px 0; }
+      .stat-card { padding: 12px 10px; }
+      .stat-val { font-size: 22px; }
+      .consult-bar, .no-consult { padding-left: 16px; padding-right: 16px; }
+      .consult-number { font-size: 30px; }
+
+      /* Tableau → Cartes sur mobile */
+      .list-header { display: none; }
+      .list-item {
+        display: flex !important;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+      }
+      .list-item.en_cours { border-left: 4px solid var(--orange) !important; }
+      .list-item.manuel:not(.en_cours) { border-left: 4px solid var(--blue) !important; }
+
+      /* Ligne 1 : numéro + nom + statut */
+      .list-item > div:nth-child(1),
+      .list-item > div:nth-child(2),
+      .list-item > div:nth-child(3) { display: inline-flex; align-items: center; }
+      .list-item > div:nth-child(1) { float: left; margin-right: 10px; }
+
+      /* Réorganiser en flex row pour le haut */
+      .list-item { position: relative; }
+      .num-badge { flex-shrink: 0; }
+      .name-col { flex: 1; font-size: 14px; }
+      .status-col { margin-left: auto; }
+
+      /* Ligne 2 : boutons plus grands, accessibles au doigt */
+      .actions-col {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 7px;
+        padding-top: 4px;
+        border-top: 1px solid var(--gray-100);
+      }
+      .action-btn {
+        padding: 9px 14px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+        flex: 1;
+        min-width: 80px;
+        text-align: center;
+      }
+      .btn-del { flex: 0 0 auto; min-width: unset; padding: 9px 12px !important; }
     }
   </style>
 </head>
@@ -329,18 +372,19 @@
       const st = p.statut || 'en_attente';
       const isM = p.source === 'manuel';
       const bc = st === 'present' ? 'present' : st === 'en_cours' ? 'en_cours' : st === 'absent' ? 'absent' : st === 'termine' ? 'termine' : '';
+      const actions = `
+        ${st === 'en_attente' ? `<button class="action-btn btn-present" onclick="setStatut(${p.id},'present')">✓ Présent</button>` : ''}
+        ${st === 'present' && !dejaEnCours ? `<button class="action-btn btn-encours" onclick="appelConsultation(${p.id},${p.position})">▶ Appeler</button>` : ''}
+        ${st === 'en_cours' ? `<button class="action-btn btn-fin" onclick="finConsultation(${p.id})">✅ Fin</button>` : ''}
+        ${st !== 'absent' && st !== 'termine' ? `<button class="action-btn btn-absent" onclick="setStatut(${p.id},'absent')">✗ Absent</button>` : ''}
+        ${st === 'absent' ? `<button class="action-btn btn-restore" onclick="setStatut(${p.id},'en_attente')">↩ Restaurer</button>` : ''}
+        <button class="action-btn btn-del" onclick="supprimer(${p.id})">🗑</button>`;
       return `<div class="list-item ${st} ${isM ? 'manuel' : ''}">
+        <!-- Desktop : grille 4 colonnes -->
         <div><div class="num-badge ${bc}">${p.position}</div></div>
         <div class="name-col">${p.nom} ${p.prenom}${isM ? '<span class="tag-manuel">Sur place</span>' : ''}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
         <div class="status-col"><span class="status-badge ${st}">${SL[st] || st}</span></div>
-        <div class="actions-col">
-          ${st === 'en_attente' ? `<button class="action-btn btn-present" onclick="setStatut(${p.id},'present')">✓ Présent</button>` : ''}
-          ${st === 'present' && !dejaEnCours ? `<button class="action-btn btn-encours" onclick="appelConsultation(${p.id},${p.position})">▶ Appeler</button>` : ''}
-          ${st === 'en_cours' ? `<button class="action-btn btn-fin" onclick="finConsultation(${p.id})">✅ Fin</button>` : ''}
-          ${st !== 'absent' && st !== 'termine' ? `<button class="action-btn btn-absent" onclick="setStatut(${p.id},'absent')">✗ Absent</button>` : ''}
-          ${st === 'absent' ? `<button class="action-btn btn-restore" onclick="setStatut(${p.id},'en_attente')">↩ Restaurer</button>` : ''}
-          <button class="action-btn btn-del" onclick="supprimer(${p.id})">🗑</button>
-        </div>
+        <div class="actions-col">${actions}</div>
       </div>`;
     }).join('');
   }
