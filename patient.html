@@ -108,6 +108,8 @@
     .progress-label { font-size: 12px; color: var(--gray-500); text-align: center; font-weight: 500; }
     .alert-ready { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
     .alert-soon { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
+    .whatsapp-btn { width: 100%; padding: 13px; background: #25d366; color: white; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; transition: background 0.15s; text-decoration: none; }
+    .whatsapp-btn:hover { background: #1ebe5d; }
     .notice-box { background: #fff5f5; border: 2px solid #feb2b2; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
     .notice-title { color: var(--red); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
     .notice-sub { color: var(--gray-700); font-size: 12px; line-height: 1.5; }
@@ -209,6 +211,11 @@
       <div class="notice-sub" id="noticeSub">Exemple : si votre numéro est <strong>6</strong>, soyez au cabinet quand le numéro <strong>3</strong> est appelé.</div>
     </div>
 
+    <a class="whatsapp-btn" id="whatsappBtn" href="#" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <span id="whatsappText">Enregistrer mon numéro sur WhatsApp</span>
+    </a>
+
     <button class="reset-btn" onclick="reset()"><span id="newRegText">Nouvelle inscription</span></button>
   </div>
 </div>
@@ -230,6 +237,7 @@
       successTitle: 'Vous êtes inscrit(e) !', successMsg: "Votre numéro dans la file d'attente",
       successInfo: 'Présentez-vous au cabinet avec ce numéro.',
       newRegText: 'Nouvelle inscription',
+      whatsappText: 'Enregistrer mon numéro sur WhatsApp',
       noticeTitle: '⚠️ Présentez-vous 3 numéros avant le vôtre !',
       noticeSub: 'Exemple : si votre numéro est 6, soyez au cabinet quand le numéro 3 est appelé.',
       closedText: "Les inscriptions sont fermées pour aujourd'hui.",
@@ -251,6 +259,7 @@
       successTitle: 'تم تسجيلك بنجاح !', successMsg: 'رقمك في قائمة الانتظار',
       successInfo: 'احضر إلى العيادة بهذا الرقم.',
       newRegText: 'تسجيل جديد',
+      whatsappText: 'حفظ رقمي على واتساب',
       noticeTitle: '⚠️ احضر قبل 3 أرقام من رقمك !',
       noticeSub: 'مثال: إذا كان رقمك 6، كن في العيادة عند استدعاء الرقم 3.',
       closedText: 'التسجيل مغلق لهذا اليوم.',
@@ -294,6 +303,7 @@
     document.getElementById('successMsg').textContent = t.successMsg;
     document.getElementById('successInfo').textContent = t.successInfo;
     document.getElementById('newRegText').textContent = t.newRegText;
+    document.getElementById('whatsappText').textContent = t.whatsappText;
     document.getElementById('closedText').textContent = t.closedText;
     document.getElementById('suiviTitle').textContent = t.suiviTitle;
     document.getElementById('suiviCurrentLabel').textContent = t.suiviCurrentLabel;
@@ -304,6 +314,16 @@
     document.getElementById('noticeTitle').textContent = t.noticeTitle;
     document.getElementById('noticeSub').innerHTML = t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>');
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
+    // Mettre à jour le lien WhatsApp si déjà inscrit
+    if (myPosition) document.getElementById('whatsappBtn').href = generateWhatsAppLink(myPosition);
+  }
+
+  function generateWhatsAppLink(position) {
+    const presentAt = Math.max(1, position - 3);
+    const msg = lang === 'ar'
+      ? `Rendz — عيادة طبية\nرقمي في قائمة الانتظار : ${position}\nتوجّه إلى العيادة عند استدعاء الرقم ${presentAt}`
+      : `Rendz — Cabinet médical\nMon numéro dans la file : ${position}\nPrésentez-vous au cabinet quand le numéro ${presentAt} est appelé.`;
+    return `https://wa.me/?text=${encodeURIComponent(msg)}`;
   }
 
   async function fetchLive() {
@@ -405,6 +425,7 @@
     if (res.ok) {
       myPosition = position;
       document.getElementById('myNumber').textContent = position;
+      document.getElementById('whatsappBtn').href = generateWhatsAppLink(position);
       document.getElementById('formSection').style.display = 'none';
       document.getElementById('successCard').style.display = 'block';
       updateSuivi(parametres.numero_en_cours || 0);
