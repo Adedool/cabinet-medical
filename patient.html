@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Inscription</title>
-  <link href="https://fonts.googleapis.com/css2? family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
@@ -326,34 +326,37 @@
 
   function applyT() {
     const t = T[lang];
-    document.getElementById('liveLabel').textContent = t.liveLabel;
-    document.getElementById('liveSub').textContent = t.liveSub;
-    document.getElementById('liveInscritsLabel').textContent = t.liveInscritsLabel;
-    document.getElementById('infoBox').textContent = t.infoBox;
-    document.getElementById('nomLabel').textContent = t.nomLabel;
-    document.getElementById('prenomLabel').textContent = t.prenomLabel;
-    document.getElementById('telLabel').textContent = t.telLabel;
-    document.getElementById('nom').placeholder = t.nomPh;
-    document.getElementById('prenom').placeholder = t.prenomPh;
-    document.getElementById('telephone').placeholder = t.telPh;
-    document.getElementById('submitText').textContent = t.submitText;
-    document.getElementById('successTitle').textContent = t.successTitle;
-    document.getElementById('successMsg').textContent = t.successMsg;
-    document.getElementById('successInfo').textContent = t.successInfo;
-    document.getElementById('newRegText').textContent = t.newRegText;
-    document.getElementById('whatsappText').textContent = t.whatsappText;
-    document.getElementById('closedText').textContent = t.closedText;
-    document.getElementById('suiviTitle').textContent = t.suiviTitle;
-    document.getElementById('suiviCurrentLabel').textContent = t.suiviCurrentLabel;
-    document.getElementById('suiviMineLabel').textContent = t.suiviMineLabel;
-    document.getElementById('suiviAheadLabel').textContent = t.suiviAheadLabel;
-    document.getElementById('readyBanner').textContent = t.ready;
-    document.getElementById('soonBanner').textContent = t.soon;
-    document.getElementById('noticeTitle').textContent = t.noticeTitle;
-    document.getElementById('noticeSub').innerHTML = t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>');
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    const setHTML = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
+    const setPH = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
+
+    set('liveLabel', t.liveLabel);
+    set('liveSub', t.liveSub);
+    set('liveInscritsLabel', t.liveInscritsLabel);
+    set('infoBox', t.infoBox);
+    set('nomLabel', t.nomLabel);
+    set('prenomLabel', t.prenomLabel);
+    set('telLabel', t.telLabel);
+    setPH('nom', t.nomPh);
+    setPH('prenom', t.prenomPh);
+    setPH('telephone', t.telPh);
+    set('submitText', t.submitText);
+    set('successTitle', t.successTitle);
+    set('successMsg', t.successMsg);
+    set('successInfo', t.successInfo);
+    set('newRegText', t.newRegText);
+    set('whatsappText', t.whatsappText);
+    set('closedText', t.closedText);
+    set('suiviTitle', t.suiviTitle);
+    set('suiviCurrentLabel', t.suiviCurrentLabel);
+    set('suiviMineLabel', t.suiviMineLabel);
+    set('suiviAheadLabel', t.suiviAheadLabel);
+    set('readyBanner', t.ready);
+    set('soonBanner', t.soon);
+    set('noticeTitle', t.noticeTitle);
+    setHTML('noticeSub', t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>'));
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
-    // Mettre à jour le lien WhatsApp si déjà inscrit
-    if (myPosition) document.getElementById('whatsappBtn').href = generateWhatsAppLink(myPosition);
+    if (myPosition) { const btn = document.getElementById('whatsappBtn'); if (btn) btn.href = generateWhatsAppLink(myPosition); }
   }
 
   function generateWhatsAppLink(position) {
