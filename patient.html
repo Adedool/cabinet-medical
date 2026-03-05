@@ -357,6 +357,18 @@
     setHTML('noticeSub', t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>'));
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
     if (myPosition) { const btn = document.getElementById('whatsappBtn'); if (btn) btn.href = generateWhatsAppLink(myPosition); }
+    // Recharger les infos cabinet dans la bonne langue
+    if (parametres.nom_cabinet) {
+      const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet) : parametres.nom_cabinet;
+      const spec = lang === 'ar' ? (parametres.specialite_ar || parametres.specialite) : parametres.specialite;
+      const hor = lang === 'ar' ? (parametres.horaires_ar || parametres.horaires) : parametres.horaires;
+      const msg = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients) : parametres.message_patients;
+      const el = document.getElementById('cabinetNom'); if (el) el.textContent = nom || '';
+      const es = document.getElementById('cabinetSpec'); if (es) es.textContent = spec || '';
+      const eh = document.getElementById('cabinetHoraires'); if (eh) eh.textContent = hor || '';
+      const em = document.getElementById('messagePatients');
+      if (em) { if (msg) { em.textContent = '📢 ' + msg; em.style.display = 'block'; } else { em.style.display = 'none'; } }
+    }
   }
 
   function generateWhatsAppLink(position) {
@@ -385,10 +397,10 @@
     document.getElementById('submitBtn').disabled = !!closed;
 
     // Infos cabinet dans le bandeau bleu
-    const nom = parametres.nom_cabinet || '';
-    const spec = parametres.specialite || '';
-    const horaires = parametres.horaires || '';
-    const msg = parametres.message_patients || '';
+    const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet || '') : (parametres.nom_cabinet || '');
+    const spec = lang === 'ar' ? (parametres.specialite_ar || parametres.specialite || '') : (parametres.specialite || '');
+    const horaires = lang === 'ar' ? (parametres.horaires_ar || parametres.horaires || '') : (parametres.horaires || '');
+    const msg = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients || '') : (parametres.message_patients || '');
     if (nom) {
       document.getElementById('cabinetNom').textContent = nom;
       document.getElementById('cabinetSpec').textContent = spec;

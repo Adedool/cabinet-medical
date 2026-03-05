@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Médecin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
@@ -221,6 +221,10 @@
     <div class="settings-card" style="max-width:560px">
       <h3>🏥 Informations du cabinet</h3>
       <br/>
+
+      <!-- Séparateur FR -->
+      <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--blue-light)">🇫🇷 Français</div>
+
       <div class="pwd-label">Nom du cabinet / Médecin</div>
       <input class="mform-input" type="text" id="nomCabinet" placeholder="Ex: Dr. Benali Mohamed" style="margin-bottom:14px"/>
       <div class="pwd-label">Spécialité</div>
@@ -228,7 +232,20 @@
       <div class="pwd-label">Horaires de consultation</div>
       <input class="mform-input" type="text" id="horaires" placeholder="Ex: Dim–Jeu 8h–12h / 14h–18h" style="margin-bottom:14px"/>
       <div class="pwd-label">Message aux patients</div>
-      <textarea class="mform-input" id="messagePatientsInput" placeholder="Ex: Merci de venir avec votre carnet de santé." rows="3" style="resize:vertical; margin-bottom:14px"></textarea>
+      <textarea class="mform-input" id="messagePatientsInput" placeholder="Ex: Merci de venir avec votre carnet de santé." rows="2" style="resize:vertical; margin-bottom:20px"></textarea>
+
+      <!-- Séparateur AR -->
+      <div style="font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--blue-light);text-align:right;direction:rtl">العربية 🇩🇿</div>
+
+      <div class="pwd-label" style="text-align:right;direction:rtl">اسم العيادة / الطبيب</div>
+      <input class="mform-input" type="text" id="nomCabinetAr" placeholder="مثال: د. بن علي محمد" style="margin-bottom:14px;text-align:right;direction:rtl;font-family:'Cairo',sans-serif"/>
+      <div class="pwd-label" style="text-align:right;direction:rtl">التخصص</div>
+      <input class="mform-input" type="text" id="specialiteAr" placeholder="مثال: طب عام، أمراض القلب..." style="margin-bottom:14px;text-align:right;direction:rtl;font-family:'Cairo',sans-serif"/>
+      <div class="pwd-label" style="text-align:right;direction:rtl">أوقات الاستشارة</div>
+      <input class="mform-input" type="text" id="horairesAr" placeholder="مثال: الأحد–الخميس 8ص–12م / 2م–6م" style="margin-bottom:14px;text-align:right;direction:rtl;font-family:'Cairo',sans-serif"/>
+      <div class="pwd-label" style="text-align:right;direction:rtl">رسالة للمرضى</div>
+      <textarea class="mform-input" id="messagePatientsArInput" placeholder="مثال: يرجى إحضار دفتر الصحة." rows="2" style="resize:vertical;margin-bottom:20px;text-align:right;direction:rtl;font-family:'Cairo',sans-serif"></textarea>
+
       <button class="pwd-btn" style="width:100%;padding:12px;font-size:14px" onclick="saveCabinet()">💾 Sauvegarder</button>
       <div class="save-note" id="cabinetNote" style="margin-top:10px">✓ Informations sauvegardées</div>
     </div>
@@ -307,18 +324,28 @@
       document.getElementById('specialite').value = data[0].specialite || '';
       document.getElementById('horaires').value = data[0].horaires || '';
       document.getElementById('messagePatientsInput').value = data[0].message_patients || '';
+      document.getElementById('nomCabinetAr').value = data[0].nom_cabinet_ar || '';
+      document.getElementById('specialiteAr').value = data[0].specialite_ar || '';
+      document.getElementById('horairesAr').value = data[0].horaires_ar || '';
+      document.getElementById('messagePatientsArInput').value = data[0].message_patients_ar || '';
     }
   }
 
   async function saveCabinet() {
-    const nom_cabinet = document.getElementById('nomCabinet').value.trim();
-    const specialite = document.getElementById('specialite').value.trim();
-    const horaires = document.getElementById('horaires').value.trim();
-    const message_patients = document.getElementById('messagePatientsInput').value.trim();
+    const body = {
+      nom_cabinet: document.getElementById('nomCabinet').value.trim(),
+      specialite: document.getElementById('specialite').value.trim(),
+      horaires: document.getElementById('horaires').value.trim(),
+      message_patients: document.getElementById('messagePatientsInput').value.trim(),
+      nom_cabinet_ar: document.getElementById('nomCabinetAr').value.trim(),
+      specialite_ar: document.getElementById('specialiteAr').value.trim(),
+      horaires_ar: document.getElementById('horairesAr').value.trim(),
+      message_patients_ar: document.getElementById('messagePatientsArInput').value.trim(),
+    };
     await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
       method: 'PATCH',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nom_cabinet, specialite, horaires, message_patients })
+      body: JSON.stringify(body)
     });
     const n = document.getElementById('cabinetNote');
     n.style.display = 'block';
