@@ -41,6 +41,20 @@
     .logout-btn { background: var(--gray-100); border: 1px solid var(--gray-200); color: var(--gray-700); padding: 7px 14px; border-radius: 8px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; }
     .logout-btn:hover { background: var(--gray-200); }
 
+    /* MODALE */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+    .modal { background: white; border-radius: 16px; padding: 28px 24px; max-width: 360px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: scale(0.95); transition: transform 0.2s; }
+    .modal-overlay.show .modal { transform: scale(1); }
+    .modal-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--gray-900); text-align: center; margin-bottom: 8px; }
+    .modal-msg { font-size: 13px; color: var(--gray-500); text-align: center; line-height: 1.5; margin-bottom: 22px; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-cancel { flex: 1; padding: 11px; background: var(--gray-100); color: var(--gray-700); border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .modal-cancel:hover { background: var(--gray-200); }
+    .modal-confirm { flex: 1; padding: 11px; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; color: white; background: var(--red); }
+    .modal-confirm:hover { background: #b91c1c; }
+
     .tabs { display: flex; background: white; border-bottom: 1px solid var(--gray-200); padding: 0 28px; }
     .tab { padding: 14px 18px; font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
     .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
@@ -115,6 +129,19 @@
   </style>
 </head>
 <body>
+
+<!-- MODALE -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-icon">🗑️</div>
+    <div class="modal-title">Effacer la liste du jour ?</div>
+    <div class="modal-msg">Tous les patients inscrits aujourd'hui seront supprimés. Cette action est irréversible.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Annuler</button>
+      <button class="modal-confirm" onclick="confirmClear()">Effacer</button>
+    </div>
+  </div>
+</div>
 
 <div class="login-wrap" id="loginWrap">
   <div class="login-card">
@@ -309,12 +336,16 @@
     loadList();
   }
 
-  async function clearDay() {
-    if (!confirm('Effacer toute la liste du jour ?')) return;
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+  function clearDay() { document.getElementById('modalOverlay').classList.add('show'); }
+  async function confirmClear() {
+    closeModal();
     const today = new Date().toISOString().split('T')[0];
     await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: 0 }) });
     loadList();
   }
+  document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
   async function changePwd(role) {
     const inputId = role === 'medecin' ? 'newPwdMed' : 'newPwdAss';
