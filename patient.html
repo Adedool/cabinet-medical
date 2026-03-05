@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --blue: #1a56db; -- blue-dark: #1341b0; --blue-light: #e8f0fe;
+      --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
       --white: #ffffff; --gray-50: #f8fafc; --gray-100: #f1f5f9;
       --gray-200: #e2e8f0; --gray-300: #cbd5e1; --gray-400: #94a3b8;
       --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
@@ -149,11 +149,16 @@
     <div class="live-number" id="liveNumber">—</div>
     <div class="live-sub" id="liveSub">Mis à jour en temps réel</div>
   </div>
-
+  <div class="right" id="cabinetInfo" style="text-align:right;display:none">
+    <div style="font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:white" id="cabinetNom"></div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px" id="cabinetSpec"></div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px" id="cabinetHoraires"></div>
+  </div>
 </div>
 
 <div class="card">
   <div class="closed-banner" id="closedBanner">🚫 <span id="closedText">Les inscriptions sont fermées pour aujourd'hui.</span></div>
+  <div id="messagePatients" style="display:none;background:#fff8e1;border:1.5px solid #ffd54f;border-radius:10px;padding:12px 14px;font-size:13px;color:#5f4700;font-weight:500;margin-bottom:16px"></div>
 
   <div id="formSection">
     <div class="info-note" id="infoBox">📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.</div>
@@ -320,9 +325,10 @@
 
   function generateWhatsAppLink(position) {
     const presentAt = Math.max(1, position - 3);
+    const cabinet = parametres.nom_cabinet || 'Cabinet médical';
     const msg = lang === 'ar'
-      ? `Rendz — عيادة طبية\nرقمي في قائمة الانتظار : ${position}\nتوجّه إلى العيادة عند استدعاء الرقم ${presentAt}`
-      : `Rendz — Cabinet médical\nMon numéro dans la file : ${position}\nPrésentez-vous au cabinet quand le numéro ${presentAt} est appelé.`;
+      ? `Rendz — ${cabinet}\nرقمي في قائمة الانتظار : ${position}\nتوجّه إلى العيادة عند استدعاء الرقم ${presentAt}`
+      : `Rendz — ${cabinet}\nMon numéro dans la file : ${position}\nPrésentez-vous au cabinet quand le numéro ${presentAt} est appelé.`;
     return `https://wa.me/?text=${encodeURIComponent(msg)}`;
   }
 
@@ -338,10 +344,26 @@
     document.getElementById('liveNumber').textContent = numEnCours || '—';
     const countHeader = countRes.headers.get('content-range');
     const totalToday = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
-    document.getElementById('liveInscrits').textContent = totalToday;
     const closed = !parametres.ouvert || (parametres.limite_patients && totalToday >= parametres.limite_patients);
     document.getElementById('closedBanner').style.display = closed ? 'block' : 'none';
     document.getElementById('submitBtn').disabled = !!closed;
+
+    // Infos cabinet dans le bandeau bleu
+    const nom = parametres.nom_cabinet || '';
+    const spec = parametres.specialite || '';
+    const horaires = parametres.horaires || '';
+    const msg = parametres.message_patients || '';
+    if (nom) {
+      document.getElementById('cabinetNom').textContent = nom;
+      document.getElementById('cabinetSpec').textContent = spec;
+      document.getElementById('cabinetHoraires').textContent = horaires;
+      document.getElementById('cabinetInfo').style.display = 'block';
+    }
+    // Message personnalisé
+    const msgEl = document.getElementById('messagePatients');
+    if (msg) { msgEl.textContent = '📢 ' + msg; msgEl.style.display = 'block'; }
+    else { msgEl.style.display = 'none'; }
+
     if (myPosition !== null) updateSuivi(numEnCours);
   }
 

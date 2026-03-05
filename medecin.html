@@ -114,6 +114,8 @@
     .pwd-btn { padding: 10px 16px; background: var(--blue); color: white; border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
     .pwd-btn:hover { background: var(--blue-dark); }
     .pwd-label { font-size: 12px; font-weight: 600; color: var(--gray-500); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .mform-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-200); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--gray-900); background: var(--gray-50); outline: none; }
+    .mform-input:focus { border-color: var(--blue); background: white; }
 
     .refresh-btn { background: none; border: 1.5px solid var(--gray-200); color: var(--gray-500); border-radius: 8px; padding: 4px 12px; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; }
     .refresh-btn:hover { border-color: var(--blue); color: var(--blue); }
@@ -166,6 +168,7 @@
   <div class="tabs">
     <div class="tab active" onclick="switchTab('today', this)">📋 Aujourd'hui</div>
     <div class="tab" onclick="switchTab('settings', this)">⚙️ Paramètres</div>
+    <div class="tab" onclick="switchTab('cabinet', this)">🏥 Mon Cabinet</div>
     <div class="tab" onclick="switchTab('password', this)">🔒 Mots de passe</div>
   </div>
 
@@ -210,6 +213,24 @@
         <br/>
         <button class="danger-btn" onclick="clearDay()">🗑️ Effacer la liste du jour</button>
       </div>
+    </div>
+  </div>
+
+  <!-- MON CABINET -->
+  <div class="tab-content" id="tab-cabinet">
+    <div class="settings-card" style="max-width:560px">
+      <h3>🏥 Informations du cabinet</h3>
+      <br/>
+      <div class="pwd-label">Nom du cabinet / Médecin</div>
+      <input class="mform-input" type="text" id="nomCabinet" placeholder="Ex: Dr. Benali Mohamed" style="margin-bottom:14px"/>
+      <div class="pwd-label">Spécialité</div>
+      <input class="mform-input" type="text" id="specialite" placeholder="Ex: Médecin généraliste, Cardiologue..." style="margin-bottom:14px"/>
+      <div class="pwd-label">Horaires de consultation</div>
+      <input class="mform-input" type="text" id="horaires" placeholder="Ex: Dim–Jeu 8h–12h / 14h–18h" style="margin-bottom:14px"/>
+      <div class="pwd-label">Message aux patients</div>
+      <textarea class="mform-input" id="messagePatientsInput" placeholder="Ex: Merci de venir avec votre carnet de santé." rows="3" style="resize:vertical; margin-bottom:14px"></textarea>
+      <button class="pwd-btn" style="width:100%;padding:12px;font-size:14px" onclick="saveCabinet()">💾 Sauvegarder</button>
+      <div class="save-note" id="cabinetNote" style="margin-top:10px">✓ Informations sauvegardées</div>
     </div>
   </div>
 
@@ -282,7 +303,26 @@
     if (data.length > 0) {
       document.getElementById('toggleOuvert').checked = data[0].ouvert;
       document.getElementById('limiteInput').value = data[0].limite_patients || 0;
+      document.getElementById('nomCabinet').value = data[0].nom_cabinet || '';
+      document.getElementById('specialite').value = data[0].specialite || '';
+      document.getElementById('horaires').value = data[0].horaires || '';
+      document.getElementById('messagePatientsInput').value = data[0].message_patients || '';
     }
+  }
+
+  async function saveCabinet() {
+    const nom_cabinet = document.getElementById('nomCabinet').value.trim();
+    const specialite = document.getElementById('specialite').value.trim();
+    const horaires = document.getElementById('horaires').value.trim();
+    const message_patients = document.getElementById('messagePatientsInput').value.trim();
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?id=eq.1`, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nom_cabinet, specialite, horaires, message_patients })
+    });
+    const n = document.getElementById('cabinetNote');
+    n.style.display = 'block';
+    setTimeout(() => n.style.display = 'none', 2500);
   }
 
   async function loadList() {
