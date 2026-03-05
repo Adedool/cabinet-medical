@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Inscription</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
@@ -12,7 +12,33 @@
       --gray-200: #e2e8f0; --gray-300: #cbd5e1; --gray-400: #94a3b8;
       --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
       --green: #16a34a; --orange: #ea580c; --red: #dc2626;
+      --font-ar: 'Cairo', sans-serif;
     }
+
+    /* ARABE — appliqué quand html[lang=ar] */
+    html[lang=ar] body { font-family: var(--font-ar); }
+    html[lang=ar] .form-label { font-size: 13px; letter-spacing: 0; }
+    html[lang=ar] .form-input { font-family: var(--font-ar); font-size: 15px; text-align: right; }
+    html[lang=ar] .submit-btn { font-family: var(--font-ar); font-size: 16px; }
+    html[lang=ar] .info-note { font-family: var(--font-ar); font-size: 14px; line-height: 1.7; }
+    html[lang=ar] .success-title { font-family: var(--font-ar); font-size: 22px; }
+    html[lang=ar] .success-sub { font-family: var(--font-ar); font-size: 15px; }
+    html[lang=ar] .suivi-title { font-family: var(--font-ar); }
+    html[lang=ar] .suivi-lbl { font-family: var(--font-ar); font-size: 12px; }
+    html[lang=ar] .alert-banner { font-family: var(--font-ar); font-size: 14px; }
+    html[lang=ar] .notice-title { font-family: var(--font-ar); font-size: 15px; }
+    html[lang=ar] .notice-sub { font-family: var(--font-ar); font-size: 13px; line-height: 1.8; }
+    html[lang=ar] .whatsapp-btn { font-family: var(--font-ar); font-size: 16px; }
+    html[lang=ar] .reset-btn { font-family: var(--font-ar); font-size: 15px; }
+    html[lang=ar] .live-banner .left .live-label { font-family: var(--font-ar); letter-spacing: 0; }
+    html[lang=ar] .live-banner .left .live-sub { font-family: var(--font-ar); font-size: 13px; }
+    html[lang=ar] .closed-banner { font-family: var(--font-ar); font-size: 14px; }
+    html[lang=ar] .error-msg { font-family: var(--font-ar); font-size: 13px; }
+    html[lang=ar] .progress-label { font-family: var(--font-ar); }
+    html[lang=ar] .footer { font-family: var(--font-ar); }
+    html[lang=ar] .lang-toggle { margin-left: 0; margin-right: 8px; }
+    html[lang=ar] .staff-icon .tooltip { right: auto; left: 0; }
+    html[lang=ar] .topbar-right { flex-direction: row-reverse; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 0 40px; }
 
@@ -255,26 +281,29 @@
       soon: '⏰ Encore quelques patients avant vous.',
     },
     ar: {
-      liveLabel: 'الرقم الحالي', liveSub: 'يتحدث في الوقت الفعلي',
+      liveLabel: 'الرقم الحالي', liveSub: 'يتجدد تلقائياً',
       liveInscritsLabel: 'المسجّلون اليوم',
-      infoBox: '📋 سجّل نفسك للحصول على رقمك في قائمة الانتظار.',
-      nomLabel: 'اللقب', prenomLabel: 'الاسم', telLabel: 'الهاتف',
+      infoBox: '📋 سجّل اسمك للحصول على رقمك في قائمة الانتظار.',
+      nomLabel: 'اللقب', prenomLabel: 'الاسم', telLabel: 'رقم الهاتف',
       nomPh: 'لقبك', prenomPh: 'اسمك', telPh: '0xxxxxxxxx',
       submitText: 'تسجيل',
-      successTitle: 'تم تسجيلك بنجاح !', successMsg: 'رقمك في قائمة الانتظار',
+      successTitle: '✅ تم تسجيلك بنجاح !',
+      successMsg: 'رقمك في قائمة الانتظار',
       successInfo: 'احضر إلى العيادة بهذا الرقم.',
       newRegText: 'تسجيل جديد',
-      whatsappText: 'حفظ رقمي على واتساب',
+      whatsappText: 'احفظ رقمي على واتساب',
       noticeTitle: '⚠️ احضر قبل 3 أرقام من رقمك !',
-      noticeSub: 'مثال: إذا كان رقمك 6، كن في العيادة عند استدعاء الرقم 3.',
-      closedText: 'التسجيل مغلق لهذا اليوم.',
-      errRequired: 'هذا الحقل مطلوب.',
-      errLimit: 'عذراً، تم الوصول إلى الحد الأقصى للمرضى اليوم.',
-      errClosed: 'التسجيل مغلق.',
-      suiviTitle: 'متابعة في الوقت الفعلي',
-      suiviCurrentLabel: 'الرقم الحالي', suiviMineLabel: 'رقمي', suiviAheadLabel: 'قبلي',
-      ready: '🟢 دورك على وشك! توجه إلى العيادة.',
-      soon: '⏰ لا يزال هناك بعض المرضى قبلك.',
+      noticeSub: 'مثال : إذا كان رقمك 6، كن في العيادة عند نداء الرقم 3.',
+      closedText: '🚫 التسجيل مغلق لهذا اليوم.',
+      errRequired: 'هذا الحقل إلزامي.',
+      errLimit: 'عذراً، اكتمل عدد المرضى لهذا اليوم.',
+      errClosed: 'التسجيل مغلق حالياً.',
+      suiviTitle: 'متابعة مباشرة',
+      suiviCurrentLabel: 'الرقم الحالي',
+      suiviMineLabel: 'رقمي',
+      suiviAheadLabel: 'قبلي',
+      ready: '🟢 دورك على وشك ! توجّه إلى العيادة الآن.',
+      soon: '⏰ لا يزال هناك بعض المرضى قبلك، استعدّ.',
     }
   };
 
@@ -288,6 +317,10 @@
     btn.classList.add('active');
     document.documentElement.lang = l === 'ar' ? 'ar' : 'fr';
     document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+    document.title = l === 'ar' ? 'رندز — التسجيل' : 'Rendz — Inscription';
+    // Adapter le bandeau bleu en RTL
+    const banner = document.querySelector('.live-banner');
+    if (banner) banner.style.flexDirection = l === 'ar' ? 'row-reverse' : 'row';
     applyT();
   }
 
@@ -396,11 +429,13 @@
 
     // Label
     if (numEnCours === 0) {
-      document.getElementById('progressLabel').textContent = 'En attente du début des consultations';
+      document.getElementById('progressLabel').textContent = lang === 'ar' ? 'في انتظار بدء الاستشارات' : 'En attente du début des consultations';
     } else if (ahead === 0) {
-      document.getElementById('progressLabel').textContent = "C'est votre tour !";
+      document.getElementById('progressLabel').textContent = lang === 'ar' ? '🟢 دورك الآن !' : "C'est votre tour !";
     } else {
-      document.getElementById('progressLabel').textContent = `${ahead} patient${ahead > 1 ? 's' : ''} avant vous`;
+      document.getElementById('progressLabel').textContent = lang === 'ar'
+        ? `${ahead} مريض قبلك`
+        : `${ahead} patient${ahead > 1 ? 's' : ''} avant vous`;
     }
 
     document.getElementById('readyBanner').style.display = ahead <= 2 && numEnCours > 0 ? 'block' : 'none';
