@@ -285,6 +285,21 @@
   <div class="footer">© 2026 <span>Rendz</span></div>
 </div>
 
+<!-- MODALE QR CODE -->
+<div id="qrOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:24px">
+  <div style="background:white;border-radius:20px;padding:32px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
+    <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#0f172a;margin-bottom:4px">QR Code</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:24px">À afficher ou imprimer dans la salle d'attente</div>
+    <div id="qrCode" style="display:flex;justify-content:center;margin-bottom:20px"></div>
+    <div style="font-size:11px;color:#94a3b8;margin-bottom:20px" id="qrUrl"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="downloadQR()" style="flex:1;padding:11px;background:#1a56db;color:white;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">⬇ Télécharger</button>
+      <button onclick="closeQR()" style="flex:1;padding:11px;background:#f1f5f9;color:#334155;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
   const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
@@ -339,6 +354,39 @@
 
   loadInfos();
   setInterval(loadInfos, 20000);
+
+  // QR CODE
+  function openQR() {
+    const url = `${window.location.origin}${window.location.pathname.replace('cabinet.html','patient.html')}?id=${cabinetId}`;
+    document.getElementById('qrUrl').textContent = url;
+    document.getElementById('qrCode').innerHTML = '';
+    new QRCode(document.getElementById('qrCode'), {
+      text: url,
+      width: 200,
+      height: 200,
+      colorDark: '#0f172a',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    document.getElementById('qrOverlay').style.display = 'flex';
+  }
+
+  function closeQR() {
+    document.getElementById('qrOverlay').style.display = 'none';
+  }
+
+  function downloadQR() {
+    const canvas = document.querySelector('#qrCode canvas');
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = `rendz-qr-${cabinetId}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  document.getElementById('qrOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeQR();
+  });
 </script>
 </body>
 </html>
