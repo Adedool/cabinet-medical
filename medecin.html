@@ -193,6 +193,19 @@
 
   <!-- SETTINGS -->
   <div class="tab-content" id="tab-settings">
+
+    <!-- BANDEAU QR CODE — bien visible en haut -->
+    <div onclick="openQR()" style="background:linear-gradient(135deg,#1a56db,#1341b0);border-radius:14px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:20px;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 16px rgba(26,86,219,0.3)" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(26,86,219,0.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 4px 16px rgba(26,86,219,0.3)'">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">📲</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:white">QR Code du cabinet</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px">Cliquez pour générer et télécharger</div>
+        </div>
+      </div>
+      <div style="color:rgba(255,255,255,0.6);font-size:20px">→</div>
+    </div>
+
     <div class="settings-grid">
       <div class="settings-card">
         <h3>⚙️ Paramètres du cabinet</h3>
@@ -213,11 +226,6 @@
         <div class="setting-row"><div class="setting-label">Places restantes</div><span id="resumeRem" style="font-weight:700;color:var(--blue)">—</span></div>
         <br/>
         <button class="danger-btn" onclick="clearDay()">🗑️ Effacer la liste du jour</button>
-      </div>
-      <div class="settings-card">
-        <h3>📲 QR Code du cabinet</h3>
-        <p style="font-size:13px;color:var(--gray-500);margin-bottom:16px;line-height:1.5">Générez le QR code à afficher dans votre salle d'attente. Les patients le scannent pour s'inscrire directement.</p>
-        <button class="pwd-btn" style="width:100%;padding:11px" onclick="openQR()">📲 Générer le QR Code</button>
       </div>
     </div>
   </div>
