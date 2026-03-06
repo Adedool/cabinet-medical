@@ -4,176 +4,218 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
-      --white: #ffffff; --gray-50: #f8fafc; --gray-100: #f1f5f9;
-      --gray-200: #e2e8f0; --gray-300: #cbd5e1; --gray-400: #94a3b8;
-      --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
-      --green: #16a34a; --green-light: #dcfce7;
-      --red: #dc2626; --red-light: #fee2e2;
-      --orange: #ea580c; --orange-light: #fff7ed;
+      --bg:          #f7f3ee;
+      --bg2:         #f0ebe3;
+      --cream:       #ede8e0;
+      --blue:        #2563eb;
+      --blue-dim:    rgba(37,99,235,0.08);
+      --blue-border: rgba(37,99,235,0.18);
+      --blue-text:   #1d4ed8;
+      --white:       #ffffff;
+      --text:        #1c1917;
+      --text-sub:    #78716c;
+      --text-muted:  #a8a29e;
+      --border:      rgba(0,0,0,0.07);
+      --shadow:      0 2px 12px rgba(0,0,0,0.06);
+      --shadow-lg:   0 8px 28px rgba(0,0,0,0.10);
+      --green:       #16a34a;
+      --green-light: #f0fdf4;
+      --green-border:#bbf7d0;
+      --red:         #dc2626;
+      --red-light:   #fef2f2;
+      --red-border:  #fecaca;
+      --orange:      #ea580c;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); min-height: 100vh; }
 
-    /* LOGIN */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes glow   { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+
+    /* ── LOGIN ── */
     .login-wrap {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
-      background: linear-gradient(135deg, #0f172a 0%, #1a56db 100%);
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 20px; background: var(--bg);
     }
-    .login-box {
-      background: white; border-radius: 20px; padding: 40px 36px;
+    .login-card {
+      background: white; border-radius: 22px; padding: 40px 36px;
       width: 100%; max-width: 380px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      text-align: center; animation: fadeUp 0.5s ease both;
     }
-    .login-logo { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--blue); margin-bottom: 4px; }
-    .login-logo span { color: var(--gray-900); }
-    .login-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 28px; font-weight: 500; }
-    .login-label { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .login-logo-wrap { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .login-logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      animation: glow 3s ease-in-out infinite;
+    }
+    .login-logo-text { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .login-logo-text span { color: var(--blue); }
+    .login-role-icon { font-size: 36px; margin: 16px 0 8px; }
+    .login-role { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; font-weight: 500; }
+    .login-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; text-align: left; }
     .login-input {
-      width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray-200);
-      border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px;
-      color: var(--gray-900); background: var(--gray-50); outline: none; margin-bottom: 16px;
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 11px; font-family: 'Outfit', sans-serif; font-size: 15px;
+      color: var(--text); background: var(--bg); margin-bottom: 12px; outline: none;
     }
     .login-input:focus { border-color: var(--blue); background: white; }
     .login-btn {
-      width: 100%; padding: 13px; background: var(--blue); color: white;
-      border: none; border-radius: 10px; font-family: 'Inter', sans-serif;
-      font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.15s;
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white; border: none; border-radius: 11px;
+      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(29,78,216,0.3); transition: all 0.15s;
     }
-    .login-btn:hover { background: var(--blue-dark); }
-    .login-err { display: none; color: var(--red); font-size: 13px; margin-top: 10px; text-align: center; }
+    .login-btn:hover { transform: translateY(-1px); }
+    .login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; font-weight: 500; }
 
-    /* DASHBOARD */
+    /* ── DASHBOARD ── */
     .dashboard { display: none; }
+
     .topbar {
-      background: white; border-bottom: 1px solid var(--gray-200);
-      padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 10;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
     }
-    .topbar-logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--blue); }
-    .topbar-logo span { color: var(--gray-900); }
+    .topbar-logo-wrap { display: flex; align-items: center; gap: 7px; }
+    .topbar-logo-icon {
+      width: 28px; height: 28px; background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .topbar-logo-text span { color: var(--blue); }
     .topbar-right { display: flex; align-items: center; gap: 12px; }
-    .admin-badge { background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
-    .logout-btn { padding: 7px 14px; border-radius: 8px; border: 1.5px solid var(--gray-200); background: white; color: var(--gray-700); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; }
+    .admin-badge { background: var(--blue-dim); color: var(--blue-text); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--blue-border); }
+    .logout-btn {
+      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: white; color: var(--text-sub);
+      font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: all 0.15s;
+    }
     .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
-    .main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+    /* MAIN */
+    .main { max-width: 1100px; margin: 0 auto; padding: 24px; }
 
-    /* STATS GLOBALES */
-    .global-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    /* GLOBAL STATS */
+    .global-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
     .gstat {
-      background: white; border-radius: 14px; border: 1px solid var(--gray-200);
-      padding: 18px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      background: white; border-radius: 14px; border: 1px solid var(--border);
+      padding: 18px 20px; box-shadow: var(--shadow);
     }
-    .gstat-val { font-family: 'DM Sans', sans-serif; font-size: 32px; font-weight: 700; color: var(--blue); line-height: 1; }
-    .gstat-lbl { font-size: 12px; color: var(--gray-500); margin-top: 4px; font-weight: 500; }
+    .gstat-val { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 900; color: var(--blue); line-height: 1; letter-spacing: -1px; }
+    .gstat-lbl { font-size: 12px; color: var(--text-sub); margin-top: 4px; font-weight: 500; }
 
-    /* SECTION TITLE */
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .section-title { font-size: 16px; font-weight: 700; color: var(--gray-900); }
+    /* SECTION HEADER */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .section-title { font-size: 15px; font-weight: 700; color: var(--text); }
 
-    /* BOUTON NOUVEAU CABINET */
+    /* NEW BUTTON */
     .new-btn {
-      padding: 9px 18px; background: var(--blue); color: white;
-      border: none; border-radius: 10px; font-family: 'Inter', sans-serif;
-      font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
-      display: flex; align-items: center; gap: 6px;
+      padding: 9px 18px; background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white; border: none; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      box-shadow: 0 3px 12px rgba(29,78,216,0.3); transition: all 0.15s;
     }
-    .new-btn:hover { background: var(--blue-dark); }
+    .new-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(29,78,216,0.4); }
 
-    /* LISTE CABINETS */
+    /* CABINETS LIST */
     .cabinets-list { display: flex; flex-direction: column; gap: 10px; }
     .cabinet-card {
-      background: white; border-radius: 14px; border: 1px solid var(--gray-200);
-      padding: 18px 22px; display: flex; align-items: center; gap: 16px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.04); transition: box-shadow 0.15s;
+      background: white; border-radius: 14px; border: 1px solid var(--border);
+      padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+      box-shadow: var(--shadow); transition: box-shadow 0.15s, transform 0.15s;
     }
-    .cabinet-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .cabinet-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
     .cabinet-card.inactive { opacity: 0.55; }
 
     .cab-avatar {
-      width: 46px; height: 46px; border-radius: 12px;
-      background: var(--blue-light); display: flex; align-items: center;
-      justify-content: center; font-size: 20px; flex-shrink: 0;
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--blue-dim); border: 1px solid var(--blue-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
     }
     .cab-info { flex: 1; min-width: 0; }
-    .cab-name { font-size: 15px; font-weight: 700; color: var(--gray-900); }
-    .cab-spec { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
-    .cab-id { font-size: 11px; color: var(--gray-400); margin-top: 2px; font-family: monospace; }
+    .cab-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .cab-spec { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+    .cab-id { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-family: monospace; letter-spacing: 0.3px; }
 
-    .cab-stats { display: flex; gap: 20px; flex-shrink: 0; }
+    .cab-stats { display: flex; gap: 18px; flex-shrink: 0; }
     .cab-stat { text-align: center; }
-    .cab-stat-val { font-size: 20px; font-weight: 700; color: var(--gray-900); font-family: 'DM Sans', sans-serif; }
-    .cab-stat-lbl { font-size: 11px; color: var(--gray-400); }
+    .cab-stat-val { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); }
+    .cab-stat-lbl { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
 
-    .cab-status { flex-shrink: 0; }
-    .pill { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-    .pill.open { background: var(--green-light); color: var(--green); }
-    .pill.closed { background: var(--gray-100); color: var(--gray-500); }
+    .pill { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .pill.open   { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+    .pill.closed { background: var(--bg2); color: var(--text-muted); border: 1px solid var(--border); }
 
-    .cab-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .cab-actions { display: flex; gap: 7px; flex-shrink: 0; }
     .cab-btn {
-      padding: 7px 12px; border-radius: 8px; border: 1.5px solid var(--gray-200);
-      background: white; font-family: 'Inter', sans-serif; font-size: 12px;
-      font-weight: 500; cursor: pointer; color: var(--gray-700); transition: all 0.15s;
+      padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: white; font-family: 'Outfit', sans-serif; font-size: 12px;
+      font-weight: 600; cursor: pointer; color: var(--text-sub); transition: all 0.15s;
     }
     .cab-btn:hover { border-color: var(--blue); color: var(--blue); }
     .cab-btn.danger:hover { border-color: var(--red); color: var(--red); }
 
-    .empty-state { text-align: center; padding: 48px; color: var(--gray-400); font-size: 14px; }
+    .empty-state { text-align: center; padding: 48px; color: var(--text-muted); font-size: 14px; }
 
-    /* MODALE NOUVEAU CABINET */
+    /* MODALS */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.5); z-index: 100;
+      background: rgba(28,25,23,0.45); z-index: 100;
       align-items: center; justify-content: center; padding: 24px;
     }
     .modal-overlay.show { display: flex; }
     .modal-box {
-      background: white; border-radius: 20px; padding: 32px 28px;
-      width: 100%; max-width: 460px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+      background: white; border-radius: 20px; padding: 30px 26px;
+      width: 100%; max-width: 460px; box-shadow: var(--shadow-lg);
     }
-    .modal-title { font-size: 18px; font-weight: 700; color: var(--gray-900); margin-bottom: 20px; }
-    .field-label { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 7px; }
+    .modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 18px; }
+    .field-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
     .field-input {
-      width: 100%; padding: 10px 13px; border: 1.5px solid var(--gray-200);
-      border-radius: 9px; font-family: 'Inter', sans-serif; font-size: 14px;
-      color: var(--gray-900); background: var(--gray-50); outline: none; margin-bottom: 14px;
+      width: 100%; padding: 10px 13px; border: 1.5px solid var(--border);
+      border-radius: 9px; font-family: 'Outfit', sans-serif; font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none; margin-bottom: 12px;
     }
     .field-input:focus { border-color: var(--blue); background: white; }
     .modal-footer { display: flex; gap: 10px; margin-top: 6px; }
-    .modal-confirm {
-      flex: 1; padding: 12px; background: var(--blue); color: white;
-      border: none; border-radius: 10px; font-family: 'Inter', sans-serif;
-      font-size: 14px; font-weight: 700; cursor: pointer;
+    .modal-confirm-btn {
+      flex: 1; padding: 12px; background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white; border: none; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 3px 12px rgba(29,78,216,0.3); transition: all 0.15s;
     }
-    .modal-confirm:hover { background: var(--blue-dark); }
-    .modal-cancel {
-      flex: 1; padding: 12px; background: var(--gray-100); color: var(--gray-700);
-      border: none; border-radius: 10px; font-family: 'Inter', sans-serif;
-      font-size: 14px; font-weight: 600; cursor: pointer;
+    .modal-confirm-btn:hover { transform: translateY(-1px); }
+    .modal-confirm-btn.red { background: var(--red); box-shadow: 0 3px 12px rgba(220,38,38,0.3); }
+    .modal-confirm-btn.red:hover { background: #b91c1c; }
+    .modal-cancel-btn {
+      flex: 1; padding: 12px; background: var(--bg); color: var(--text-sub);
+      border: 1px solid var(--border); border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
     }
-    .modal-err { display: none; color: var(--red); font-size: 13px; margin-top: 8px; }
+    .modal-cancel-btn:hover { background: var(--cream); }
+    .modal-err { display: none; color: var(--red); font-size: 12px; margin-top: 6px; font-weight: 600; }
 
-    /* LIEN GÉNÉRÉ */
     .link-box {
-      background: var(--blue-light); border-radius: 10px; padding: 12px 14px;
-      font-size: 12px; color: var(--blue); font-weight: 600;
-      word-break: break-all; margin-top: 14px; display: none;
-      border: 1.5px solid rgba(26,86,219,0.2);
+      background: var(--blue-dim); border-radius: 10px; padding: 12px 14px;
+      font-size: 12px; color: var(--blue-text); font-weight: 600;
+      word-break: break-all; margin-top: 12px; display: none;
+      border: 1px solid var(--blue-border); line-height: 1.7;
     }
 
     @media (max-width: 640px) {
       .cab-stats { display: none; }
-      .topbar { padding: 12px 16px; }
-      .main { padding: 16px; }
+      .topbar, .main { padding-left: 14px; padding-right: 14px; }
+      .main { padding-top: 16px; }
+      .cabinet-card { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -181,9 +223,15 @@
 
 <!-- LOGIN -->
 <div class="login-wrap" id="loginWrap">
-  <div class="login-box">
-    <div class="login-logo" style="position:relative;display:inline-flex;align-items:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="position:absolute;left:-24px;top:50%;transform:translateY(-50%);opacity:0.2" xmlns="http://www.w3.org/2000/svg"><path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="8" r="2.2" stroke="#1a56db" stroke-width="1.8"/><path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/><path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/></svg>Rend<span>z</span></div>
-    <div class="login-sub">Espace Administrateur</div>
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <div class="login-logo-icon">
+        <svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.9" stroke-linecap="round"/><circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.9"/><path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.9" stroke-linecap="round"/><path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.9" stroke-linecap="round"/></svg>
+      </div>
+      <div class="login-logo-text">Rend<span>z</span></div>
+    </div>
+    <div class="login-role-icon">⚡</div>
+    <div class="login-role">Espace Administrateur</div>
     <div class="login-label">Mot de passe admin</div>
     <input class="login-input" type="password" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') login()"/>
     <button class="login-btn" onclick="login()">Accéder</button>
@@ -194,7 +242,12 @@
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
   <div class="topbar">
-    <div class="topbar-logo" style="position:relative;display:inline-flex;align-items:center"><svg width="16" height="16" viewBox="0 0 22 22" fill="none" style="position:absolute;left:-18px;top:50%;transform:translateY(-50%);opacity:0.2" xmlns="http://www.w3.org/2000/svg"><path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="8" r="2.2" stroke="#1a56db" stroke-width="1.8"/><path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/><path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/></svg>Rend<span>z</span></div>
+    <div class="topbar-logo-wrap">
+      <div class="topbar-logo-icon">
+        <svg width="15" height="15" viewBox="0 0 22 22" fill="none"><path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.9" stroke-linecap="round"/><circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.9"/><path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.9" stroke-linecap="round"/><path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.9" stroke-linecap="round"/></svg>
+      </div>
+      <div class="topbar-logo-text">Rend<span>z</span></div>
+    </div>
     <div class="topbar-right">
       <div class="admin-badge">⚡ Admin</div>
       <button class="logout-btn" onclick="logout()">Déconnexion</button>
@@ -202,23 +255,12 @@
   </div>
 
   <div class="main">
-    <!-- STATS GLOBALES -->
     <div class="global-stats">
-      <div class="gstat">
-        <div class="gstat-val" id="totalCabinets">—</div>
-        <div class="gstat-lbl">Cabinets actifs</div>
-      </div>
-      <div class="gstat">
-        <div class="gstat-val" id="totalOuverts">—</div>
-        <div class="gstat-lbl">Ouverts maintenant</div>
-      </div>
-      <div class="gstat">
-        <div class="gstat-val" id="totalPatients">—</div>
-        <div class="gstat-lbl">Patients aujourd'hui</div>
-      </div>
+      <div class="gstat"><div class="gstat-val" id="totalCabinets">—</div><div class="gstat-lbl">Cabinets actifs</div></div>
+      <div class="gstat"><div class="gstat-val" id="totalOuverts">—</div><div class="gstat-lbl">Ouverts maintenant</div></div>
+      <div class="gstat"><div class="gstat-val" id="totalPatients">—</div><div class="gstat-lbl">Patients aujourd'hui</div></div>
     </div>
 
-    <!-- LISTE -->
     <div class="section-header">
       <div class="section-title">🏥 Cabinets enregistrés</div>
       <button class="new-btn" onclick="openNew()">＋ Nouveau cabinet</button>
@@ -246,21 +288,21 @@
     <div class="modal-err" id="newErr">Veuillez remplir tous les champs.</div>
     <div class="link-box" id="newLinkBox"></div>
     <div class="modal-footer">
-      <button class="modal-confirm" id="newConfirmBtn" onclick="createCabinet()">✓ Créer</button>
-      <button class="modal-cancel" onclick="closeNew()">Annuler</button>
+      <button class="modal-confirm-btn" id="newConfirmBtn" onclick="createCabinet()">✓ Créer</button>
+      <button class="modal-cancel-btn" onclick="closeNew()">Annuler</button>
     </div>
   </div>
 </div>
 
-<!-- MODALE CONFIRMATION DÉSACTIVATION -->
+<!-- MODALE CONFIRMATION SUPPRESSION -->
 <div class="modal-overlay" id="modalConfirm">
   <div class="modal-box" style="max-width:380px;text-align:center">
     <div style="font-size:36px;margin-bottom:12px" id="confirmIcon">⚠️</div>
     <div class="modal-title" style="text-align:center" id="confirmTitle"></div>
-    <div style="font-size:13px;color:var(--gray-500);margin-bottom:24px" id="confirmMsg"></div>
+    <div style="font-size:13px;color:var(--text-sub);margin-bottom:22px;line-height:1.5" id="confirmMsg"></div>
     <div class="modal-footer">
-      <button class="modal-confirm" id="confirmBtn" style="background:var(--red)" onclick="confirmAction()">Confirmer</button>
-      <button class="modal-cancel" onclick="closeConfirm()">Annuler</button>
+      <button class="modal-confirm-btn red" onclick="confirmAction()">Supprimer</button>
+      <button class="modal-cancel-btn" onclick="closeConfirm()">Annuler</button>
     </div>
   </div>
 </div>
@@ -270,7 +312,6 @@
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   const ADMIN_PWD = 'rendz-admin-2025';
   const BASE_URL = window.location.origin + window.location.pathname.replace('admin.html', '');
-
   let pendingAction = null;
 
   function login() {
@@ -301,96 +342,63 @@
   async function loadAll() {
     const today = new Date().toISOString().split('T')[0];
     const [paramRes, inscRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=not.is.null&order=id.asc`, {
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-      }),
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=cabinet_id`, {
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
-      })
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=not.is.null&order=id.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=cabinet_id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
     ]);
-
     const cabinets = await paramRes.json();
     const inscriptions = await inscRes.json();
-
-    // Compter patients par cabinet
     const countByCabinet = {};
-    inscriptions.forEach(i => {
-      countByCabinet[i.cabinet_id] = (countByCabinet[i.cabinet_id] || 0) + 1;
-    });
-
-    // Stats globales
-    const ouverts = cabinets.filter(c => c.ouvert).length;
-    const totalPat = inscriptions.length;
+    inscriptions.forEach(i => { countByCabinet[i.cabinet_id] = (countByCabinet[i.cabinet_id] || 0) + 1; });
     document.getElementById('totalCabinets').textContent = cabinets.length;
-    document.getElementById('totalOuverts').textContent = ouverts;
-    document.getElementById('totalPatients').textContent = totalPat;
+    document.getElementById('totalOuverts').textContent = cabinets.filter(c => c.ouvert).length;
+    document.getElementById('totalPatients').textContent = inscriptions.length;
 
-    // Render liste
     const list = document.getElementById('cabinetsList');
     if (cabinets.length === 0) {
       list.innerHTML = '<div class="empty-state">Aucun cabinet enregistré.<br>Cliquez sur "Nouveau cabinet" pour commencer.</div>';
       return;
     }
-
     list.innerHTML = cabinets.map(c => {
       const count = countByCabinet[c.cabinet_id] || 0;
       const isOpen = c.ouvert;
       const nom = c.nom_cabinet || c.cabinet_id;
       const spec = c.specialite || '—';
-      return `
-        <div class="cabinet-card ${!isOpen ? 'inactive' : ''}">
-          <div class="cab-avatar">🏥</div>
-          <div class="cab-info">
-            <div class="cab-name">${nom}</div>
-            <div class="cab-spec">${spec}</div>
-            <div class="cab-id">${c.cabinet_id}</div>
-          </div>
-          <div class="cab-stats">
-            <div class="cab-stat">
-              <div class="cab-stat-val">${count}</div>
-              <div class="cab-stat-lbl">Patients</div>
-            </div>
-            <div class="cab-stat">
-              <div class="cab-stat-val">${c.numero_en_cours || 0}</div>
-              <div class="cab-stat-lbl">En cours</div>
-            </div>
-          </div>
-          <div class="cab-status">
-            <span class="pill ${isOpen ? 'open' : 'closed'}">${isOpen ? '✓ Ouvert' : '✗ Fermé'}</span>
-          </div>
-          <div class="cab-actions">
-            <button class="cab-btn" onclick="copyLink('${c.cabinet_id}')">🔗 Lien</button>
-            <button class="cab-btn danger" onclick="askDelete('${c.cabinet_id}', '${nom}')">🗑</button>
-          </div>
-        </div>`;
+      return `<div class="cabinet-card ${!isOpen ? 'inactive' : ''}">
+        <div class="cab-avatar">🏥</div>
+        <div class="cab-info">
+          <div class="cab-name">${nom}</div>
+          <div class="cab-spec">${spec}</div>
+          <div class="cab-id">${c.cabinet_id}</div>
+        </div>
+        <div class="cab-stats">
+          <div class="cab-stat"><div class="cab-stat-val">${count}</div><div class="cab-stat-lbl">Patients</div></div>
+          <div class="cab-stat"><div class="cab-stat-val">${c.numero_en_cours || 0}</div><div class="cab-stat-lbl">En cours</div></div>
+        </div>
+        <div><span class="pill ${isOpen ? 'open' : 'closed'}">${isOpen ? '✓ Ouvert' : '✗ Fermé'}</span></div>
+        <div class="cab-actions">
+          <button class="cab-btn" onclick="copyLink('${c.cabinet_id}')">🔗 Lien</button>
+          <button class="cab-btn danger" onclick="askDelete('${c.cabinet_id}', '${nom}')">🗑</button>
+        </div>
+      </div>`;
     }).join('');
   }
 
   function copyLink(cabinetId) {
     const url = `${BASE_URL}cabinet.html?id=${cabinetId}`;
-    navigator.clipboard.writeText(url).then(() => {
-      alert('✓ Lien copié !\n\n' + url);
-    });
+    navigator.clipboard.writeText(url).then(() => { alert('✓ Lien copié !\n\n' + url); });
   }
 
-  // NOUVEAU CABINET
   function openNew() {
-    document.getElementById('newNom').value = '';
-    document.getElementById('newSpec').value = '';
-    document.getElementById('newId').value = '';
-    document.getElementById('newPwdMed').value = '';
-    document.getElementById('newPwdAss').value = '';
+    ['newNom','newSpec','newId','newPwdMed','newPwdAss'].forEach(id => { document.getElementById(id).value = ''; });
     document.getElementById('newErr').style.display = 'none';
     document.getElementById('newLinkBox').style.display = 'none';
     document.getElementById('newConfirmBtn').style.display = 'block';
     document.getElementById('newConfirmBtn').textContent = '✓ Créer';
+    document.getElementById('newConfirmBtn').disabled = false;
     document.getElementById('modalNew').classList.add('show');
   }
 
-  function closeNew() {
-    document.getElementById('modalNew').classList.remove('show');
-    loadAll();
-  }
+  function closeNew() { document.getElementById('modalNew').classList.remove('show'); loadAll(); }
 
   async function createCabinet() {
     const nom = document.getElementById('newNom').value.trim();
@@ -398,23 +406,16 @@
     const id = document.getElementById('newId').value.trim().toLowerCase().replace(/\s+/g, '-');
     const pwdMed = document.getElementById('newPwdMed').value.trim();
     const pwdAss = document.getElementById('newPwdAss').value.trim();
-
-    if (!nom || !id || !pwdMed || !pwdAss) {
-      document.getElementById('newErr').style.display = 'block';
-      return;
-    }
+    if (!nom || !id || !pwdMed || !pwdAss) { document.getElementById('newErr').style.display = 'block'; return; }
     document.getElementById('newErr').style.display = 'none';
     document.getElementById('newConfirmBtn').textContent = '...';
     document.getElementById('newConfirmBtn').disabled = true;
 
-    // Créer dans parametres
     await fetch(`${SUPABASE_URL}/rest/v1/parametres`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ cabinet_id: id, nom_cabinet: nom, specialite: spec, ouvert: false, numero_en_cours: 0, limite_patients: 0 })
     });
-
-    // Créer médecin et assistante
     await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
@@ -423,16 +424,13 @@
         { cabinet_id: id, role: 'assistante', mot_de_passe: pwdAss }
       ])
     });
-
-    // Afficher le lien
     const link = `${BASE_URL}cabinet.html?id=${id}`;
-    const linkBox = document.getElementById('newLinkBox');
-    linkBox.innerHTML = `✅ Cabinet créé !<br><br>🔗 Lien à envoyer au médecin :<br><strong>${link}</strong>`;
-    linkBox.style.display = 'block';
+    const lb = document.getElementById('newLinkBox');
+    lb.innerHTML = `✅ Cabinet créé !<br><br>🔗 Lien à envoyer au médecin :<br><strong>${link}</strong>`;
+    lb.style.display = 'block';
     document.getElementById('newConfirmBtn').style.display = 'none';
   }
 
-  // SUPPRIMER
   function askDelete(cabinetId, nom) {
     document.getElementById('confirmIcon').textContent = '🗑️';
     document.getElementById('confirmTitle').textContent = `Supprimer ${nom} ?`;
@@ -441,18 +439,10 @@
     document.getElementById('modalConfirm').classList.add('show');
   }
 
-  function closeConfirm() {
-    document.getElementById('modalConfirm').classList.remove('show');
-    pendingAction = null;
-  }
-
-  async function confirmAction() {
-    closeConfirm();
-    if (pendingAction) await pendingAction();
-  }
+  function closeConfirm() { document.getElementById('modalConfirm').classList.remove('show'); pendingAction = null; }
+  async function confirmAction() { closeConfirm(); if (pendingAction) await pendingAction(); }
 
   async function deleteCabinet(cabinetId) {
-    const today = new Date().toISOString().split('T')[0];
     await Promise.all([
       fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
       fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
@@ -463,7 +453,7 @@
 
   document.getElementById('modalNew').addEventListener('click', function(e) { if (e.target === this) closeNew(); });
   document.getElementById('modalConfirm').addEventListener('click', function(e) { if (e.target === this) closeConfirm(); });
-
+  document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
   setInterval(loadAll, 30000);
 </script>
 </body>
