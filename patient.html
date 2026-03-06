@@ -4,196 +4,374 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Inscription</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
-      --white: #ffffff; --gray-50: #f8fafc; --gray-100: #f1f5f9;
-      --gray-200: #e2e8f0; --gray-300: #cbd5e1; --gray-400: #94a3b8;
-      --gray-500: #64748b; --gray-700: #334155; --gray-900: #0f172a;
-      --green: #16a34a; --orange: #ea580c; --red: #dc2626;
+      --bg: #06090f;
+      --bg2: #0b1120;
+      --blue: #3b82f6;
+      --blue-bright: #60a5fa;
+      --blue-dim: rgba(59,130,246,0.12);
+      --blue-border: rgba(59,130,246,0.25);
+      --white: #ffffff;
+      --text: #f1f5f9;
+      --text-sub: #64748b;
+      --text-muted: #334155;
+      --border: rgba(255,255,255,0.07);
+      --surface: rgba(255,255,255,0.04);
+      --surface2: rgba(255,255,255,0.06);
+      --green: #4ade80;
+      --green-dim: rgba(74,222,128,0.1);
+      --orange: #fb923c;
+      --orange-dim: rgba(251,146,60,0.1);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.1);
       --font-ar: 'Cairo', sans-serif;
     }
 
-    /* ARABE — appliqué quand html[lang=ar] */
     html[lang=ar] body { font-family: var(--font-ar); }
-    html[lang=ar] .form-label { font-size: 13px; letter-spacing: 0; }
     html[lang=ar] .form-input { font-family: var(--font-ar); font-size: 15px; text-align: right; }
     html[lang=ar] .submit-btn { font-family: var(--font-ar); font-size: 16px; }
-    html[lang=ar] .info-note { font-family: var(--font-ar); font-size: 14px; line-height: 1.7; }
-    html[lang=ar] .success-title { font-family: var(--font-ar); font-size: 22px; }
-    html[lang=ar] .success-sub { font-family: var(--font-ar); font-size: 15px; }
-    html[lang=ar] .suivi-title { font-family: var(--font-ar); }
-    html[lang=ar] .suivi-lbl { font-family: var(--font-ar); font-size: 12px; }
-    html[lang=ar] .alert-banner { font-family: var(--font-ar); font-size: 14px; }
-    html[lang=ar] .notice-title { font-family: var(--font-ar); font-size: 15px; }
-    html[lang=ar] .notice-sub { font-family: var(--font-ar); font-size: 13px; line-height: 1.8; }
-    html[lang=ar] .whatsapp-btn { font-family: var(--font-ar); font-size: 16px; }
-    html[lang=ar] .reset-btn { font-family: var(--font-ar); font-size: 15px; }
-    html[lang=ar] .live-banner .left .live-label { font-family: var(--font-ar); letter-spacing: 0; }
-    html[lang=ar] .live-banner .left .live-sub { font-family: var(--font-ar); font-size: 13px; }
-    html[lang=ar] .closed-banner { font-family: var(--font-ar); font-size: 14px; }
-    html[lang=ar] .error-msg { font-family: var(--font-ar); font-size: 13px; }
-    html[lang=ar] .progress-label { font-family: var(--font-ar); }
-    html[lang=ar] .footer { font-family: var(--font-ar); }
-    html[lang=ar] .lang-toggle { margin-left: 0; margin-right: 8px; }
-    html[lang=ar] .staff-icon .tooltip { right: auto; left: 0; }
     html[lang=ar] .topbar-right { flex-direction: row-reverse; }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 0 0 40px; }
 
-    /* TOPBAR */
-    .topbar { width: 100%; background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-family: 'DM Sans', sans-serif; font-size: 22px; font-weight: 700; color: var(--blue); letter-spacing: -0.5px; }
-    .logo span { color: var(--gray-900); }
-    .topbar-right { display: flex; align-items: center; gap: 6px; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding-bottom: 48px;
+      overflow-x: hidden;
+    }
 
-    /* ICONES STAFF — discrètes */
+    .bg-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 40% at 50% -5%, rgba(59,130,246,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 85% 90%, rgba(59,130,246,0.05) 0%, transparent 50%);
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
+    @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.35;} }
+    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+    @keyframes popIn { 0%{transform:scale(0.8);opacity:0;}70%{transform:scale(1.05);}100%{transform:scale(1);opacity:1;} }
+    @keyframes countUp { from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;} }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      width: 100%; position: relative; z-index: 10;
+      background: rgba(6,9,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(140deg, #3b82f6, #1d4ed8);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 12px rgba(59,130,246,0.35);
+    }
+    .logo-text { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+    .logo-text span { color: var(--blue-bright); }
+
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
     .staff-icons { display: flex; gap: 4px; }
     .staff-icon {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: var(--gray-100);
-      border: 1px solid var(--gray-200);
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--surface); border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
-      text-decoration: none;
-      transition: all 0.15s;
-      cursor: pointer;
-      position: relative;
+      text-decoration: none; transition: all 0.15s; position: relative;
     }
-    .staff-icon:hover { background: var(--blue-light); border-color: var(--blue); }
+    .staff-icon:hover { background: var(--blue-dim); border-color: var(--blue-border); }
     .staff-icon .tooltip {
-      position: absolute; top: 38px; right: 0;
-      background: var(--gray-900); color: white;
-      font-size: 11px; font-weight: 500;
-      padding: 4px 8px; border-radius: 6px;
-      white-space: nowrap; opacity: 0; pointer-events: none;
-      transition: opacity 0.15s;
+      position: absolute; top: 36px; right: 0;
+      background: #1e293b; color: var(--text); border: 1px solid var(--border);
+      font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 6px;
+      white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s;
     }
     .staff-icon:hover .tooltip { opacity: 1; }
 
-    .lang-toggle { display: flex; gap: 5px; margin-left: 8px; }
-    .lang-btn { padding: 5px 12px; border-radius: 8px; border: 1.5px solid var(--gray-200); background: transparent; color: var(--gray-500); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .lang-toggle { display: flex; gap: 4px; }
+    .lang-btn {
+      padding: 4px 11px; border-radius: 7px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text-sub); font-family: 'Outfit', sans-serif;
+      font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+    }
     .lang-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
 
-    /* LIVE BANNER */
-    .live-banner { width: 100%; max-width: 480px; margin: 24px auto 0; background: var(--blue); border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 20px rgba(26,86,219,0.2); }
-    .live-banner .left .live-label { font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-    .live-banner .left .live-number { font-family: 'DM Sans', sans-serif; font-size: 52px; font-weight: 700; color: white; line-height: 1; }
-    .live-banner .left .live-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
-    .live-banner .right { text-align: right; }
-    .live-banner .right .inscrits-val { font-family: 'DM Sans', sans-serif; font-size: 32px; font-weight: 700; color: rgba(255,255,255,0.9); }
-    .live-banner .right .inscrits-lbl { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
-    .live-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    /* ── HERO NUMÉRO ── */
+    .hero {
+      width: 100%; max-width: 420px;
+      padding: 28px 20px 0;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.5s ease both;
+    }
 
-    /* CARD */
-    .card { background: var(--white); border-radius: 16px; padding: 28px; max-width: 480px; width: calc(100% - 32px); margin: 16px auto 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid var(--gray-200); }
-    .closed-banner { background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 10px; padding: 14px 16px; color: var(--red); font-size: 14px; font-weight: 500; display: none; margin-bottom: 20px; }
-    .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
-    .form-group { margin-bottom: 16px; }
-    .form-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; color: var(--gray-900); background: var(--gray-50); outline: none; transition: border-color 0.15s; }
-    .form-input:focus { border-color: var(--blue); background: var(--white); }
-    .error-msg { color: var(--red); font-size: 12px; margin-top: 4px; display: none; }
-    .submit-btn { width: 100%; padding: 13px; background: var(--blue); color: white; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; margin-top: 4px; }
-    .submit-btn:hover { background: var(--blue-dark); }
-    .submit-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
-    .info-note { background: var(--blue-light); border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--blue-dark); margin-bottom: 16px; font-weight: 500; }
+    .cabinet-strip {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px;
+    }
+    .cabinet-avatar {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--blue-dim); border: 1px solid var(--blue-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .cabinet-info-text { flex: 1; min-width: 0; }
+    .cabinet-info-name { font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cabinet-info-spec { font-size: 11px; color: var(--blue-bright); font-weight: 500; }
 
-    /* SUCCESS */
+    .live-chip {
+      display: flex; align-items: center; gap: 5px;
+      background: var(--green-dim); border: 1px solid rgba(74,222,128,0.18);
+      border-radius: 20px; padding: 4px 10px; flex-shrink: 0;
+    }
+    .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 1.8s infinite; }
+    .live-chip-text { font-size: 11px; font-weight: 700; color: var(--green); letter-spacing: 0.2px; }
+
+    /* Grand numéro */
+    .number-hero {
+      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.04));
+      border: 1px solid var(--blue-border);
+      border-radius: 22px;
+      padding: 24px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .number-left .num-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .number-left .num-value { font-family: 'Outfit', sans-serif; font-size: 64px; font-weight: 900; color: var(--white); line-height: 1; letter-spacing: -2px; }
+    .number-left .num-sub { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+    .number-right { text-align: right; }
+    .inscrits-val { font-family: 'Outfit', sans-serif; font-size: 36px; font-weight: 800; color: rgba(255,255,255,0.7); line-height: 1; }
+    .inscrits-lbl { font-size: 11px; color: var(--text-sub); margin-top: 3px; }
+
+    .closed-banner {
+      background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 12px; padding: 12px 16px;
+      color: var(--red); font-size: 13px; font-weight: 600;
+      display: none; margin-bottom: 12px; text-align: center;
+    }
+
+    .message-banner {
+      background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.18);
+      border-radius: 12px; padding: 10px 16px;
+      font-size: 12px; color: #fbbf24; font-weight: 500;
+      display: none; margin-bottom: 12px; text-align: center;
+    }
+
+    /* ── CARD ── */
+    .card {
+      width: 100%; max-width: 420px;
+      margin: 12px 0 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px 20px;
+      position: relative; z-index: 1;
+      animation: fadeUp 0.5s 0.1s ease both; opacity: 0; animation-fill-mode: forwards;
+    }
+
+    .info-note {
+      background: var(--blue-dim); border: 1px solid var(--blue-border);
+      border-radius: 12px; padding: 12px 14px;
+      font-size: 13px; color: var(--blue-bright); font-weight: 500;
+      margin-bottom: 18px;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block; font-size: 11px; font-weight: 600;
+      color: var(--text-sub); text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 7px;
+    }
+    .form-input {
+      width: 100%; padding: 12px 14px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 11px; font-family: 'Outfit', sans-serif;
+      font-size: 15px; color: var(--text); outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus { border-color: var(--blue); background: rgba(59,130,246,0.06); }
+    .error-msg { color: var(--red); font-size: 12px; margin-top: 5px; display: none; font-weight: 500; }
+
+    .submit-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: white; border: none; border-radius: 12px;
+      font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s; margin-top: 6px;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+    }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(37,99,235,0.45); }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: var(--surface2); color: var(--text-sub); cursor: not-allowed; box-shadow: none; transform: none; }
+
+    /* ── SUCCESS ── */
     .success-card { text-align: center; display: none; }
-    .number-circle { width: 110px; height: 110px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'DM Sans', sans-serif; font-size: 48px; font-weight: 700; color: white; box-shadow: 0 8px 32px rgba(26,86,219,0.3); }
-    .success-title { font-size: 20px; font-weight: 700; color: var(--gray-900); margin-bottom: 6px; }
-    .success-sub { font-size: 14px; color: var(--gray-500); margin-bottom: 24px; }
-    .suivi-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
-    .suivi-title { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 14px; }
-    .suivi-row { display: flex; gap: 10px; }
-    .suivi-stat { flex: 1; background: white; border-radius: 10px; padding: 12px 8px; text-align: center; border: 1px solid var(--gray-200); }
-    .suivi-val { font-family: 'DM Sans', sans-serif; font-size: 28px; font-weight: 700; }
+
+    .my-number-display {
+      width: 120px; height: 120px;
+      background: linear-gradient(140deg, #1d4ed8, #3b82f6);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      font-family: 'Outfit', sans-serif; font-size: 52px; font-weight: 900;
+      color: white; letter-spacing: -2px;
+      box-shadow: 0 0 40px rgba(59,130,246,0.45), 0 0 80px rgba(59,130,246,0.15);
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    .success-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 5px; letter-spacing: -0.3px; }
+    .success-sub { font-size: 13px; color: var(--text-sub); margin-bottom: 22px; }
+
+    /* SUIVI */
+    .suivi-block {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px 16px; margin-bottom: 14px;
+    }
+    .suivi-title { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px; }
+    .suivi-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .suivi-stat {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 6px; text-align: center;
+    }
+    .suivi-val { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; line-height: 1; }
     .suivi-val.current { color: var(--orange); }
-    .suivi-val.mine { color: var(--blue); }
+    .suivi-val.mine { color: var(--blue-bright); }
     .suivi-val.ahead { color: var(--red); }
-    .suivi-lbl { font-size: 11px; color: var(--gray-500); margin-top: 3px; font-weight: 500; }
-    .progress-wrap { margin-top: 14px; }
-    .progress-bar { background: var(--gray-200); border-radius: 10px; height: 6px; overflow: hidden; }
-    .progress-fill { height: 100%; background: var(--blue); border-radius: 10px; transition: width 0.5s ease; }
-    .progress-label { font-size: 12px; color: var(--gray-500); margin-top: 6px; text-align: center; }
-    /* CERCLE DE PROGRESSION */
-    .progress-wrap { margin-top: 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-    .circle-container { position: relative; width: 100px; height: 100px; }
-    .circle-bg { fill: none; stroke: var(--gray-200); stroke-width: 8; }
+    .suivi-lbl { font-size: 10px; color: var(--text-sub); margin-top: 4px; font-weight: 500; }
+
+    /* Cercle progression */
+    .circle-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .circle-container { position: relative; width: 90px; height: 90px; }
+    .circle-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
     .circle-fill { fill: none; stroke: var(--blue); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 251.2; stroke-dashoffset: 251.2; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1); }
     .circle-fill.urgent { stroke: var(--orange); }
     .circle-fill.almost { stroke: var(--green); }
-    .circle-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .circle-pct { font-family: 'DM Sans', sans-serif; font-size: 22px; font-weight: 700; color: var(--blue); line-height: 1; }
+    .circle-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .circle-pct { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: var(--blue-bright); line-height: 1; }
     .circle-pct.urgent { color: var(--orange); }
     .circle-pct.almost { color: var(--green); }
-    .circle-sub { font-size: 10px; color: var(--gray-500); font-weight: 500; margin-top: 2px; }
-    .progress-label { font-size: 12px; color: var(--gray-500); text-align: center; font-weight: 500; }
-    .alert-ready { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
-    .alert-soon { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
-    .whatsapp-btn { width: 100%; padding: 13px; background: #25d366; color: white; border: none; border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; transition: background 0.15s; text-decoration: none; }
-    .whatsapp-btn:hover { background: #1ebe5d; }
-    .notice-box { background: #fff5f5; border: 2px solid #feb2b2; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
-    .notice-title { color: var(--red); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-    .notice-sub { color: var(--gray-700); font-size: 12px; line-height: 1.5; }
+    .circle-sub-txt { font-size: 9px; color: var(--text-sub); margin-top: 2px; }
+    .progress-label { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 500; }
+
+    .alert-banner {
+      border-radius: 10px; padding: 11px 14px;
+      font-size: 13px; font-weight: 600; text-align: center;
+      margin-top: 10px; display: none;
+    }
+    .alert-ready { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+    .alert-soon { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(251,146,60,0.2); }
+
+    /* Notice */
+    .notice-box {
+      background: var(--red-dim); border: 1px solid rgba(248,113,113,0.15);
+      border-radius: 12px; padding: 13px 14px; margin-bottom: 12px; text-align: left;
+    }
+    .notice-title { color: var(--red); font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .notice-sub { color: var(--text-sub); font-size: 12px; line-height: 1.5; }
     .notice-sub strong { color: var(--red); }
-    .reset-btn { width: 100%; padding: 12px; background: var(--gray-100); color: var(--gray-700); border: 1.5px solid var(--gray-200); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
-    .reset-btn:hover { background: var(--gray-200); }
-    .footer { margin-top: 32px; color: var(--gray-400); font-size: 12px; }
+
+    /* Boutons */
+    .whatsapp-btn {
+      width: 100%; padding: 13px; background: #16a34a;
+      color: white; border: none; border-radius: 12px;
+      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 10px; transition: all 0.15s; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(22,163,74,0.3);
+    }
+    .whatsapp-btn:hover { background: #15803d; transform: translateY(-1px); }
+
+    .reset-btn {
+      width: 100%; padding: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--text-sub);
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .reset-btn:hover { border-color: var(--blue-border); color: var(--blue-bright); }
+
+    .footer { margin-top: 28px; color: var(--text-muted); font-size: 11px; position: relative; z-index: 1; }
+    .footer span { color: var(--blue-bright); font-weight: 600; }
   </style>
 </head>
 <body>
+<div class="bg-glow"></div>
 
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="logo" style="position:relative;display:inline-flex;align-items:center">
-    <svg width="20" height="20" viewBox="0 0 22 22" fill="none" style="position:absolute;left:-20px;top:50%;transform:translateY(-50%);opacity:0.2" xmlns="http://www.w3.org/2000/svg">
-      <path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="17" cy="8" r="2.2" stroke="#1a56db" stroke-width="1.8"/>
-      <path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-    Rend<span>z</span>
+  <div class="logo-wrap">
+    <div class="logo-icon">
+      <svg width="17" height="17" viewBox="0 0 22 22" fill="none">
+        <path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+        <circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.9"/>
+        <path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+        <path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="logo-text">Rend<span>z</span></div>
   </div>
   <div class="topbar-right">
-    <!-- Icônes staff discrètes -->
     <div class="staff-icons">
-      <a class="staff-icon" href="assistante.html">
-        👩‍⚕️
+      <a class="staff-icon" id="staffAss" href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#f97316" stroke-width="1.6"/></svg>
         <span class="tooltip">Espace Assistante</span>
       </a>
-      <a class="staff-icon" href="medecin.html">
-        👨‍⚕️
+      <a class="staff-icon" id="staffMed" href="#">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span class="tooltip">Espace Médecin</span>
       </a>
     </div>
-    <!-- Langue -->
     <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('fr', this)">FR</button>
-      <button class="lang-btn" onclick="setLang('ar', this)">ع</button>
+      <button class="lang-btn active" onclick="setLang('fr',this)">FR</button>
+      <button class="lang-btn" onclick="setLang('ar',this)">ع</button>
     </div>
   </div>
 </div>
 
-<div class="live-banner">
-  <div class="left">
-    <div class="live-label"><span class="live-dot"></span> <span id="liveLabel">Numéro en cours</span></div>
-    <div class="live-number" id="liveNumber">—</div>
-    <div class="live-sub" id="liveSub">Mis à jour en temps réel</div>
+<!-- HERO -->
+<div class="hero">
+  <!-- Cabinet strip -->
+  <div class="cabinet-strip" id="cabinetStrip" style="display:none">
+    <div class="cabinet-avatar">👨‍⚕️</div>
+    <div class="cabinet-info-text">
+      <div class="cabinet-info-name" id="cabinetNom"></div>
+      <div class="cabinet-info-spec" id="cabinetSpec"></div>
+    </div>
+    <div class="live-chip">
+      <div class="live-dot"></div>
+      <div class="live-chip-text">Live</div>
+    </div>
   </div>
-  <div class="right" id="cabinetInfo" style="text-align:right;display:none">
-    <div style="font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:white" id="cabinetNom"></div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px" id="cabinetSpec"></div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px" id="cabinetHoraires"></div>
+
+  <!-- Grand numéro -->
+  <div class="number-hero">
+    <div class="number-left">
+      <div class="num-label" id="liveLabel">Numéro en cours</div>
+      <div class="num-value" id="liveNumber">—</div>
+      <div class="num-sub" id="liveSub">Mis à jour en temps réel</div>
+    </div>
+    <div class="number-right">
+      <div class="inscrits-val" id="liveInscrits">0</div>
+      <div class="inscrits-lbl" id="liveInscritsLabel">Inscrits aujourd'hui</div>
+    </div>
   </div>
+
+  <div class="closed-banner" id="closedBanner">🚫 <span id="closedText">Les inscriptions sont fermées pour aujourd'hui.</span></div>
+  <div class="message-banner" id="messagePatients"></div>
 </div>
 
+<!-- CARD FORMULAIRE -->
 <div class="card">
-  <div class="closed-banner" id="closedBanner">🚫 <span id="closedText">Les inscriptions sont fermées pour aujourd'hui.</span></div>
-  <div id="messagePatients" style="display:none;background:#fff8e1;border:1.5px solid #ffd54f;border-radius:10px;padding:12px 14px;font-size:13px;color:#5f4700;font-weight:500;margin-bottom:16px"></div>
-
   <div id="formSection">
     <div class="info-note" id="infoBox">📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.</div>
     <div class="form-group">
@@ -217,108 +395,106 @@
   </div>
 
   <div class="success-card" id="successCard">
-    <div class="number-circle" id="myNumber">1</div>
+    <div class="my-number-display" id="myNumber">1</div>
     <div class="success-title" id="successTitle">Vous êtes inscrit(e) !</div>
     <div class="success-sub" id="successMsg">Votre numéro dans la file d'attente</div>
-    <div class="suivi-card">
+
+    <div class="suivi-block">
       <div class="suivi-title" id="suiviTitle">Suivi en temps réel</div>
       <div class="suivi-row">
         <div class="suivi-stat"><div class="suivi-val current" id="suiviCurrent">—</div><div class="suivi-lbl" id="suiviCurrentLabel">En cours</div></div>
         <div class="suivi-stat"><div class="suivi-val mine" id="suiviMine">—</div><div class="suivi-lbl" id="suiviMineLabel">Mon numéro</div></div>
         <div class="suivi-stat"><div class="suivi-val ahead" id="suiviAhead">—</div><div class="suivi-lbl" id="suiviAheadLabel">Avant moi</div></div>
       </div>
-      <div class="progress-wrap">
+      <div class="circle-wrap">
         <div class="circle-container">
-          <svg width="100" height="100" viewBox="0 0 100 100">
+          <svg width="90" height="90" viewBox="0 0 100 100">
             <circle class="circle-bg" cx="50" cy="50" r="40"/>
             <circle class="circle-fill" id="circleFill" cx="50" cy="50" r="40"/>
           </svg>
-          <div class="circle-text">
+          <div class="circle-inner">
             <div class="circle-pct" id="circlePct">0%</div>
-            <div class="circle-sub" id="circleSub">écoulé</div>
+            <div class="circle-sub-txt" id="circleSub">écoulé</div>
           </div>
         </div>
         <div class="progress-label" id="progressLabel">Calcul en cours...</div>
       </div>
-      <div class="alert-banner alert-ready" id="readyBanner">🟢 C'est bientôt votre tour ! Rendez-vous au cabinet.</div>
+      <div class="alert-banner alert-ready" id="readyBanner">🟢 C'est bientôt votre tour !</div>
       <div class="alert-banner alert-soon" id="soonBanner">⏰ Encore quelques patients avant vous.</div>
     </div>
-    <div class="info-note" id="successInfo">Présentez-vous au cabinet avec ce numéro.</div>
 
     <div class="notice-box">
       <div class="notice-title" id="noticeTitle">⚠️ Présentez-vous 3 numéros avant le vôtre !</div>
       <div class="notice-sub" id="noticeSub">Exemple : si votre numéro est <strong>6</strong>, soyez au cabinet quand le numéro <strong>3</strong> est appelé.</div>
     </div>
 
+    <div class="info-note" id="successInfo" style="margin-bottom:14px">Présentez-vous au cabinet avec ce numéro.</div>
+
     <a class="whatsapp-btn" id="whatsappBtn" href="#" target="_blank">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       <span id="whatsappText">Enregistrer mon numéro sur WhatsApp</span>
     </a>
-
     <button class="reset-btn" onclick="reset()"><span id="newRegText">Nouvelle inscription</span></button>
   </div>
 </div>
 
-<div class="footer">© 2026 Rendz</div>
+<div class="footer">© 2026 <span>Rendz</span></div>
 
 <script>
   const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
 
+  const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
+  const base = window.location.href.replace(/patient\.html.*/, '');
+  document.getElementById('staffAss').href = `${base}assistante.html?id=${cabinetId}`;
+  document.getElementById('staffMed').href = `${base}medecin.html?id=${cabinetId}`;
+
   const T = {
     fr: {
-      liveLabel: 'Numéro en cours', liveSub: 'Mis à jour en temps réel',
-      liveInscritsLabel: "Inscrits aujourd'hui",
-      infoBox: "📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.",
-      nomLabel: 'Nom', prenomLabel: 'Prénom', telLabel: 'Téléphone',
-      nomPh: 'Votre nom', prenomPh: 'Votre prénom', telPh: '0xxxxxxxxx',
-      submitText: "S'inscrire",
-      successTitle: 'Vous êtes inscrit(e) !', successMsg: "Votre numéro dans la file d'attente",
-      successInfo: 'Présentez-vous au cabinet avec ce numéro.',
-      newRegText: 'Nouvelle inscription',
-      whatsappText: 'Enregistrer mon numéro sur WhatsApp',
-      noticeTitle: '⚠️ Présentez-vous 3 numéros avant le vôtre !',
-      noticeSub: 'Exemple : si votre numéro est 6, soyez au cabinet quand le numéro 3 est appelé.',
-      closedText: "Les inscriptions sont fermées pour aujourd'hui.",
-      errRequired: 'Ce champ est requis.',
-      errLimit: "Désolé, la limite de patients est atteinte pour aujourd'hui.",
-      errClosed: 'Les inscriptions sont fermées.',
-      suiviTitle: 'Suivi en temps réel',
-      suiviCurrentLabel: 'En cours', suiviMineLabel: 'Mon numéro', suiviAheadLabel: 'Avant moi',
-      ready: "🟢 C'est bientôt votre tour ! Rendez-vous au cabinet.",
-      soon: '⏰ Encore quelques patients avant vous.',
+      liveLabel:'Numéro en cours', liveSub:'Mis à jour en temps réel',
+      liveInscritsLabel:"Inscrits aujourd'hui",
+      infoBox:"📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.",
+      nomLabel:'Nom', prenomLabel:'Prénom', telLabel:'Téléphone',
+      nomPh:'Votre nom', prenomPh:'Votre prénom', telPh:'0xxxxxxxxx',
+      submitText:"S'inscrire",
+      successTitle:'Vous êtes inscrit(e) !', successMsg:"Votre numéro dans la file d'attente",
+      successInfo:'Présentez-vous au cabinet avec ce numéro.',
+      newRegText:'Nouvelle inscription', whatsappText:'Enregistrer mon numéro sur WhatsApp',
+      noticeTitle:'⚠️ Présentez-vous 3 numéros avant le vôtre !',
+      noticeSub:'Exemple : si votre numéro est 6, soyez au cabinet quand le numéro 3 est appelé.',
+      closedText:"Les inscriptions sont fermées pour aujourd'hui.",
+      errRequired:'Ce champ est requis.',
+      errLimit:"Désolé, la limite de patients est atteinte pour aujourd'hui.",
+      errClosed:'Les inscriptions sont fermées.',
+      suiviTitle:'Suivi en temps réel',
+      suiviCurrentLabel:'En cours', suiviMineLabel:'Mon numéro', suiviAheadLabel:'Avant moi',
+      ready:"🟢 C'est bientôt votre tour ! Rendez-vous au cabinet.",
+      soon:'⏰ Encore quelques patients avant vous.',
     },
     ar: {
-      liveLabel: 'الرقم الحالي', liveSub: 'يتجدد تلقائياً',
-      liveInscritsLabel: 'المسجّلون اليوم',
-      infoBox: '📋 سجّل اسمك للحصول على رقمك في قائمة الانتظار.',
-      nomLabel: 'اللقب', prenomLabel: 'الاسم', telLabel: 'رقم الهاتف',
-      nomPh: 'لقبك', prenomPh: 'اسمك', telPh: '0xxxxxxxxx',
-      submitText: 'تسجيل',
-      successTitle: '✅ تم تسجيلك بنجاح !',
-      successMsg: 'رقمك في قائمة الانتظار',
-      successInfo: 'احضر إلى العيادة بهذا الرقم.',
-      newRegText: 'تسجيل جديد',
-      whatsappText: 'احفظ رقمي على واتساب',
-      noticeTitle: '⚠️ احضر قبل 3 أرقام من رقمك !',
-      noticeSub: 'مثال : إذا كان رقمك 6، كن في العيادة عند نداء الرقم 3.',
-      closedText: '🚫 التسجيل مغلق لهذا اليوم.',
-      errRequired: 'هذا الحقل إلزامي.',
-      errLimit: 'عذراً، اكتمل عدد المرضى لهذا اليوم.',
-      errClosed: 'التسجيل مغلق حالياً.',
-      suiviTitle: 'متابعة مباشرة',
-      suiviCurrentLabel: 'الرقم الحالي',
-      suiviMineLabel: 'رقمي',
-      suiviAheadLabel: 'قبلي',
-      ready: '🟢 دورك على وشك ! توجّه إلى العيادة الآن.',
-      soon: '⏰ لا يزال هناك بعض المرضى قبلك، استعدّ.',
+      liveLabel:'الرقم الحالي', liveSub:'يتجدد تلقائياً',
+      liveInscritsLabel:'المسجّلون اليوم',
+      infoBox:'📋 سجّل اسمك للحصول على رقمك في قائمة الانتظار.',
+      nomLabel:'اللقب', prenomLabel:'الاسم', telLabel:'رقم الهاتف',
+      nomPh:'لقبك', prenomPh:'اسمك', telPh:'0xxxxxxxxx',
+      submitText:'تسجيل',
+      successTitle:'✅ تم تسجيلك بنجاح !', successMsg:'رقمك في قائمة الانتظار',
+      successInfo:'احضر إلى العيادة بهذا الرقم.',
+      newRegText:'تسجيل جديد', whatsappText:'احفظ رقمي على واتساب',
+      noticeTitle:'⚠️ احضر قبل 3 أرقام من رقمك !',
+      noticeSub:'مثال : إذا كان رقمك 6، كن في العيادة عند نداء الرقم 3.',
+      closedText:'🚫 التسجيل مغلق لهذا اليوم.',
+      errRequired:'هذا الحقل إلزامي.',
+      errLimit:'عذراً، اكتمل عدد المرضى لهذا اليوم.',
+      errClosed:'التسجيل مغلق حالياً.',
+      suiviTitle:'متابعة مباشرة',
+      suiviCurrentLabel:'الرقم الحالي', suiviMineLabel:'رقمي', suiviAheadLabel:'قبلي',
+      ready:'🟢 دورك على وشك ! توجّه إلى العيادة الآن.',
+      soon:'⏰ لا يزال هناك بعض المرضى قبلك، استعدّ.',
     }
   };
 
-  let lang = 'fr';
-  let parametres = {};
-  let myPosition = null;
-  const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
+  let lang = 'fr', parametres = {}, myPosition = null;
 
   function setLang(l, btn) {
     lang = l;
@@ -327,54 +503,36 @@
     document.documentElement.lang = l === 'ar' ? 'ar' : 'fr';
     document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
     document.title = l === 'ar' ? 'رندز — التسجيل' : 'Rendz — Inscription';
-    // Adapter le bandeau bleu en RTL
-    const banner = document.querySelector('.live-banner');
-    if (banner) banner.style.flexDirection = l === 'ar' ? 'row-reverse' : 'row';
     applyT();
   }
 
   function applyT() {
     const t = T[lang];
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    const setHTML = (id, val) => { const el = document.getElementById(id); if (el) el.innerHTML = val; };
     const setPH = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
-
-    set('liveLabel', t.liveLabel);
-    set('liveSub', t.liveSub);
+    set('liveLabel', t.liveLabel); set('liveSub', t.liveSub);
     set('liveInscritsLabel', t.liveInscritsLabel);
     set('infoBox', t.infoBox);
-    set('nomLabel', t.nomLabel);
-    set('prenomLabel', t.prenomLabel);
-    set('telLabel', t.telLabel);
-    setPH('nom', t.nomPh);
-    setPH('prenom', t.prenomPh);
-    setPH('telephone', t.telPh);
+    set('nomLabel', t.nomLabel); set('prenomLabel', t.prenomLabel); set('telLabel', t.telLabel);
+    setPH('nom', t.nomPh); setPH('prenom', t.prenomPh); setPH('telephone', t.telPh);
     set('submitText', t.submitText);
-    set('successTitle', t.successTitle);
-    set('successMsg', t.successMsg);
-    set('successInfo', t.successInfo);
-    set('newRegText', t.newRegText);
-    set('whatsappText', t.whatsappText);
-    set('closedText', t.closedText);
+    set('successTitle', t.successTitle); set('successMsg', t.successMsg);
+    set('successInfo', t.successInfo); set('newRegText', t.newRegText);
+    set('whatsappText', t.whatsappText); set('closedText', t.closedText);
     set('suiviTitle', t.suiviTitle);
-    set('suiviCurrentLabel', t.suiviCurrentLabel);
-    set('suiviMineLabel', t.suiviMineLabel);
-    set('suiviAheadLabel', t.suiviAheadLabel);
-    set('readyBanner', t.ready);
-    set('soonBanner', t.soon);
+    set('suiviCurrentLabel', t.suiviCurrentLabel); set('suiviMineLabel', t.suiviMineLabel); set('suiviAheadLabel', t.suiviAheadLabel);
+    set('readyBanner', t.ready); set('soonBanner', t.soon);
     set('noticeTitle', t.noticeTitle);
-    setHTML('noticeSub', t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>'));
+    const ns = document.getElementById('noticeSub');
+    if (ns) ns.innerHTML = t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>');
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
     if (myPosition) { const btn = document.getElementById('whatsappBtn'); if (btn) btn.href = generateWhatsAppLink(myPosition); }
-    // Recharger les infos cabinet dans la bonne langue
     if (parametres.nom_cabinet) {
       const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet) : parametres.nom_cabinet;
       const spec = lang === 'ar' ? (parametres.specialite_ar || parametres.specialite) : parametres.specialite;
-      const hor = lang === 'ar' ? (parametres.horaires_ar || parametres.horaires) : parametres.horaires;
       const msg = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients) : parametres.message_patients;
       const el = document.getElementById('cabinetNom'); if (el) el.textContent = nom || '';
       const es = document.getElementById('cabinetSpec'); if (es) es.textContent = spec || '';
-      const eh = document.getElementById('cabinetHoraires'); if (eh) eh.textContent = hor || '';
       const em = document.getElementById('messagePatients');
       if (em) { if (msg) { em.textContent = '📢 ' + msg; em.style.display = 'block'; } else { em.style.display = 'none'; } }
     }
@@ -401,26 +559,24 @@
     document.getElementById('liveNumber').textContent = numEnCours || '—';
     const countHeader = countRes.headers.get('content-range');
     const totalToday = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
+    document.getElementById('liveInscrits').textContent = totalToday;
     const closed = !parametres.ouvert || (parametres.limite_patients && totalToday >= parametres.limite_patients);
     document.getElementById('closedBanner').style.display = closed ? 'block' : 'none';
     document.getElementById('submitBtn').disabled = !!closed;
 
-    // Infos cabinet dans le bandeau bleu
+    // Cabinet strip
     const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet || '') : (parametres.nom_cabinet || '');
     const spec = lang === 'ar' ? (parametres.specialite_ar || parametres.specialite || '') : (parametres.specialite || '');
-    const horaires = lang === 'ar' ? (parametres.horaires_ar || parametres.horaires || '') : (parametres.horaires || '');
     const msg = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients || '') : (parametres.message_patients || '');
     if (nom) {
       document.getElementById('cabinetNom').textContent = nom;
       document.getElementById('cabinetSpec').textContent = spec;
-      document.getElementById('cabinetHoraires').textContent = horaires;
-      document.getElementById('cabinetInfo').style.display = 'block';
+      document.getElementById('cabinetStrip').style.display = 'flex';
+      document.title = `Rendz — ${nom}`;
     }
-    // Message personnalisé
     const msgEl = document.getElementById('messagePatients');
     if (msg) { msgEl.textContent = '📢 ' + msg; msgEl.style.display = 'block'; }
     else { msgEl.style.display = 'none'; }
-
     if (myPosition !== null) updateSuivi(numEnCours);
   }
 
@@ -429,39 +585,19 @@
     document.getElementById('suiviCurrent').textContent = numEnCours || '—';
     document.getElementById('suiviMine').textContent = myPosition;
     document.getElementById('suiviAhead').textContent = ahead;
-
     const progress = myPosition > 0 ? Math.min(100, Math.round((numEnCours / myPosition) * 100)) : 0;
-
-    // Animer le cercle SVG
     const circle = document.getElementById('circleFill');
     const pct = document.getElementById('circlePct');
     const circumference = 251.2;
-    const offset = circumference - (progress / 100) * circumference;
-    circle.style.strokeDashoffset = offset;
+    circle.style.strokeDashoffset = circumference - (progress / 100) * circumference;
     pct.textContent = progress + '%';
-
-    // Couleur selon urgence
     circle.className = 'circle-fill';
     pct.className = 'circle-pct';
-    if (ahead <= 2 && numEnCours > 0) {
-      circle.classList.add('almost');
-      pct.classList.add('almost');
-    } else if (ahead <= 5 && numEnCours > 0) {
-      circle.classList.add('urgent');
-      pct.classList.add('urgent');
-    }
-
-    // Label
-    if (numEnCours === 0) {
-      document.getElementById('progressLabel').textContent = lang === 'ar' ? 'في انتظار بدء الاستشارات' : 'En attente du début des consultations';
-    } else if (ahead === 0) {
-      document.getElementById('progressLabel').textContent = lang === 'ar' ? '🟢 دورك الآن !' : "C'est votre tour !";
-    } else {
-      document.getElementById('progressLabel').textContent = lang === 'ar'
-        ? `${ahead} مريض قبلك`
-        : `${ahead} patient${ahead > 1 ? 's' : ''} avant vous`;
-    }
-
+    if (ahead <= 2 && numEnCours > 0) { circle.classList.add('almost'); pct.classList.add('almost'); }
+    else if (ahead <= 5 && numEnCours > 0) { circle.classList.add('urgent'); pct.classList.add('urgent'); }
+    if (numEnCours === 0) document.getElementById('progressLabel').textContent = lang === 'ar' ? 'في انتظار بدء الاستشارات' : 'En attente du début des consultations';
+    else if (ahead === 0) document.getElementById('progressLabel').textContent = lang === 'ar' ? '🟢 دورك الآن !' : "C'est votre tour !";
+    else document.getElementById('progressLabel').textContent = lang === 'ar' ? `${ahead} مريض قبلك` : `${ahead} patient${ahead > 1 ? 's' : ''} avant vous`;
     document.getElementById('readyBanner').style.display = ahead <= 2 && numEnCours > 0 ? 'block' : 'none';
     document.getElementById('soonBanner').style.display = ahead > 2 && ahead <= 5 ? 'block' : 'none';
   }
@@ -472,15 +608,10 @@
     const prenom = document.getElementById('prenom').value.trim();
     const telephone = document.getElementById('telephone').value.trim();
     let valid = true;
-    const nomErr = document.getElementById('nomErr');
-    const prenomErr = document.getElementById('prenomErr');
-    const telErr = document.getElementById('telErr');
-    if (nomErr) nomErr.style.display = 'none';
-    if (prenomErr) prenomErr.style.display = 'none';
-    if (telErr) telErr.style.display = 'none';
-    if (!nom) { if (nomErr) nomErr.style.display = 'block'; valid = false; }
-    if (!prenom) { if (prenomErr) prenomErr.style.display = 'block'; valid = false; }
-    if (!telephone) { if (telErr) telErr.style.display = 'block'; valid = false; }
+    ['nomErr','prenomErr','telErr'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    if (!nom) { const el = document.getElementById('nomErr'); if (el) el.style.display = 'block'; valid = false; }
+    if (!prenom) { const el = document.getElementById('prenomErr'); if (el) el.style.display = 'block'; valid = false; }
+    if (!telephone) { const el = document.getElementById('telErr'); if (el) el.style.display = 'block'; valid = false; }
     if (!valid) return;
     if (!parametres.ouvert) { alert(t.errClosed); return; }
     document.getElementById('submitBtn').disabled = true;
