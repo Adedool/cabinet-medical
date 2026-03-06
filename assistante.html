@@ -512,7 +512,7 @@
     document.getElementById('modalOverlay').classList.add('show');
   }
   function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); pendingAction = null; }
-  async function confirmAction() { closeModal(); if (pendingAction) await pendingAction(); }
+  async function confirmAction() { const action = pendingAction; closeModal(); if (action) await action(); }
 
   async function supprimer(id) {
     showModal('🗑️', 'Supprimer ce patient ?', 'Cette action est irréversible.', 'danger',
