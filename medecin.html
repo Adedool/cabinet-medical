@@ -4,13 +4,15 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Médecin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
       --bg:          #f7f3ee;
       --bg2:         #f0ebe3;
       --cream:       #ede8e0;
       --blue:        #2563eb;
+      --blue-mid:    #3b82f6;
       --blue-dim:    rgba(37,99,235,0.08);
       --blue-border: rgba(37,99,235,0.18);
       --blue-text:   #1d4ed8;
@@ -103,7 +105,20 @@
     }
     .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
-    /* HERO — N° EN COURS */
+    /* TABS */
+    .tabs {
+      background: white; border-bottom: 1px solid var(--border);
+      display: flex; padding: 0 24px; gap: 0;
+    }
+    .tab-btn {
+      padding: 12px 18px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--text-sub); background: none; border: none; border-bottom: 2px solid transparent;
+      cursor: pointer; transition: all 0.15s; margin-bottom: -1px;
+    }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .tab-btn:hover:not(.active) { color: var(--text); }
+
+    /* HERO */
     .hero-bar {
       background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
       padding: 24px 28px; display: flex; align-items: center;
@@ -116,7 +131,6 @@
       background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 65%);
       pointer-events: none;
     }
-    .hero-left {}
     .hero-label { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
     .hero-number { font-family: 'Outfit', sans-serif; font-size: 52px; font-weight: 900; color: white; line-height: 1; letter-spacing: -2px; }
     .hero-name { font-size: 14px; color: rgba(255,255,255,0.85); margin-top: 4px; font-weight: 500; }
@@ -127,10 +141,9 @@
       cursor: pointer; transition: all 0.15s;
     }
     .btn-suivant { background: white; color: var(--blue-text); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .btn-suivant:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.18); }
+    .btn-suivant:hover { transform: translateY(-1px); }
     .btn-fin { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.35); }
     .btn-fin:hover { background: rgba(255,255,255,0.3); }
-
     .no-consult {
       background: var(--cream); border-bottom: 1px solid var(--border);
       padding: 11px 24px; font-size: 13px; color: var(--text-sub);
@@ -143,7 +156,7 @@
       background: white; border-radius: 12px; padding: 14px 16px;
       flex: 1; min-width: 90px; border: 1px solid var(--border); box-shadow: var(--shadow);
     }
-    .stat-val { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: var(--blue); }
+    .stat-val { font-size: 26px; font-weight: 800; color: var(--blue); }
     .stat-lbl { font-size: 11px; color: var(--text-sub); margin-top: 2px; font-weight: 500; }
 
     /* CONTROLS */
@@ -156,8 +169,6 @@
       font-family: 'Outfit', sans-serif; font-weight: 500;
     }
     .refresh-btn:hover { border-color: var(--blue); color: var(--blue); }
-
-    /* OUVERTURE CABINET */
     .toggle-section { display: flex; align-items: center; gap: 10px; }
     .toggle-label { font-size: 12px; font-weight: 600; color: var(--text-sub); }
     .toggle-switch { position: relative; width: 44px; height: 24px; }
@@ -198,10 +209,8 @@
     .list-item:last-child { border-bottom: none; }
     .list-item:hover { background: var(--bg); }
     .list-item.en_cours { background: var(--blue-dim); border-left: 3px solid var(--blue); }
-    .list-item.present  { }
     .list-item.absent   { opacity: 0.45; }
     .list-item.termine  { opacity: 0.35; }
-
     .num-badge {
       width: 32px; height: 32px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -211,47 +220,100 @@
     .num-badge.en_cours { background: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
     .num-badge.absent   { background: var(--text-muted); }
     .num-badge.termine  { background: var(--cream); color: var(--text-muted); }
-
     .name-col { font-weight: 600; color: var(--text); font-size: 14px; }
     .name-col .tel { font-size: 12px; color: var(--text-sub); font-weight: 400; margin-top: 1px; }
-
     .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
     .status-badge.en_attente { background: var(--bg2); color: var(--text-sub); }
     .status-badge.present    { background: var(--green-light); color: var(--green); }
     .status-badge.en_cours   { background: var(--blue-dim); color: var(--blue-text); border: 1px solid var(--blue-border); }
     .status-badge.absent     { background: var(--bg2); color: var(--text-muted); }
     .status-badge.termine    { background: var(--bg2); color: var(--text-muted); }
-
     .empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
     .empty-state .ico { font-size: 36px; margin-bottom: 10px; }
     .empty-state p { font-size: 14px; }
 
-    /* SETTINGS PANEL */
-    .settings-panel {
-      background: white; border-radius: 14px; border: 1px solid var(--border);
-      padding: 18px; margin-top: 16px; box-shadow: var(--shadow);
+    /* ── SETTINGS TAB ── */
+    .settings-tab { padding: 20px 24px 40px; display: none; }
+    .settings-tab.active { display: block; }
+
+    /* QR BANNER */
+    .qr-banner {
+      background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
+      border-radius: 16px; padding: 18px 20px;
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 20px; cursor: pointer;
+      box-shadow: 0 6px 24px rgba(29,78,216,0.3);
+      transition: all 0.2s; position: relative; overflow: hidden;
     }
-    .settings-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
-    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .sfield { }
+    .qr-banner::before {
+      content: ''; position: absolute; top: -40%; right: -5%;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .qr-banner:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(29,78,216,0.4); }
+    .qr-banner-icon {
+      width: 46px; height: 46px; background: rgba(255,255,255,0.2);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .qr-banner-body { flex: 1; }
+    .qr-banner-title { font-size: 15px; font-weight: 800; color: white; margin-bottom: 2px; }
+    .qr-banner-sub { font-size: 12px; color: rgba(255,255,255,0.7); }
+    .qr-banner-arrow { color: rgba(255,255,255,0.7); font-size: 18px; flex-shrink: 0; }
+
+    /* SETTINGS CARDS */
+    .settings-card {
+      background: white; border-radius: 14px; border: 1px solid var(--border);
+      padding: 20px; margin-bottom: 14px; box-shadow: var(--shadow);
+    }
+    .settings-card-title {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 7px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--cream);
+    }
+    .settings-card-title .badge-lang {
+      font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700;
+    }
+    .badge-fr { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .badge-ar { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+    .sfield { margin-bottom: 12px; }
+    .sfield:last-child { margin-bottom: 0; }
     .sfield-label { font-size: 10px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px; }
     .sfield-input {
-      width: 100%; padding: 9px 11px; border: 1.5px solid var(--border);
-      border-radius: 9px; font-family: 'Outfit', sans-serif; font-size: 14px;
-      color: var(--text); background: var(--bg); outline: none;
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none; transition: border-color 0.15s;
     }
     .sfield-input:focus { border-color: var(--blue); background: white; }
-    .sfield.full { grid-column: 1 / -1; }
+    .sfield-input[dir="rtl"] { font-family: 'Cairo', sans-serif; }
+    .sfield-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
     .save-btn {
-      margin-top: 12px; padding: 10px 20px;
+      padding: 10px 20px;
       background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: white; border: none; border-radius: 9px;
+      color: white; border: none; border-radius: 10px;
       font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700;
       cursor: pointer; transition: all 0.15s;
       box-shadow: 0 3px 12px rgba(29,78,216,0.25);
     }
     .save-btn:hover { transform: translateY(-1px); }
     .save-ok { color: var(--green); font-size: 12px; font-weight: 600; margin-left: 10px; display: none; }
+
+    /* Danger zone */
+    .danger-card {
+      background: var(--red-light); border: 1px solid var(--red-border);
+      border-radius: 14px; padding: 18px 20px; margin-bottom: 14px;
+    }
+    .danger-card-title { font-size: 13px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
+    .danger-card-sub { font-size: 12px; color: #991b1b; margin-bottom: 14px; }
+    .danger-btn {
+      padding: 9px 18px; background: var(--red); color: white; border: none;
+      border-radius: 9px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .danger-btn:hover { background: #b91c1c; }
 
     /* MODAL */
     .modal-overlay {
@@ -280,12 +342,39 @@
     .modal-confirm.danger  { background: var(--red); }
     .modal-confirm.danger:hover  { background: #b91c1c; }
     .modal-confirm.success { background: var(--green); }
-    .modal-confirm.success:hover { background: #15803d; }
     .modal-confirm.primary { background: var(--blue); }
-    .modal-confirm.primary:hover { background: var(--blue-text); }
+
+    /* QR MODAL */
+    .qr-modal-overlay {
+      position: fixed; inset: 0; background: rgba(28,25,23,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1001; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .qr-modal-overlay.show { opacity: 1; pointer-events: all; }
+    .qr-modal {
+      background: white; border-radius: 22px; padding: 32px 28px;
+      max-width: 360px; width: 100%; box-shadow: var(--shadow-lg);
+      transform: scale(0.95); transition: transform 0.2s; text-align: center;
+    }
+    .qr-modal-overlay.show .qr-modal { transform: scale(1); }
+    .qr-modal-title { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .qr-modal-sub { font-size: 12px; color: var(--text-sub); margin-bottom: 20px; }
+    #qrCodeContainer { display: flex; justify-content: center; margin-bottom: 20px; }
+    #qrCodeContainer canvas, #qrCodeContainer img { border-radius: 10px; }
+    .qr-modal-actions { display: flex; gap: 10px; }
+    .qr-dl-btn {
+      flex: 1; padding: 11px; background: linear-gradient(135deg,#1d4ed8,#2563eb);
+      color: white; border: none; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .qr-close-btn {
+      flex: 1; padding: 11px; background: var(--bg); color: var(--text-sub);
+      border: 1px solid var(--border); border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
 
     @media (max-width: 640px) {
-      .topbar, .content, .controls { padding-left: 14px; padding-right: 14px; }
+      .topbar, .content, .controls, .settings-tab { padding-left: 14px; padding-right: 14px; }
       .stats-row { padding: 12px 14px 0; gap: 7px; }
       .hero-bar { padding: 18px 14px; }
       .hero-number { font-size: 38px; }
@@ -293,12 +382,14 @@
       .list-header { display: none; }
       .list-item { display: flex !important; flex-direction: column; gap: 8px; padding: 12px 14px; }
       .list-item.en_cours { border-left: 4px solid var(--blue) !important; }
-      .settings-grid { grid-template-columns: 1fr; }
+      .sfield-grid { grid-template-columns: 1fr; }
+      .tabs { padding: 0 14px; overflow-x: auto; }
     }
   </style>
 </head>
 <body>
 
+<!-- CONFIRM MODAL -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-icon" id="modalIcon">⚠️</div>
@@ -311,12 +402,30 @@
   </div>
 </div>
 
+<!-- QR MODAL -->
+<div class="qr-modal-overlay" id="qrModalOverlay">
+  <div class="qr-modal">
+    <div class="qr-modal-title">QR Code du cabinet</div>
+    <div class="qr-modal-sub" id="qrModalSub">Scannez pour accéder à la salle d'attente</div>
+    <div id="qrCodeContainer"></div>
+    <div class="qr-modal-actions">
+      <button class="qr-dl-btn" onclick="downloadQR()">⬇ Télécharger</button>
+      <button class="qr-close-btn" onclick="closeQR()">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-card">
     <div class="login-logo-wrap">
       <div class="login-logo-icon">
-        <svg width="18" height="18" viewBox="0 0 22 22" fill="none"><path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.9" stroke-linecap="round"/><circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.9"/><path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.9" stroke-linecap="round"/><path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.9" stroke-linecap="round"/></svg>
+        <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+          <path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+          <circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.9"/>
+          <path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+          <path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
       </div>
       <div class="login-logo-text">Rend<span>z</span></div>
     </div>
@@ -333,7 +442,12 @@
   <div class="topbar">
     <div class="topbar-logo-wrap">
       <div class="topbar-logo-icon">
-        <svg width="15" height="15" viewBox="0 0 22 22" fill="none"><path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.9" stroke-linecap="round"/><circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.9"/><path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.9" stroke-linecap="round"/><path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.9" stroke-linecap="round"/></svg>
+        <svg width="15" height="15" viewBox="0 0 22 22" fill="none">
+          <path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+          <circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.9"/>
+          <path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+          <path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.9" stroke-linecap="round"/>
+        </svg>
       </div>
       <div class="topbar-logo-text">Rend<span>z</span></div>
     </div>
@@ -344,68 +458,177 @@
     </div>
   </div>
 
-  <div id="heroBar"></div>
-
-  <div class="stats-row">
-    <div class="stat-card"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Inscrits</div></div>
-    <div class="stat-card"><div class="stat-val" id="statPresent">0</div><div class="stat-lbl">Présents</div></div>
-    <div class="stat-card"><div class="stat-val" id="statTermine">0</div><div class="stat-lbl">Terminés</div></div>
-    <div class="stat-card"><div class="stat-val" id="statAttente">0</div><div class="stat-lbl">En attente</div></div>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('file',this)">📋 File d'attente</button>
+    <button class="tab-btn" onclick="showTab('cabinet',this)">🏥 Mon Cabinet</button>
+    <button class="tab-btn" onclick="showTab('securite',this)">🔐 Sécurité</button>
   </div>
 
-  <div class="controls">
-    <div class="controls-left">
-      <div class="section-title">File d'attente</div>
-      <button class="refresh-btn" onclick="loadData()">↻ Actualiser</button>
+  <!-- TAB FILE -->
+  <div id="tab-file">
+    <div id="heroBar"></div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Inscrits</div></div>
+      <div class="stat-card"><div class="stat-val" id="statPresent">0</div><div class="stat-lbl">Présents</div></div>
+      <div class="stat-card"><div class="stat-val" id="statTermine">0</div><div class="stat-lbl">Terminés</div></div>
+      <div class="stat-card"><div class="stat-val" id="statAttente">0</div><div class="stat-lbl">En attente</div></div>
     </div>
-    <div class="toggle-section">
-      <span class="toggle-label">Cabinet</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="ouvertToggle" onchange="toggleOuvert()"/>
-        <span class="toggle-slider"></span>
-      </label>
-      <span class="ouvert-badge closed" id="ouvertBadge">Fermé</span>
-    </div>
-  </div>
-
-  <div class="content">
-    <div class="list-wrap">
-      <div class="list-header">
-        <span>#</span><span>Patient</span><span>Statut</span>
+    <div class="controls">
+      <div class="controls-left">
+        <div class="section-title">File d'attente</div>
+        <button class="refresh-btn" onclick="loadData()">↻ Actualiser</button>
       </div>
-      <div id="listBody"></div>
+      <div class="toggle-section">
+        <span class="toggle-label">Cabinet</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="ouvertToggle" onchange="toggleOuvert()"/>
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="ouvert-badge closed" id="ouvertBadge">Fermé</span>
+      </div>
+    </div>
+    <div class="content">
+      <div class="list-wrap">
+        <div class="list-header">
+          <span>#</span><span>Patient</span><span>Statut</span>
+        </div>
+        <div id="listBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB CABINET -->
+  <div id="tab-cabinet" class="settings-tab">
+
+    <!-- QR BANNER -->
+    <div class="qr-banner" onclick="openQR()">
+      <div class="qr-banner-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="3" width="7" height="7" rx="1" stroke="white" stroke-width="1.8"/>
+          <rect x="14" y="3" width="7" height="7" rx="1" stroke="white" stroke-width="1.8"/>
+          <rect x="3" y="14" width="7" height="7" rx="1" stroke="white" stroke-width="1.8"/>
+          <rect x="5" y="5" width="3" height="3" fill="white"/>
+          <rect x="16" y="5" width="3" height="3" fill="white"/>
+          <rect x="5" y="16" width="3" height="3" fill="white"/>
+          <path d="M14 14h2v2h-2z M18 14h3 M14 18v3 M18 18h3v3h-3z" stroke="white" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="qr-banner-body">
+        <div class="qr-banner-title">📲 Générer le QR Code</div>
+        <div class="qr-banner-sub">Affichez-le à l'entrée de votre cabinet</div>
+      </div>
+      <div class="qr-banner-arrow">›</div>
     </div>
 
-    <div class="settings-panel">
-      <div class="settings-title">⚙️ Paramètres du cabinet</div>
-      <div class="settings-grid">
-        <div class="sfield full">
-          <div class="sfield-label">Nom du médecin</div>
-          <input class="sfield-input" type="text" id="sNom" placeholder="Dr. Prénom Nom"/>
-        </div>
+    <!-- FR -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        🇫🇷 Informations en français
+        <span class="badge-lang badge-fr">FR</span>
+      </div>
+      <div class="sfield">
+        <div class="sfield-label">Nom du médecin</div>
+        <input class="sfield-input" type="text" id="sNom" placeholder="Dr. Prénom Nom"/>
+      </div>
+      <div class="sfield-grid">
         <div class="sfield">
           <div class="sfield-label">Spécialité</div>
-          <input class="sfield-input" type="text" id="sSpec" placeholder="Ex: Généraliste"/>
+          <input class="sfield-input" type="text" id="sSpec" placeholder="Ex: Cardiologue"/>
         </div>
         <div class="sfield">
           <div class="sfield-label">Horaires</div>
-          <input class="sfield-input" type="text" id="sHoraires" placeholder="Ex: 8h–12h"/>
-        </div>
-        <div class="sfield full">
-          <div class="sfield-label">Message patients</div>
-          <input class="sfield-input" type="text" id="sMessage" placeholder="Ex: Consultations reprennent à 14h"/>
-        </div>
-        <div class="sfield">
-          <div class="sfield-label">Limite patients/jour</div>
-          <input class="sfield-input" type="number" id="sLimite" placeholder="0 = illimité" min="0"/>
+          <input class="sfield-input" type="text" id="sHoraires" placeholder="Ex: 8h–13h"/>
         </div>
       </div>
-      <div style="display:flex;align-items:center;margin-top:12px">
-        <button class="save-btn" onclick="saveSettings()">💾 Enregistrer</button>
-        <span class="save-ok" id="saveOk">✓ Sauvegardé !</span>
+      <div class="sfield">
+        <div class="sfield-label">Message aux patients</div>
+        <input class="sfield-input" type="text" id="sMessage" placeholder="Ex: Consultations reprennent à 14h"/>
+      </div>
+      <div class="sfield">
+        <div class="sfield-label">Limite patients/jour (0 = illimité)</div>
+        <input class="sfield-input" type="number" id="sLimite" placeholder="0" min="0" style="max-width:140px"/>
       </div>
     </div>
+
+    <!-- AR -->
+    <div class="settings-card">
+      <div class="settings-card-title">
+        🇩🇿 المعلومات بالعربية
+        <span class="badge-lang badge-ar">AR</span>
+      </div>
+      <div class="sfield">
+        <div class="sfield-label">اسم الطبيب</div>
+        <input class="sfield-input" type="text" id="sNomAr" dir="rtl" placeholder="د. الاسم الكامل"/>
+      </div>
+      <div class="sfield-grid">
+        <div class="sfield">
+          <div class="sfield-label">التخصص</div>
+          <input class="sfield-input" type="text" id="sSpecAr" dir="rtl" placeholder="مثال: طب القلب"/>
+        </div>
+        <div class="sfield">
+          <div class="sfield-label">أوقات العمل</div>
+          <input class="sfield-input" type="text" id="sHorairesAr" dir="rtl" placeholder="مثال: 8ص–13م"/>
+        </div>
+      </div>
+      <div class="sfield">
+        <div class="sfield-label">رسالة للمرضى</div>
+        <input class="sfield-input" type="text" id="sMessageAr" dir="rtl" placeholder="مثال: الاستشارات تستأنف الساعة 14:00"/>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px">
+      <button class="save-btn" onclick="saveSettings()">💾 Enregistrer</button>
+      <span class="save-ok" id="saveOk">✓ Sauvegardé !</span>
+    </div>
   </div>
+
+  <!-- TAB SÉCURITÉ -->
+  <div id="tab-securite" class="settings-tab">
+
+    <!-- Changer MDP -->
+    <div class="settings-card">
+      <div class="settings-card-title">🔑 Changer le mot de passe médecin</div>
+      <div class="sfield">
+        <div class="sfield-label">Nouveau mot de passe</div>
+        <input class="sfield-input" type="password" id="newPwdMed" placeholder="Nouveau mot de passe"/>
+      </div>
+      <div class="sfield">
+        <div class="sfield-label">Confirmer</div>
+        <input class="sfield-input" type="password" id="confirmPwdMed" placeholder="Confirmer le mot de passe"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+        <button class="save-btn" onclick="changePwd('medecin')">🔒 Mettre à jour</button>
+        <span class="save-ok" id="pwdMedOk">✓ Mis à jour !</span>
+        <span style="color:var(--red);font-size:12px;font-weight:600;display:none" id="pwdMedErr">Les mots de passe ne correspondent pas.</span>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-card-title">🔑 Changer le mot de passe assistante</div>
+      <div class="sfield">
+        <div class="sfield-label">Nouveau mot de passe</div>
+        <input class="sfield-input" type="password" id="newPwdAss" placeholder="Nouveau mot de passe"/>
+      </div>
+      <div class="sfield">
+        <div class="sfield-label">Confirmer</div>
+        <input class="sfield-input" type="password" id="confirmPwdAss" placeholder="Confirmer le mot de passe"/>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+        <button class="save-btn" onclick="changePwd('assistante')">🔒 Mettre à jour</button>
+        <span class="save-ok" id="pwdAssOk">✓ Mis à jour !</span>
+        <span style="color:var(--red);font-size:12px;font-weight:600;display:none" id="pwdAssErr">Les mots de passe ne correspondent pas.</span>
+      </div>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="danger-card">
+      <div class="danger-card-title">⚠️ Zone dangereuse</div>
+      <div class="danger-card-sub">Cette action supprime définitivement tous les patients de la liste du jour et remet le compteur à zéro. Irréversible.</div>
+      <button class="danger-btn" onclick="confirmReset()">🗑 Remettre à zéro la liste</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -414,10 +637,13 @@
   let refreshInterval;
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
   const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };
+  const H = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+  const HJ = { ...H, 'Content-Type': 'application/json' };
 
+  /* ── LOGIN ── */
   async function login() {
     const pwd = document.getElementById('pwdInput').value;
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin&cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin&cabinet_id=eq.${cabinetId}`, { headers: H });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
       localStorage.setItem(`rendz_medecin_${cabinetId}`, 'true');
@@ -442,31 +668,63 @@
 
   if (localStorage.getItem(`rendz_medecin_${cabinetId}`)) showDashboard();
 
+  /* ── TABS ── */
+  function showTab(name, btn) {
+    ['file','cabinet','securite'].forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (el) el.style.display = 'none';
+      if (t === 'file') {
+        // handled via classList below
+      }
+    });
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const fileEl = document.getElementById('tab-file');
+    const cabEl  = document.getElementById('tab-cabinet');
+    const secEl  = document.getElementById('tab-securite');
+
+    fileEl.style.display = name === 'file' ? 'block' : 'none';
+    cabEl.style.display  = 'none';
+    secEl.style.display  = 'none';
+    if (name === 'cabinet') { cabEl.style.display = 'block'; }
+    if (name === 'securite') { secEl.style.display = 'block'; }
+  }
+  // init
+  document.getElementById('tab-cabinet').style.display = 'none';
+  document.getElementById('tab-securite').style.display = 'none';
+
+  /* ── DATA ── */
   async function loadData() {
     const today = new Date().toISOString().split('T')[0];
     const [listRes, paramRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: H }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: H })
     ]);
     const list = await listRes.json();
     const params = (await paramRes.json())[0] || {};
 
-    // Ouvert toggle
+    // Toggle
     const ouvert = !!params.ouvert;
     document.getElementById('ouvertToggle').checked = ouvert;
     const badge = document.getElementById('ouvertBadge');
     badge.textContent = ouvert ? '✓ Ouvert' : '✗ Fermé';
     badge.className = `ouvert-badge ${ouvert ? 'open' : 'closed'}`;
 
-    // Settings
-    document.getElementById('sNom').value = params.nom_cabinet || '';
-    document.getElementById('sSpec').value = params.specialite || '';
-    document.getElementById('sHoraires').value = params.horaires || '';
+    // Settings FR
+    document.getElementById('sNom').value     = params.nom_cabinet || '';
+    document.getElementById('sSpec').value    = params.specialite || '';
+    document.getElementById('sHoraires').value= params.horaires || '';
     document.getElementById('sMessage').value = params.message_patients || '';
-    document.getElementById('sLimite').value = params.limite_patients || 0;
+    document.getElementById('sLimite').value  = params.limite_patients || 0;
+    // Settings AR
+    document.getElementById('sNomAr').value      = params.nom_cabinet_ar || '';
+    document.getElementById('sSpecAr').value     = params.specialite_ar || '';
+    document.getElementById('sHorairesAr').value = params.horaires_ar || '';
+    document.getElementById('sMessageAr').value  = params.message_patients_ar || '';
 
     // Stats
-    document.getElementById('statTotal').textContent = list.length;
+    document.getElementById('statTotal').textContent   = list.length;
     document.getElementById('statPresent').textContent = list.filter(p => p.statut === 'present').length;
     document.getElementById('statTermine').textContent = list.filter(p => p.statut === 'termine').length;
     document.getElementById('statAttente').textContent = list.filter(p => p.statut === 'en_attente').length;
@@ -476,7 +734,7 @@
     const suivant = list.find(p => p.statut === 'present');
     const heroBar = document.getElementById('heroBar');
     if (enCours) {
-      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours</div><div class="hero-number">${enCours.position}</div><div class="hero-name">${enCours.nom} ${enCours.prenom}</div></div><div class="hero-actions">${suivant ? `<button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Suivant — N°${suivant.position}</button>` : ''}<button class="hero-btn btn-fin" onclick="finConsultation(${enCours.id})">✅ Fin</button></div></div>`;
+      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours</div><div class="hero-number">${enCours.position}</div><div class="hero-name">${enCours.nom} ${enCours.prenom}</div></div><div class="hero-actions">${suivant?`<button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Suivant — N°${suivant.position}</button>`:''}<button class="hero-btn btn-fin" onclick="finConsultation(${enCours.id})">✅ Fin</button></div></div>`;
     } else if (suivant) {
       heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">⏳ Prochain patient</div><div class="hero-number">${suivant.position}</div><div class="hero-name">${suivant.nom} ${suivant.prenom}</div></div><div class="hero-actions"><button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Commencer</button></div></div>`;
     } else {
@@ -488,7 +746,7 @@
     if (list.length === 0) { body.innerHTML = `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit aujourd'hui.</p></div>`; return; }
     body.innerHTML = list.map(p => {
       const st = p.statut || 'en_attente';
-      const bc = st === 'present' ? 'present' : st === 'en_cours' ? 'en_cours' : st === 'absent' ? 'absent' : st === 'termine' ? 'termine' : '';
+      const bc = ['present','en_cours','absent','termine'].includes(st) ? st : '';
       return `<div class="list-item ${st}">
         <div><div class="num-badge ${bc}">${p.position}</div></div>
         <div class="name-col">${p.nom} ${p.prenom}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
@@ -498,43 +756,29 @@
   }
 
   async function appelSuivant(id, position) {
-    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: H });
     const params = await paramRes.json();
     const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
     const updates = [
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours' }) })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ statut: 'en_cours' }) })
     ];
     if (position > numeroActuel) {
-      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: position }) }));
+      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: position }) }));
     }
     await Promise.all(updates);
     loadData();
   }
 
-  let pendingAction = null;
-
-  function showModal(icon, title, msg, confirmClass, action) {
-    document.getElementById('modalIcon').textContent = icon;
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalMsg').textContent = msg;
-    document.getElementById('modalConfirm').className = `modal-confirm ${confirmClass}`;
-    document.getElementById('modalConfirm').textContent = 'Confirmer';
-    pendingAction = action;
-    document.getElementById('modalOverlay').classList.add('show');
-  }
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); pendingAction = null; }
-  async function confirmAction() { closeModal(); if (pendingAction) await pendingAction(); }
-
   async function finConsultation(id) {
     showModal('✅', 'Fin de consultation ?', 'Le patient sera marqué comme terminé.', 'success',
       async () => {
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'termine' }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ statut: 'termine' }) });
         const today = new Date().toISOString().split('T')[0];
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: H });
         const tous = await res.json();
         const restants = tous.filter(p => p.statut !== 'termine' && p.statut !== 'absent' && p.id !== id);
         if (restants.length === 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: 0 }) });
+          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
         }
         loadData();
       }
@@ -543,7 +787,7 @@
 
   async function toggleOuvert() {
     const ouvert = document.getElementById('ouvertToggle').checked;
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ ouvert }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ ouvert }) });
     const badge = document.getElementById('ouvertBadge');
     badge.textContent = ouvert ? '✓ Ouvert' : '✗ Fermé';
     badge.className = `ouvert-badge ${ouvert ? 'open' : 'closed'}`;
@@ -551,19 +795,93 @@
 
   async function saveSettings() {
     const body = {
-      nom_cabinet: document.getElementById('sNom').value.trim(),
-      specialite: document.getElementById('sSpec').value.trim(),
-      horaires: document.getElementById('sHoraires').value.trim(),
-      message_patients: document.getElementById('sMessage').value.trim(),
-      limite_patients: parseInt(document.getElementById('sLimite').value) || 0
+      nom_cabinet:          document.getElementById('sNom').value.trim(),
+      specialite:           document.getElementById('sSpec').value.trim(),
+      horaires:             document.getElementById('sHoraires').value.trim(),
+      message_patients:     document.getElementById('sMessage').value.trim(),
+      limite_patients:      parseInt(document.getElementById('sLimite').value) || 0,
+      nom_cabinet_ar:       document.getElementById('sNomAr').value.trim(),
+      specialite_ar:        document.getElementById('sSpecAr').value.trim(),
+      horaires_ar:          document.getElementById('sHorairesAr').value.trim(),
+      message_patients_ar:  document.getElementById('sMessageAr').value.trim()
     };
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify(body) });
     const ok = document.getElementById('saveOk');
     ok.style.display = 'inline';
     setTimeout(() => ok.style.display = 'none', 2500);
   }
 
-  document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  /* ── MDP ── */
+  async function changePwd(role) {
+    const suffix = role === 'medecin' ? 'Med' : 'Ass';
+    const newPwd  = document.getElementById(`newPwd${suffix}`).value.trim();
+    const confirm = document.getElementById(`confirmPwd${suffix}`).value.trim();
+    const okEl    = document.getElementById(`pwd${suffix}Ok`);
+    const errEl   = document.getElementById(`pwd${suffix}Err`);
+    okEl.style.display = 'none'; errEl.style.display = 'none';
+    if (!newPwd || newPwd !== confirm) { errEl.style.display = 'inline'; return; }
+    await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}&cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ mot_de_passe: newPwd }) });
+    document.getElementById(`newPwd${suffix}`).value = '';
+    document.getElementById(`confirmPwd${suffix}`).value = '';
+    okEl.style.display = 'inline';
+    setTimeout(() => okEl.style.display = 'none', 2500);
+  }
+
+  /* ── RESET ── */
+  function confirmReset() {
+    showModal('🗑', 'Remettre à zéro ?', 'Tous les patients seront supprimés et le compteur remis à 0. Action irréversible.', 'danger',
+      async () => {
+        const today = new Date().toISOString().split('T')[0];
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}`, { method: 'DELETE', headers: H });
+        await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
+        loadData();
+      }
+    );
+  }
+
+  /* ── QR CODE ── */
+  let qrGenerated = false;
+  function openQR() {
+    document.getElementById('qrModalOverlay').classList.add('show');
+    if (!qrGenerated) {
+      const base = window.location.href.replace(/medecin\.html.*/, '');
+      const url  = `${base}patient.html?id=${cabinetId}`;
+      document.getElementById('qrModalSub').textContent = url;
+      new QRCode(document.getElementById('qrCodeContainer'), {
+        text: url, width: 220, height: 220,
+        colorDark: '#1c1917', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      qrGenerated = true;
+    }
+  }
+  function closeQR() { document.getElementById('qrModalOverlay').classList.remove('show'); }
+  function downloadQR() {
+    const canvas = document.querySelector('#qrCodeContainer canvas');
+    if (!canvas) return;
+    const a = document.createElement('a');
+    a.download = `rendz-qr-${cabinetId}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }
+
+  /* ── MODAL ── */
+  let pendingAction = null;
+  function showModal(icon, title, msg, confirmClass, action) {
+    document.getElementById('modalIcon').textContent = icon;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMsg').textContent = msg;
+    const btn = document.getElementById('modalConfirm');
+    btn.className = `modal-confirm ${confirmClass}`;
+    btn.textContent = 'Confirmer';
+    pendingAction = action;
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); pendingAction = null; }
+  async function confirmAction() { closeModal(); if (pendingAction) await pendingAction(); }
+
+  document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
+  document.getElementById('qrModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('qrModalOverlay')) closeQR(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
 </script>
 </body>
