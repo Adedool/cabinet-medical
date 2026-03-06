@@ -4,259 +4,200 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Cabinet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --blue: #1a56db; --blue-dark: #1341b0; --blue-light: #e8f0fe;
-      --white: #ffffff; --gray-50: #f8fafc; --gray-100: #f1f5f9;
-      --gray-200: #e2e8f0; --gray-400: #94a3b8; --gray-500: #64748b;
-      --gray-700: #334155; --gray-900: #0f172a;
+      --bg: #080e1a;
+      --blue: #3b82f6;
+      --blue-bright: #60a5fa;
+      --blue-glow: rgba(59,130,246,0.15);
+      --white: #ffffff;
+      --text: #f1f5f9;
+      --text-sub: #94a3b8;
+      --text-muted: #475569;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(59,130,246,0.4);
+      --card-bg: rgba(255,255,255,0.04);
+      --green: #4ade80;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--gray-50);
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 28px 20px;
+      overflow-x: hidden;
     }
-
-    /* Fond décoratif */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 20% 20%, rgba(26,86,219,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(26,86,219,0.05) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
+        radial-gradient(ellipse 70% 60% at 15% 10%, rgba(59,130,246,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 85% 85%, rgba(59,130,246,0.07) 0%, transparent 50%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+    .container { width: 100%; max-width: 400px; position: relative; z-index: 1; }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,0.4);} 50%{opacity:0.7;box-shadow:0 0 0 4px rgba(74,222,128,0);} }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    @keyframes float { 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-4px);} }
+
+    .header { text-align: center; margin-bottom: 32px; animation: fadeUp 0.6s ease both; }
+
+    .logo-wrap { display:inline-flex; align-items:center; justify-content:center; gap:10px; margin-bottom:20px; }
+    .logo-icon {
+      width:44px; height:44px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius:13px;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 0 24px rgba(59,130,246,0.45), inset 0 1px 0 rgba(255,255,255,0.15);
+      animation: float 3s ease-in-out infinite;
+    }
+    .logo-text { font-family:'Syne',sans-serif; font-size:34px; font-weight:800; color:var(--white); letter-spacing:-1px; line-height:1; }
+    .logo-text span { color:var(--blue-bright); }
+
+    .cabinet-card {
+      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.04));
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius:18px; padding:18px 22px;
+      margin-bottom:18px; text-align:center;
+      display:none;
+    }
+    .cabinet-card.visible { display:block; animation:fadeUp 0.5s ease both; }
+    .cabinet-name { font-size:17px; font-weight:700; color:var(--white); margin-bottom:4px; }
+    .cabinet-spec { font-size:13px; color:var(--blue-bright); font-weight:500; margin-bottom:3px; }
+    .cabinet-horaires { font-size:12px; color:var(--text-sub); }
+
+    .status-bar {
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      margin-bottom:18px;
+      animation: fadeUp 0.6s 0.1s ease both; opacity:0; animation-fill-mode:forwards;
+    }
+    .live-indicator {
+      display:flex; align-items:center; gap:6px;
+      background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.2);
+      border-radius:20px; padding:5px 12px;
+    }
+    .live-dot { width:7px; height:7px; background:var(--green); border-radius:50%; animation:pulse 2s infinite; }
+    .live-text { font-size:12px; color:var(--green); font-weight:600; }
+    .live-num { font-size:12px; color:var(--text-sub); font-weight:500; }
+    .live-num strong { color:var(--blue-bright); font-weight:700; }
+
+    .message-box {
+      background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2);
+      border-radius:12px; padding:11px 16px; font-size:13px; color:#fbbf24;
+      font-weight:500; text-align:center; margin-bottom:14px; display:none;
     }
 
-    .container {
-      width: 100%;
-      max-width: 420px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* HEADER */
-    .header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 36px;
-      font-weight: 800;
-      color: var(--blue);
-      letter-spacing: -1px;
-      line-height: 1;
-    }
-    .logo span { color: var(--gray-900); }
-
-    .cabinet-name {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-top: 16px;
-      line-height: 1.3;
-    }
-    .cabinet-spec {
-      font-size: 13px;
-      color: var(--gray-500);
-      margin-top: 4px;
-      font-weight: 500;
-    }
-    .cabinet-horaires {
-      font-size: 12px;
-      color: var(--gray-400);
-      margin-top: 3px;
-    }
-
-    .divider {
-      width: 40px;
-      height: 3px;
-      background: var(--blue);
-      border-radius: 2px;
-      margin: 16px auto 0;
-    }
-
-    /* CARDS */
     .cards {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      display:flex; flex-direction:column; gap:10px;
+      animation: fadeUp 0.6s 0.2s ease both; opacity:0; animation-fill-mode:forwards;
     }
 
     .card {
-      background: white;
-      border-radius: 16px;
-      border: 1.5px solid var(--gray-200);
-      padding: 20px 24px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      position: relative;
-      overflow: hidden;
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:18px; padding:18px 20px;
+      display:flex; align-items:center; gap:16px;
+      cursor:pointer; text-decoration:none;
+      transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
+      position:relative; overflow:hidden;
     }
+    .card::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg, rgba(59,130,246,0.1), transparent);
+      opacity:0; transition:opacity 0.25s;
+    }
+    .card:hover { border-color:var(--border-hover); transform:translateX(5px); box-shadow:0 0 30px rgba(59,130,246,0.12); }
+    .card:hover::before { opacity:1; }
+    .card:active { transform:translateX(2px) scale(0.99); }
 
-    .card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--blue);
-      opacity: 0;
-      transition: opacity 0.2s;
+    .card-patient {
+      background:linear-gradient(135deg, rgba(59,130,246,0.14), rgba(59,130,246,0.05));
+      border-color:rgba(59,130,246,0.25); padding:22px 20px;
     }
+    .card-patient:hover { background:linear-gradient(135deg, rgba(59,130,246,0.24), rgba(59,130,246,0.08)); border-color:rgba(59,130,246,0.5); box-shadow:0 0 40px rgba(59,130,246,0.2); }
 
-    .card:hover {
-      border-color: var(--blue);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(26,86,219,0.15);
-    }
+    .card-icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; transition:transform 0.2s; position:relative; z-index:1; }
+    .card:hover .card-icon { transform:scale(1.1) rotate(-3deg); }
+    .card-patient .card-icon { background:rgba(59,130,246,0.2); }
+    .card-assistante .card-icon { background:rgba(249,115,22,0.12); }
+    .card-medecin .card-icon { background:rgba(34,197,94,0.12); }
 
-    .card:active { transform: translateY(0); }
+    .card-body { flex:1; position:relative; z-index:1; }
+    .card-title { font-size:15px; font-weight:700; color:var(--white); margin-bottom:2px; letter-spacing:-0.2px; }
+    .card-patient .card-title { font-size:16px; }
+    .card-sub { font-size:12px; color:var(--text-sub); }
+    .badge-new { display:inline-block; background:var(--blue); color:white; font-size:10px; font-weight:700; padding:2px 7px; border-radius:20px; margin-left:8px; vertical-align:middle; }
 
-    .card-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-      transition: transform 0.2s;
-    }
-    .card:hover .card-icon { transform: scale(1.08); }
+    .card-arrow { color:var(--text-muted); font-size:16px; transition:all 0.2s; position:relative; z-index:1; }
+    .card:hover .card-arrow { color:var(--blue-bright); transform:translateX(4px); }
 
-    .card-patient .card-icon { background: var(--blue-light); }
-    .card-assistante .card-icon { background: #fff7ed; }
-    .card-medecin .card-icon { background: #f0fdf4; }
+    .separator { display:flex; align-items:center; gap:10px; margin:4px 0; }
+    .sep-line { flex:1; height:1px; background:var(--border); }
+    .sep-text { font-size:10px; color:var(--text-muted); font-weight:500; letter-spacing:0.5px; text-transform:uppercase; }
 
-    .card-body { flex: 1; }
-    .card-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--gray-900);
-      margin-bottom: 3px;
-    }
-    .card-sub {
-      font-size: 12px;
-      color: var(--gray-500);
-      font-weight: 400;
-    }
+    .footer { text-align:center; margin-top:28px; font-size:11px; color:var(--text-muted); animation:fadeIn 0.6s 0.4s ease both; opacity:0; animation-fill-mode:forwards; }
+    .footer span { color:var(--blue-bright); font-weight:600; }
 
-    .card-arrow {
-      color: var(--gray-300);
-      font-size: 18px;
-      transition: all 0.2s;
-    }
-    .card:hover .card-arrow {
-      color: var(--blue);
-      transform: translateX(3px);
-    }
+    .skeleton { background:linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.05) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
+    .skel-name { height:18px; width:160px; margin:16px auto 6px; }
+    .skel-spec { height:13px; width:110px; margin:0 auto; }
 
-    /* Statut live */
-    .status-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-    .live-dot {
-      width: 8px; height: 8px;
-      background: #4ade80;
-      border-radius: 50%;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-    .status-text {
-      font-size: 12px;
-      color: var(--gray-500);
-      font-weight: 500;
-    }
-    .status-num {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--blue);
-    }
-
-    /* Message patients */
-    .message-box {
-      background: #fff8e1;
-      border: 1.5px solid #ffd54f;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #5f4700;
-      font-weight: 500;
-      text-align: center;
-      margin-bottom: 16px;
-      display: none;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 28px;
-      font-size: 11px;
-      color: var(--gray-400);
-    }
-    .footer span { color: var(--blue); font-weight: 600; }
-
-    /* Skeleton loader */
-    .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    .skel-name { height: 20px; width: 180px; margin: 16px auto 6px; }
-    .skel-spec { height: 14px; width: 120px; margin: 0 auto; }
-
-    @media (max-width: 480px) {
-      .logo { font-size: 30px; }
-      .card { padding: 16px 18px; }
-      .card-icon { width: 46px; height: 46px; font-size: 20px; }
+    @media (max-width:480px) {
+      .logo-text { font-size:28px; }
+      .card { padding:15px 16px; }
+      .card-patient { padding:18px 16px; }
     }
   </style>
 </head>
 <body>
-
 <div class="container">
   <div class="header">
-    <div class="logo" style="position:relative;display:inline-flex;align-items:center">
-      <svg width="26" height="26" viewBox="0 0 22 22" fill="none" style="position:absolute;left:-24px;top:50%;transform:translateY(-50%);opacity:0.2" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/>
-        <circle cx="17" cy="8" r="2.2" stroke="#1a56db" stroke-width="1.8"/>
-        <path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round"/>
-      </svg>
-      Rend<span>z</span>
+    <div class="logo-wrap">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 3C5 3 3 3 3 6C3 9 5 9 5 12C5 15.3137 7.68629 18 11 18C14.3137 18 17 15.3137 17 12V10" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="17" cy="8" r="2.2" stroke="white" stroke-width="1.8"/>
+          <path d="M3 6C3 5 2.5 4.5 3 3.5C3.5 3 4.5 3 5 3" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M5 3C5.5 3 6.5 3 7 4C7.5 5 6.5 5.5 6 5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="logo-text">Rend<span>z</span></div>
     </div>
 
-    <div id="skeletonName" class="skeleton skel-name"></div>
-    <div id="skeletonSpec" class="skeleton skel-spec" style="margin-top:6px"></div>
+    <div id="skeletonWrap">
+      <div class="skeleton skel-name"></div>
+      <div class="skeleton skel-spec" style="margin-top:8px"></div>
+    </div>
 
-    <div id="cabinetInfo" style="display:none">
+    <div class="cabinet-card" id="cabinetCard">
       <div class="cabinet-name" id="cabinetName"></div>
       <div class="cabinet-spec" id="cabinetSpec"></div>
       <div class="cabinet-horaires" id="cabinetHoraires"></div>
     </div>
-    <div class="divider"></div>
   </div>
 
   <div class="status-bar">
-    <div class="live-dot"></div>
-    <div class="status-text">Numéro en cours :</div>
-    <div class="status-num" id="numEnCours">—</div>
+    <div class="live-indicator">
+      <div class="live-dot"></div>
+      <div class="live-text">Live</div>
+    </div>
+    <div class="live-num">Numéro en cours : <strong id="numEnCours">—</strong></div>
   </div>
 
   <div class="message-box" id="messageBox"></div>
@@ -265,11 +206,17 @@
     <a class="card card-patient" id="linkPatient" href="#">
       <div class="card-icon">🏥</div>
       <div class="card-body">
-        <div class="card-title">Salle d'attente</div>
-        <div class="card-sub">S'inscrire et suivre la file</div>
+        <div class="card-title">Salle d'attente <span class="badge-new">PATIENT</span></div>
+        <div class="card-sub">S'inscrire et suivre votre numéro</div>
       </div>
       <div class="card-arrow">→</div>
     </a>
+
+    <div class="separator">
+      <div class="sep-line"></div>
+      <div class="sep-text">Personnel</div>
+      <div class="sep-line"></div>
+    </div>
 
     <a class="card card-assistante" id="linkAssistante" href="#">
       <div class="card-icon">👩‍⚕️</div>
@@ -290,31 +237,13 @@
     </a>
   </div>
 
-  <div class="footer">© 2026 <span>Rendz</span></div>
+  <div class="footer">© 2026 <span>Rendz</span> — Gestion de file d'attente médicale</div>
 </div>
 
-<!-- MODALE QR CODE -->
-<div id="qrOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:none;align-items:center;justify-content:center;padding:24px">
-  <div style="background:white;border-radius:20px;padding:32px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2)">
-    <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#0f172a;margin-bottom:4px">QR Code</div>
-    <div style="font-size:13px;color:#64748b;margin-bottom:24px">À afficher ou imprimer dans la salle d'attente</div>
-    <div id="qrCode" style="display:flex;justify-content:center;margin-bottom:20px"></div>
-    <div style="font-size:11px;color:#94a3b8;margin-bottom:20px" id="qrUrl"></div>
-    <div style="display:flex;gap:10px">
-      <button onclick="downloadQR()" style="flex:1;padding:11px;background:#1a56db;color:white;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">⬇ Télécharger</button>
-      <button onclick="closeQR()" style="flex:1;padding:11px;background:#f1f5f9;color:#334155;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">Fermer</button>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
   const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
-
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
-
-  // Construire les liens
   const base = window.location.href.replace(/cabinet\.html.*/, '');
   document.getElementById('linkPatient').href    = `${base}patient.html?id=${cabinetId}`;
   document.getElementById('linkAssistante').href = `${base}assistante.html?id=${cabinetId}`;
@@ -326,28 +255,18 @@
         headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
       });
       const data = await res.json();
-
-      // Cacher skeletons
-      document.getElementById('skeletonName').style.display = 'none';
-      document.getElementById('skeletonSpec').style.display = 'none';
-
+      document.getElementById('skeletonWrap').style.display = 'none';
       if (data.length > 0) {
         const p = data[0];
-
-        // Nom cabinet
         const nom = p.nom_cabinet || '';
         if (nom) {
           document.getElementById('cabinetName').textContent = nom;
           document.getElementById('cabinetSpec').textContent = p.specialite || '';
           document.getElementById('cabinetHoraires').textContent = p.horaires || '';
-          document.getElementById('cabinetInfo').style.display = 'block';
+          document.getElementById('cabinetCard').classList.add('visible');
           document.title = `Rendz — ${nom}`;
         }
-
-        // Numéro en cours
         document.getElementById('numEnCours').textContent = p.numero_en_cours || '—';
-
-        // Message patients
         const msg = p.message_patients || '';
         if (msg) {
           document.getElementById('messageBox').textContent = '📢 ' + msg;
@@ -355,46 +274,11 @@
         }
       }
     } catch(e) {
-      document.getElementById('skeletonName').style.display = 'none';
-      document.getElementById('skeletonSpec').style.display = 'none';
+      document.getElementById('skeletonWrap').style.display = 'none';
     }
   }
-
   loadInfos();
   setInterval(loadInfos, 20000);
-
-  // QR CODE
-  function openQR() {
-    const url = `${window.location.origin}${window.location.pathname.replace('cabinet.html','patient.html')}?id=${cabinetId}`;
-    document.getElementById('qrUrl').textContent = url;
-    document.getElementById('qrCode').innerHTML = '';
-    new QRCode(document.getElementById('qrCode'), {
-      text: url,
-      width: 200,
-      height: 200,
-      colorDark: '#0f172a',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.H
-    });
-    document.getElementById('qrOverlay').style.display = 'flex';
-  }
-
-  function closeQR() {
-    document.getElementById('qrOverlay').style.display = 'none';
-  }
-
-  function downloadQR() {
-    const canvas = document.querySelector('#qrCode canvas');
-    if (!canvas) return;
-    const link = document.createElement('a');
-    link.download = `rendz-qr-${cabinetId}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }
-
-  document.getElementById('qrOverlay').addEventListener('click', function(e) {
-    if (e.target === this) closeQR();
-  });
 </script>
 </body>
 </html>
