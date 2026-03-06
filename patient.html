@@ -7,26 +7,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #06090f;
-      --bg2: #0b1120;
-      --blue: #3b82f6;
-      --blue-bright: #60a5fa;
-      --blue-dim: rgba(59,130,246,0.12);
-      --blue-border: rgba(59,130,246,0.25);
-      --white: #ffffff;
-      --text: #f1f5f9;
-      --text-sub: #64748b;
-      --text-muted: #334155;
-      --border: rgba(255,255,255,0.07);
-      --surface: rgba(255,255,255,0.04);
-      --surface2: rgba(255,255,255,0.06);
-      --green: #4ade80;
-      --green-dim: rgba(74,222,128,0.1);
-      --orange: #fb923c;
-      --orange-dim: rgba(251,146,60,0.1);
-      --red: #f87171;
-      --red-dim: rgba(248,113,113,0.1);
-      --font-ar: 'Cairo', sans-serif;
+      --bg:         #f7f3ee;
+      --bg2:        #f0ebe3;
+      --cream:      #ede8e0;
+      --blue:       #2563eb;
+      --blue-mid:   #3b82f6;
+      --blue-dim:   rgba(37,99,235,0.08);
+      --blue-border:rgba(37,99,235,0.18);
+      --blue-text:  #1d4ed8;
+      --white:      #ffffff;
+      --text:       #1c1917;
+      --text-sub:   #78716c;
+      --text-muted: #a8a29e;
+      --border:     rgba(0,0,0,0.07);
+      --shadow:     0 2px 12px rgba(0,0,0,0.06);
+      --shadow-lg:  0 8px 28px rgba(0,0,0,0.10);
+      --green:      #16a34a;
+      --green-dim:  rgba(22,163,74,0.08);
+      --orange:     #ea580c;
+      --orange-dim: rgba(234,88,12,0.08);
+      --red:        #dc2626;
+      --red-dim:    rgba(220,38,38,0.07);
+      --font-ar:    'Cairo', sans-serif;
     }
 
     html[lang=ar] body { font-family: var(--font-ar); }
@@ -42,56 +44,56 @@
       min-height: 100vh;
       display: flex; flex-direction: column; align-items: center;
       padding-bottom: 48px;
-      overflow-x: hidden;
     }
 
-    .bg-glow {
+    body::before {
+      content: '';
       position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background:
-        radial-gradient(ellipse 80% 40% at 50% -5%, rgba(59,130,246,0.14) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 30% at 85% 90%, rgba(59,130,246,0.05) 0%, transparent 50%);
+        radial-gradient(ellipse 80% 35% at 50% -5%, rgba(37,99,235,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 90% 95%, rgba(37,99,235,0.04) 0%, transparent 50%);
     }
 
-    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
-    @keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
-    @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.35;} }
-    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
-    @keyframes popIn { 0%{transform:scale(0.8);opacity:0;}70%{transform:scale(1.05);}100%{transform:scale(1);opacity:1;} }
-    @keyframes countUp { from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeIn   { from{opacity:0;}to{opacity:1;} }
+    @keyframes pulse    { 0%,100%{opacity:1;}50%{opacity:0.35;} }
+    @keyframes shimmer  { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+    @keyframes popIn    { 0%{transform:scale(0.75);opacity:0;}70%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;} }
+    @keyframes glow     { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
 
     /* ── TOPBAR ── */
     .topbar {
       width: 100%; position: relative; z-index: 10;
-      background: rgba(6,9,15,0.85);
+      background: rgba(247,243,238,0.92);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 12px 20px;
       display: flex; align-items: center; justify-content: space-between;
     }
-
     .logo-wrap { display: flex; align-items: center; gap: 8px; }
     .logo-icon {
       width: 30px; height: 30px;
-      background: linear-gradient(140deg, #3b82f6, #1d4ed8);
+      background: linear-gradient(140deg, #2563eb, #1d4ed8);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 12px rgba(59,130,246,0.35);
+      animation: glow 3s ease-in-out infinite;
     }
-    .logo-text { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
-    .logo-text span { color: var(--blue-bright); }
+    .logo-text { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .logo-text span { color: var(--blue); }
 
     .topbar-right { display: flex; align-items: center; gap: 8px; }
     .staff-icons { display: flex; gap: 4px; }
     .staff-icon {
       width: 30px; height: 30px; border-radius: 8px;
-      background: var(--surface); border: 1px solid var(--border);
+      background: white; border: 1px solid var(--border);
       display: flex; align-items: center; justify-content: center;
       text-decoration: none; transition: all 0.15s; position: relative;
+      box-shadow: var(--shadow);
     }
-    .staff-icon:hover { background: var(--blue-dim); border-color: var(--blue-border); }
+    .staff-icon:hover { border-color: var(--blue-border); background: var(--blue-dim); }
     .staff-icon .tooltip {
       position: absolute; top: 36px; right: 0;
-      background: #1e293b; color: var(--text); border: 1px solid var(--border);
+      background: var(--text); color: white;
       font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 6px;
       white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s;
     }
@@ -100,7 +102,7 @@
     .lang-toggle { display: flex; gap: 4px; }
     .lang-btn {
       padding: 4px 11px; border-radius: 7px;
-      border: 1px solid var(--border); background: transparent;
+      border: 1px solid var(--border); background: white;
       color: var(--text-sub); font-family: 'Outfit', sans-serif;
       font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s;
     }
@@ -109,79 +111,83 @@
     /* ── HERO NUMÉRO ── */
     .hero {
       width: 100%; max-width: 420px;
-      padding: 28px 20px 0;
+      padding: 24px 20px 0;
       position: relative; z-index: 1;
       animation: fadeUp 0.5s ease both;
     }
 
     .cabinet-strip {
       display: flex; align-items: center; gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      background: white; border: 1px solid var(--border);
+      border-radius: 14px; padding: 10px 14px;
+      box-shadow: var(--shadow);
     }
     .cabinet-avatar {
-      width: 38px; height: 38px; border-radius: 10px;
+      width: 36px; height: 36px; border-radius: 10px;
       background: var(--blue-dim); border: 1px solid var(--blue-border);
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px; flex-shrink: 0;
+      font-size: 17px; flex-shrink: 0;
     }
     .cabinet-info-text { flex: 1; min-width: 0; }
-    .cabinet-info-name { font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cabinet-info-spec { font-size: 11px; color: var(--blue-bright); font-weight: 500; }
+    .cabinet-info-name { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cabinet-info-spec { font-size: 11px; color: var(--blue-text); font-weight: 500; }
 
     .live-chip {
       display: flex; align-items: center; gap: 5px;
-      background: var(--green-dim); border: 1px solid rgba(74,222,128,0.18);
+      background: var(--green-dim); border: 1px solid rgba(22,163,74,0.2);
       border-radius: 20px; padding: 4px 10px; flex-shrink: 0;
     }
     .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 1.8s infinite; }
-    .live-chip-text { font-size: 11px; font-weight: 700; color: var(--green); letter-spacing: 0.2px; }
+    .live-chip-text { font-size: 11px; font-weight: 700; color: var(--green); }
 
     /* Grand numéro */
     .number-hero {
-      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.04));
-      border: 1px solid var(--blue-border);
-      border-radius: 22px;
-      padding: 24px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px 20px;
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
     }
-    .number-left .num-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .number-left .num-value { font-family: 'Outfit', sans-serif; font-size: 64px; font-weight: 900; color: var(--white); line-height: 1; letter-spacing: -2px; }
-    .number-left .num-sub { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+    .number-left .num-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .number-left .num-value { font-family: 'Outfit', sans-serif; font-size: 60px; font-weight: 900; color: var(--blue); line-height: 1; letter-spacing: -2px; }
+    .number-left .num-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
     .number-right { text-align: right; }
-    .inscrits-val { font-family: 'Outfit', sans-serif; font-size: 36px; font-weight: 800; color: rgba(255,255,255,0.7); line-height: 1; }
-    .inscrits-lbl { font-size: 11px; color: var(--text-sub); margin-top: 3px; }
+    .inscrits-val { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--text-sub); line-height: 1; }
+    .inscrits-lbl { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 
     .closed-banner {
-      background: var(--red-dim); border: 1px solid rgba(248,113,113,0.2);
-      border-radius: 12px; padding: 12px 16px;
+      background: #fef2f2; border: 1px solid #fecaca;
+      border-radius: 12px; padding: 11px 16px;
       color: var(--red); font-size: 13px; font-weight: 600;
-      display: none; margin-bottom: 12px; text-align: center;
+      display: none; margin-bottom: 10px; text-align: center;
     }
-
     .message-banner {
-      background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.18);
+      background: #fffbeb; border: 1px solid #fde68a;
       border-radius: 12px; padding: 10px 16px;
-      font-size: 12px; color: #fbbf24; font-weight: 500;
-      display: none; margin-bottom: 12px; text-align: center;
+      font-size: 12px; color: #92400e; font-weight: 500;
+      display: none; margin-bottom: 10px; text-align: center;
     }
 
     /* ── CARD ── */
     .card {
       width: 100%; max-width: 420px;
-      margin: 12px 0 0;
-      background: var(--surface);
+      margin: 10px 0 0;
+      background: white;
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 24px 20px;
       position: relative; z-index: 1;
+      box-shadow: var(--shadow);
       animation: fadeUp 0.5s 0.1s ease both; opacity: 0; animation-fill-mode: forwards;
     }
 
     .info-note {
       background: var(--blue-dim); border: 1px solid var(--blue-border);
       border-radius: 12px; padding: 12px 14px;
-      font-size: 13px; color: var(--blue-bright); font-weight: 500;
+      font-size: 13px; color: var(--blue-text); font-weight: 500;
       margin-bottom: 18px;
     }
 
@@ -193,119 +199,117 @@
     }
     .form-input {
       width: 100%; padding: 12px 14px;
-      background: var(--surface2); border: 1px solid var(--border);
+      background: var(--bg); border: 1.5px solid var(--border);
       border-radius: 11px; font-family: 'Outfit', sans-serif;
       font-size: 15px; color: var(--text); outline: none;
       transition: border-color 0.15s, background 0.15s;
     }
     .form-input::placeholder { color: var(--text-muted); }
-    .form-input:focus { border-color: var(--blue); background: rgba(59,130,246,0.06); }
+    .form-input:focus { border-color: var(--blue); background: white; }
     .error-msg { color: var(--red); font-size: 12px; margin-top: 5px; display: none; font-weight: 500; }
 
     .submit-btn {
       width: 100%; padding: 14px;
-      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
       color: white; border: none; border-radius: 12px;
       font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700;
       cursor: pointer; transition: all 0.15s; margin-top: 6px;
-      box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+      box-shadow: 0 4px 18px rgba(29,78,216,0.3);
     }
-    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(37,99,235,0.45); }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(29,78,216,0.4); }
     .submit-btn:active { transform: scale(0.99); }
-    .submit-btn:disabled { background: var(--surface2); color: var(--text-sub); cursor: not-allowed; box-shadow: none; transform: none; }
+    .submit-btn:disabled { background: var(--cream); color: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none; }
 
     /* ── SUCCESS ── */
     .success-card { text-align: center; display: none; }
 
     .my-number-display {
-      width: 120px; height: 120px;
+      width: 116px; height: 116px;
       background: linear-gradient(140deg, #1d4ed8, #3b82f6);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 18px;
-      font-family: 'Outfit', sans-serif; font-size: 52px; font-weight: 900;
+      margin: 0 auto 16px;
+      font-family: 'Outfit', sans-serif; font-size: 50px; font-weight: 900;
       color: white; letter-spacing: -2px;
-      box-shadow: 0 0 40px rgba(59,130,246,0.45), 0 0 80px rgba(59,130,246,0.15);
+      box-shadow: 0 8px 32px rgba(29,78,216,0.35), 0 0 0 8px rgba(37,99,235,0.08);
       animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
     }
 
-    .success-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 5px; letter-spacing: -0.3px; }
-    .success-sub { font-size: 13px; color: var(--text-sub); margin-bottom: 22px; }
+    .success-title { font-size: 19px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .success-sub { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
 
-    /* SUIVI */
     .suivi-block {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 16px; padding: 18px 16px; margin-bottom: 14px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px 14px; margin-bottom: 12px;
     }
-    .suivi-title { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px; }
-    .suivi-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .suivi-title { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px; }
+    .suivi-row { display: flex; gap: 8px; margin-bottom: 14px; }
     .suivi-stat {
-      flex: 1; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 12px 6px; text-align: center;
+      flex: 1; background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 6px; text-align: center;
+      box-shadow: var(--shadow);
     }
-    .suivi-val { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; line-height: 1; }
+    .suivi-val { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; line-height: 1; }
     .suivi-val.current { color: var(--orange); }
-    .suivi-val.mine { color: var(--blue-bright); }
-    .suivi-val.ahead { color: var(--red); }
+    .suivi-val.mine    { color: var(--blue); }
+    .suivi-val.ahead   { color: var(--red); }
     .suivi-lbl { font-size: 10px; color: var(--text-sub); margin-top: 4px; font-weight: 500; }
 
-    /* Cercle progression */
     .circle-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .circle-container { position: relative; width: 90px; height: 90px; }
-    .circle-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
+    .circle-container { position: relative; width: 88px; height: 88px; }
+    .circle-bg { fill: none; stroke: var(--cream); stroke-width: 8; }
     .circle-fill { fill: none; stroke: var(--blue); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 251.2; stroke-dashoffset: 251.2; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.8s cubic-bezier(0.4,0,0.2,1); }
     .circle-fill.urgent { stroke: var(--orange); }
     .circle-fill.almost { stroke: var(--green); }
     .circle-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .circle-pct { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: var(--blue-bright); line-height: 1; }
+    .circle-pct { font-family: 'Outfit', sans-serif; font-size: 19px; font-weight: 800; color: var(--blue); line-height: 1; }
     .circle-pct.urgent { color: var(--orange); }
     .circle-pct.almost { color: var(--green); }
-    .circle-sub-txt { font-size: 9px; color: var(--text-sub); margin-top: 2px; }
+    .circle-sub-txt { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
     .progress-label { font-size: 12px; color: var(--text-sub); text-align: center; font-weight: 500; }
 
     .alert-banner {
-      border-radius: 10px; padding: 11px 14px;
+      border-radius: 10px; padding: 10px 14px;
       font-size: 13px; font-weight: 600; text-align: center;
       margin-top: 10px; display: none;
     }
-    .alert-ready { background: var(--green-dim); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
-    .alert-soon { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(251,146,60,0.2); }
+    .alert-ready { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
+    .alert-soon  { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
 
-    /* Notice */
     .notice-box {
-      background: var(--red-dim); border: 1px solid rgba(248,113,113,0.15);
-      border-radius: 12px; padding: 13px 14px; margin-bottom: 12px; text-align: left;
+      background: #fef2f2; border: 1px solid #fecaca;
+      border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; text-align: left;
     }
-    .notice-title { color: var(--red); font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .notice-title { color: var(--red); font-size: 13px; font-weight: 700; margin-bottom: 4px; }
     .notice-sub { color: var(--text-sub); font-size: 12px; line-height: 1.5; }
     .notice-sub strong { color: var(--red); }
 
-    /* Boutons */
     .whatsapp-btn {
       width: 100%; padding: 13px; background: #16a34a;
       color: white; border: none; border-radius: 12px;
       font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
       cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
       margin-bottom: 10px; transition: all 0.15s; text-decoration: none;
-      box-shadow: 0 4px 16px rgba(22,163,74,0.3);
+      box-shadow: 0 4px 14px rgba(22,163,74,0.25);
     }
     .whatsapp-btn:hover { background: #15803d; transform: translateY(-1px); }
 
     .reset-btn {
       width: 100%; padding: 12px;
-      background: var(--surface); border: 1px solid var(--border);
+      background: var(--bg); border: 1px solid var(--border);
       border-radius: 12px; color: var(--text-sub);
       font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
       cursor: pointer; transition: all 0.15s;
     }
-    .reset-btn:hover { border-color: var(--blue-border); color: var(--blue-bright); }
+    .reset-btn:hover { border-color: var(--blue-border); color: var(--blue); }
 
     .footer { margin-top: 28px; color: var(--text-muted); font-size: 11px; position: relative; z-index: 1; }
-    .footer span { color: var(--blue-bright); font-weight: 600; }
+    .footer span { color: var(--blue); font-weight: 600; }
+
+    .skeleton { background: linear-gradient(90deg, var(--cream) 25%, var(--bg2) 50%, var(--cream) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
   </style>
 </head>
 <body>
-<div class="bg-glow"></div>
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -327,7 +331,7 @@
         <span class="tooltip">Espace Assistante</span>
       </a>
       <a class="staff-icon" id="staffMed" href="#">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span class="tooltip">Espace Médecin</span>
       </a>
     </div>
@@ -340,7 +344,6 @@
 
 <!-- HERO -->
 <div class="hero">
-  <!-- Cabinet strip -->
   <div class="cabinet-strip" id="cabinetStrip" style="display:none">
     <div class="cabinet-avatar">👨‍⚕️</div>
     <div class="cabinet-info-text">
@@ -353,7 +356,6 @@
     </div>
   </div>
 
-  <!-- Grand numéro -->
   <div class="number-hero">
     <div class="number-left">
       <div class="num-label" id="liveLabel">Numéro en cours</div>
@@ -370,7 +372,7 @@
   <div class="message-banner" id="messagePatients"></div>
 </div>
 
-<!-- CARD FORMULAIRE -->
+<!-- CARD -->
 <div class="card">
   <div id="formSection">
     <div class="info-note" id="infoBox">📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.</div>
@@ -403,12 +405,12 @@
       <div class="suivi-title" id="suiviTitle">Suivi en temps réel</div>
       <div class="suivi-row">
         <div class="suivi-stat"><div class="suivi-val current" id="suiviCurrent">—</div><div class="suivi-lbl" id="suiviCurrentLabel">En cours</div></div>
-        <div class="suivi-stat"><div class="suivi-val mine" id="suiviMine">—</div><div class="suivi-lbl" id="suiviMineLabel">Mon numéro</div></div>
-        <div class="suivi-stat"><div class="suivi-val ahead" id="suiviAhead">—</div><div class="suivi-lbl" id="suiviAheadLabel">Avant moi</div></div>
+        <div class="suivi-stat"><div class="suivi-val mine"    id="suiviMine">—</div>   <div class="suivi-lbl" id="suiviMineLabel">Mon numéro</div></div>
+        <div class="suivi-stat"><div class="suivi-val ahead"   id="suiviAhead">—</div>  <div class="suivi-lbl" id="suiviAheadLabel">Avant moi</div></div>
       </div>
       <div class="circle-wrap">
         <div class="circle-container">
-          <svg width="90" height="90" viewBox="0 0 100 100">
+          <svg width="88" height="88" viewBox="0 0 100 100">
             <circle class="circle-bg" cx="50" cy="50" r="40"/>
             <circle class="circle-fill" id="circleFill" cx="50" cy="50" r="40"/>
           </svg>
@@ -420,7 +422,7 @@
         <div class="progress-label" id="progressLabel">Calcul en cours...</div>
       </div>
       <div class="alert-banner alert-ready" id="readyBanner">🟢 C'est bientôt votre tour !</div>
-      <div class="alert-banner alert-soon" id="soonBanner">⏰ Encore quelques patients avant vous.</div>
+      <div class="alert-banner alert-soon"  id="soonBanner">⏰ Encore quelques patients avant vous.</div>
     </div>
 
     <div class="notice-box">
@@ -443,7 +445,6 @@
 <script>
   const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
-
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
   const base = window.location.href.replace(/patient\.html.*/, '');
   document.getElementById('staffAss').href = `${base}assistante.html?id=${cabinetId}`;
@@ -510,19 +511,16 @@
     const t = T[lang];
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     const setPH = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
-    set('liveLabel', t.liveLabel); set('liveSub', t.liveSub);
-    set('liveInscritsLabel', t.liveInscritsLabel);
+    set('liveLabel', t.liveLabel); set('liveSub', t.liveSub); set('liveInscritsLabel', t.liveInscritsLabel);
     set('infoBox', t.infoBox);
     set('nomLabel', t.nomLabel); set('prenomLabel', t.prenomLabel); set('telLabel', t.telLabel);
     setPH('nom', t.nomPh); setPH('prenom', t.prenomPh); setPH('telephone', t.telPh);
     set('submitText', t.submitText);
-    set('successTitle', t.successTitle); set('successMsg', t.successMsg);
-    set('successInfo', t.successInfo); set('newRegText', t.newRegText);
-    set('whatsappText', t.whatsappText); set('closedText', t.closedText);
+    set('successTitle', t.successTitle); set('successMsg', t.successMsg); set('successInfo', t.successInfo);
+    set('newRegText', t.newRegText); set('whatsappText', t.whatsappText); set('closedText', t.closedText);
     set('suiviTitle', t.suiviTitle);
     set('suiviCurrentLabel', t.suiviCurrentLabel); set('suiviMineLabel', t.suiviMineLabel); set('suiviAheadLabel', t.suiviAheadLabel);
-    set('readyBanner', t.ready); set('soonBanner', t.soon);
-    set('noticeTitle', t.noticeTitle);
+    set('readyBanner', t.ready); set('soonBanner', t.soon); set('noticeTitle', t.noticeTitle);
     const ns = document.getElementById('noticeSub');
     if (ns) ns.innerHTML = t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>');
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
@@ -530,7 +528,7 @@
     if (parametres.nom_cabinet) {
       const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet) : parametres.nom_cabinet;
       const spec = lang === 'ar' ? (parametres.specialite_ar || parametres.specialite) : parametres.specialite;
-      const msg = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients) : parametres.message_patients;
+      const msg  = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients) : parametres.message_patients;
       const el = document.getElementById('cabinetNom'); if (el) el.textContent = nom || '';
       const es = document.getElementById('cabinetSpec'); if (es) es.textContent = spec || '';
       const em = document.getElementById('messagePatients');
@@ -563,11 +561,9 @@
     const closed = !parametres.ouvert || (parametres.limite_patients && totalToday >= parametres.limite_patients);
     document.getElementById('closedBanner').style.display = closed ? 'block' : 'none';
     document.getElementById('submitBtn').disabled = !!closed;
-
-    // Cabinet strip
     const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet || '') : (parametres.nom_cabinet || '');
     const spec = lang === 'ar' ? (parametres.specialite_ar || parametres.specialite || '') : (parametres.specialite || '');
-    const msg = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients || '') : (parametres.message_patients || '');
+    const msg  = lang === 'ar' ? (parametres.message_patients_ar || parametres.message_patients || '') : (parametres.message_patients || '');
     if (nom) {
       document.getElementById('cabinetNom').textContent = nom;
       document.getElementById('cabinetSpec').textContent = spec;
@@ -575,8 +571,7 @@
       document.title = `Rendz — ${nom}`;
     }
     const msgEl = document.getElementById('messagePatients');
-    if (msg) { msgEl.textContent = '📢 ' + msg; msgEl.style.display = 'block'; }
-    else { msgEl.style.display = 'none'; }
+    if (msg) { msgEl.textContent = '📢 ' + msg; msgEl.style.display = 'block'; } else { msgEl.style.display = 'none'; }
     if (myPosition !== null) updateSuivi(numEnCours);
   }
 
@@ -588,8 +583,7 @@
     const progress = myPosition > 0 ? Math.min(100, Math.round((numEnCours / myPosition) * 100)) : 0;
     const circle = document.getElementById('circleFill');
     const pct = document.getElementById('circlePct');
-    const circumference = 251.2;
-    circle.style.strokeDashoffset = circumference - (progress / 100) * circumference;
+    circle.style.strokeDashoffset = 251.2 - (progress / 100) * 251.2;
     pct.textContent = progress + '%';
     circle.className = 'circle-fill';
     pct.className = 'circle-pct';
@@ -609,9 +603,9 @@
     const telephone = document.getElementById('telephone').value.trim();
     let valid = true;
     ['nomErr','prenomErr','telErr'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    if (!nom) { const el = document.getElementById('nomErr'); if (el) el.style.display = 'block'; valid = false; }
-    if (!prenom) { const el = document.getElementById('prenomErr'); if (el) el.style.display = 'block'; valid = false; }
-    if (!telephone) { const el = document.getElementById('telErr'); if (el) el.style.display = 'block'; valid = false; }
+    if (!nom)       { const el = document.getElementById('nomErr');    if (el) el.style.display = 'block'; valid = false; }
+    if (!prenom)    { const el = document.getElementById('prenomErr'); if (el) el.style.display = 'block'; valid = false; }
+    if (!telephone) { const el = document.getElementById('telErr');    if (el) el.style.display = 'block'; valid = false; }
     if (!valid) return;
     if (!parametres.ouvert) { alert(t.errClosed); return; }
     document.getElementById('submitBtn').disabled = true;
@@ -650,9 +644,7 @@
 
   function reset() {
     myPosition = null;
-    document.getElementById('nom').value = '';
-    document.getElementById('prenom').value = '';
-    document.getElementById('telephone').value = '';
+    ['nom','prenom','telephone'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('successCard').style.display = 'none';
     document.getElementById('submitBtn').disabled = false;

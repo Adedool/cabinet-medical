@@ -4,192 +4,164 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Cabinet</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #06090f;
-      --blue: #3b82f6;
-      --blue-bright: #60a5fa;
-      --blue-dim: rgba(59,130,246,0.15);
-      --white: #ffffff;
-      --text: #f1f5f9;
-      --text-sub: #64748b;
-      --text-muted: #334155;
-      --border: rgba(255,255,255,0.07);
-      --border-blue: rgba(59,130,246,0.3);
-      --green: #4ade80;
-      --surface: rgba(255,255,255,0.03);
+      --bg:       #f7f3ee;
+      --bg2:      #f0ebe3;
+      --cream:    #ede8e0;
+      --blue:     #2563eb;
+      --blue-mid: #3b82f6;
+      --blue-dim: rgba(37,99,235,0.08);
+      --blue-border: rgba(37,99,235,0.18);
+      --blue-text: #1d4ed8;
+      --white:    #ffffff;
+      --text:     #1c1917;
+      --text-sub: #78716c;
+      --text-muted: #a8a29e;
+      --border:   rgba(0,0,0,0.07);
+      --shadow:   0 2px 16px rgba(0,0,0,0.07);
+      --shadow-lg:0 8px 32px rgba(0,0,0,0.10);
+      --green:    #16a34a;
+      --green-dim:rgba(22,163,74,0.1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Outfit', sans-serif;
       background: var(--bg);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 20px 40px;
-      overflow-x: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px 20px 48px;
     }
 
-    /* Fond ambiance */
-    .bg-glow {
+    /* Fond doux */
+    body::before {
+      content: '';
       position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 80% 90%, rgba(59,130,246,0.06) 0%, transparent 50%);
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 90% 90%, rgba(37,99,235,0.04) 0%, transparent 50%);
     }
 
-    .container {
-      width: 100%; max-width: 380px;
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column; align-items: center;
-    }
+    .container { width: 100%; max-width: 390px; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
 
-    /* ANIMATIONS */
-    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    @keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(59,130,246,0.3);} 50%{box-shadow:0 0 35px rgba(59,130,246,0.5);} }
-    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeIn { from{opacity:0;}to{opacity:1;} }
+    @keyframes glow { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+    @keyframes pulse { 0%,100%{opacity:1;}50%{opacity:0.4;} }
+    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
-    /* ── LOGO ── */
+    /* LOGO */
     .logo-wrap {
       display: flex; align-items: center; gap: 9px;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
       animation: fadeIn 0.5s ease both;
     }
     .logo-icon {
-      width: 36px; height: 36px;
-      background: linear-gradient(140deg, #3b82f6 0%, #1d4ed8 100%);
-      border-radius: 10px;
+      width: 38px; height: 38px;
+      background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 11px;
       display: flex; align-items: center; justify-content: center;
       animation: glow 3s ease-in-out infinite;
     }
-    .logo-text {
-      font-family: 'Syne', sans-serif;
-      font-size: 26px; font-weight: 800;
-      color: var(--white); letter-spacing: -0.5px;
-    }
-    .logo-text span { color: var(--blue-bright); }
+    .logo-text { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .logo-text span { color: var(--blue); }
 
-    /* ── HERO MÉDECIN ── */
+    /* DOCTOR HERO */
     .doctor-hero {
       width: 100%; text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       animation: fadeUp 0.6s 0.1s ease both; opacity: 0; animation-fill-mode: forwards;
     }
-
     .doctor-avatar {
-      width: 72px; height: 72px;
-      background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05));
-      border: 1.5px solid var(--border-blue);
+      width: 68px; height: 68px;
+      background: white;
+      border: 2px solid var(--blue-border);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 32px;
-      margin: 0 auto 16px;
+      font-size: 30px;
+      margin: 0 auto 14px;
+      box-shadow: var(--shadow);
     }
-
-    .doctor-name {
-      font-size: 24px; font-weight: 800;
-      color: var(--white);
-      letter-spacing: -0.5px;
-      line-height: 1.1;
+    .doctor-name { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; margin-bottom: 6px; }
+    .doctor-spec {
+      display: inline-flex; align-items: center;
+      background: var(--blue-dim); border: 1px solid var(--blue-border);
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 12px; font-weight: 600; color: var(--blue-text);
       margin-bottom: 6px;
     }
-    .doctor-spec {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(59,130,246,0.12);
-      border: 1px solid rgba(59,130,246,0.2);
-      border-radius: 20px;
-      padding: 4px 14px;
-      font-size: 12px; font-weight: 600;
-      color: var(--blue-bright);
-      letter-spacing: 0.2px;
-      margin-bottom: 8px;
-    }
-    .doctor-horaires {
-      font-size: 12px; color: var(--text-sub);
-      font-weight: 400;
-    }
+    .doctor-horaires { font-size: 12px; color: var(--text-sub); }
 
     /* LIVE */
     .live-bar {
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       animation: fadeUp 0.6s 0.2s ease both; opacity: 0; animation-fill-mode: forwards;
     }
     .live-pill {
       display: flex; align-items: center; gap: 6px;
-      background: rgba(74,222,128,0.08);
-      border: 1px solid rgba(74,222,128,0.18);
+      background: var(--green-dim); border: 1px solid rgba(22,163,74,0.2);
       border-radius: 20px; padding: 5px 12px;
     }
     .live-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 1.8s infinite; }
-    .live-label { font-size: 11px; font-weight: 700; color: var(--green); letter-spacing: 0.3px; text-transform: uppercase; }
-    .num-display {
-      font-size: 13px; color: var(--text-sub);
-    }
-    .num-display strong { font-size: 20px; font-weight: 800; color: var(--white); font-family: 'Outfit', sans-serif; }
+    .live-label { font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.3px; }
+    .num-display { font-size: 13px; color: var(--text-sub); }
+    .num-display strong { font-size: 20px; font-weight: 800; color: var(--text); font-family: 'Outfit', sans-serif; }
 
     /* MESSAGE */
     .message-box {
       width: 100%;
-      background: rgba(251,191,36,0.07);
-      border: 1px solid rgba(251,191,36,0.18);
+      background: #fffbeb; border: 1px solid #fde68a;
       border-radius: 12px; padding: 10px 16px;
-      font-size: 12px; color: #fbbf24; font-weight: 500;
-      text-align: center; margin-bottom: 20px; display: none;
+      font-size: 12px; color: #92400e; font-weight: 500;
+      text-align: center; margin-bottom: 16px; display: none;
     }
 
-    /* ── CARTE PATIENT (HERO) ── */
+    /* CARTE PATIENT */
     .patient-card {
       width: 100%;
-      background: linear-gradient(140deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%);
-      border-radius: 22px;
-      padding: 26px 24px;
-      display: flex; align-items: center; gap: 18px;
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #3b82f6 100%);
+      border-radius: 20px; padding: 22px 20px;
+      display: flex; align-items: center; gap: 16px;
       cursor: pointer; text-decoration: none;
-      margin-bottom: 12px;
-      position: relative; overflow: hidden;
+      margin-bottom: 10px;
+      box-shadow: 0 8px 28px rgba(29,78,216,0.3), 0 0 0 1px rgba(255,255,255,0.1) inset;
       transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 8px 32px rgba(29,78,216,0.4), 0 0 0 1px rgba(255,255,255,0.08) inset;
+      position: relative; overflow: hidden;
       animation: fadeUp 0.6s 0.25s ease both; opacity: 0; animation-fill-mode: forwards;
     }
     .patient-card::before {
       content: '';
-      position: absolute; top: -40%; right: -20%;
-      width: 200px; height: 200px;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      position: absolute; top: -50%; right: -15%;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%);
       pointer-events: none;
     }
-    .patient-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 16px 48px rgba(29,78,216,0.5); }
+    .patient-card:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(29,78,216,0.4); }
     .patient-card:active { transform: scale(0.99); }
 
     .patient-icon {
-      width: 54px; height: 54px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 16px;
+      width: 50px; height: 50px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      backdrop-filter: blur(4px);
     }
     .patient-body { flex: 1; position: relative; z-index: 1; }
-    .patient-title { font-size: 18px; font-weight: 800; color: white; letter-spacing: -0.3px; margin-bottom: 3px; }
-    .patient-sub { font-size: 12px; color: rgba(255,255,255,0.65); font-weight: 400; }
+    .patient-title { font-size: 17px; font-weight: 800; color: white; letter-spacing: -0.3px; margin-bottom: 2px; }
+    .patient-sub { font-size: 12px; color: rgba(255,255,255,0.7); }
     .patient-arrow {
-      width: 36px; height: 36px;
-      background: rgba(255,255,255,0.15);
+      width: 34px; height: 34px;
+      background: rgba(255,255,255,0.18);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 16px;
-      transition: all 0.2s; flex-shrink: 0;
+      color: white; font-size: 15px; transition: all 0.2s; flex-shrink: 0;
     }
-    .patient-card:hover .patient-arrow { background: rgba(255,255,255,0.25); transform: translateX(3px); }
+    .patient-card:hover .patient-arrow { background: rgba(255,255,255,0.28); transform: translateX(2px); }
 
-    /* ── STAFF (petit, bas) ── */
+    /* STAFF */
     .staff-section {
       width: 100%;
       animation: fadeUp 0.6s 0.35s ease both; opacity: 0; animation-fill-mode: forwards;
@@ -200,63 +172,45 @@
       text-align: center; margin-bottom: 8px;
     }
     .staff-cards { display: flex; gap: 8px; }
-
     .staff-card {
-      flex: 1;
-      background: var(--surface);
+      flex: 1; background: white;
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px 12px;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      border-radius: 16px; padding: 14px 10px;
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
       cursor: pointer; text-decoration: none;
       transition: all 0.2s;
+      box-shadow: var(--shadow);
     }
-    .staff-card:hover {
-      border-color: var(--border-blue);
-      background: var(--blue-dim);
-      transform: translateY(-2px);
-    }
-    .staff-card:active { transform: scale(0.98); }
-
-    .staff-icon {
-      width: 38px; height: 38px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      transition: transform 0.2s;
-    }
+    .staff-card:hover { border-color: var(--blue-border); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .staff-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; transition: transform 0.2s; }
     .staff-card:hover .staff-icon { transform: scale(1.1); }
-    .staff-card-ass .staff-icon { background: rgba(249,115,22,0.1); }
-    .staff-card-med .staff-icon { background: rgba(34,197,94,0.1); }
-
-    .staff-title { font-size: 12px; font-weight: 600; color: var(--text); text-align: center; }
-    .staff-sub { font-size: 10px; color: var(--text-sub); text-align: center; }
+    .staff-card-ass .staff-icon { background: #fff7ed; }
+    .staff-card-med .staff-icon { background: #f0fdf4; }
+    .staff-title { font-size: 12px; font-weight: 700; color: var(--text); }
+    .staff-sub { font-size: 10px; color: var(--text-sub); }
 
     /* FOOTER */
     .footer {
-      margin-top: 32px; font-size: 11px; color: var(--text-muted);
+      margin-top: 28px; font-size: 11px; color: var(--text-muted);
       animation: fadeIn 0.6s 0.5s ease both; opacity: 0; animation-fill-mode: forwards;
     }
-    .footer span { color: var(--blue-bright); font-weight: 600; }
+    .footer span { color: var(--blue); font-weight: 600; }
 
     /* SKELETON */
-    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
-    .skel-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 16px; }
-    .skel-name { height: 22px; width: 180px; margin: 0 auto 10px; }
-    .skel-spec { height: 26px; width: 120px; border-radius: 20px; margin: 0 auto; }
+    .skeleton { background: linear-gradient(90deg, var(--cream) 25%, var(--bg2) 50%, var(--cream) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+    .skel-avatar { width: 68px; height: 68px; border-radius: 50%; margin: 0 auto 14px; }
+    .skel-name { height: 20px; width: 170px; margin: 0 auto 8px; }
+    .skel-spec { height: 24px; width: 110px; border-radius: 20px; margin: 0 auto; }
 
     @media (max-width: 400px) {
-      .doctor-name { font-size: 20px; }
-      .patient-title { font-size: 16px; }
-      .staff-title { font-size: 11px; }
+      .doctor-name { font-size: 19px; }
+      .patient-title { font-size: 15px; }
     }
   </style>
 </head>
 <body>
-<div class="bg-glow"></div>
 <div class="container">
 
-  <!-- LOGO -->
   <div class="logo-wrap">
     <div class="logo-icon">
       <svg width="20" height="20" viewBox="0 0 22 22" fill="none">
@@ -269,15 +223,13 @@
     <div class="logo-text">Rend<span>z</span></div>
   </div>
 
-  <!-- HERO MÉDECIN -->
-  <div class="doctor-hero" id="doctorHero">
-    <!-- Skeleton -->
+  <!-- DOCTOR -->
+  <div class="doctor-hero">
     <div id="skeletonWrap">
       <div class="skeleton skel-avatar"></div>
       <div class="skeleton skel-name"></div>
       <div class="skeleton skel-spec" style="margin-top:8px"></div>
     </div>
-    <!-- Contenu réel -->
     <div id="doctorInfo" style="display:none">
       <div class="doctor-avatar">👨‍⚕️</div>
       <div class="doctor-name" id="cabinetName"></div>
@@ -295,13 +247,12 @@
     <div class="num-display">N° en cours &nbsp;<strong id="numEnCours">—</strong></div>
   </div>
 
-  <!-- MESSAGE -->
   <div class="message-box" id="messageBox"></div>
 
-  <!-- CARTE PATIENT -->
+  <!-- PATIENT -->
   <a class="patient-card" id="linkPatient" href="#">
     <div class="patient-icon">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="white" stroke-width="2" stroke-linecap="round"/>
         <circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/>
         <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -321,19 +272,14 @@
     <div class="staff-cards">
       <a class="staff-card staff-card-ass" id="linkAssistante" href="#">
         <div class="staff-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M9 12l2 2 4-4" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" stroke="#f97316" stroke-width="1.8"/>
-          </svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#f97316" stroke-width="1.6"/></svg>
         </div>
         <div class="staff-title">Assistante</div>
         <div class="staff-sub">File d'attente</div>
       </a>
       <a class="staff-card staff-card-med" id="linkMedecin" href="#">
         <div class="staff-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="staff-title">Médecin</div>
         <div class="staff-sub">Tableau de bord</div>
@@ -362,20 +308,18 @@
       document.getElementById('skeletonWrap').style.display = 'none';
       if (data.length > 0) {
         const p = data[0];
-        const nom = p.nom_cabinet || '';
-        if (nom) {
-          document.getElementById('cabinetName').textContent = nom;
+        if (p.nom_cabinet) {
+          document.getElementById('cabinetName').textContent = p.nom_cabinet;
           const specEl = document.getElementById('cabinetSpec');
           specEl.textContent = p.specialite || '';
           specEl.style.display = p.specialite ? 'inline-flex' : 'none';
           document.getElementById('cabinetHoraires').textContent = p.horaires || '';
           document.getElementById('doctorInfo').style.display = 'block';
-          document.title = `Rendz — ${nom}`;
+          document.title = `Rendz — ${p.nom_cabinet}`;
         }
         document.getElementById('numEnCours').textContent = p.numero_en_cours || '—';
-        const msg = p.message_patients || '';
-        if (msg) {
-          document.getElementById('messageBox').textContent = '📢 ' + msg;
+        if (p.message_patients) {
+          document.getElementById('messageBox').textContent = '📢 ' + p.message_patients;
           document.getElementById('messageBox').style.display = 'block';
         }
       }
