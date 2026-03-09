@@ -193,6 +193,7 @@
     .btn-present:hover { background: var(--green); color: white; }
     .btn-encours { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange-border); }
     .btn-encours:hover { background: var(--orange); color: white; }
+    .btn-encours:disabled { background: var(--cream); color: var(--text-muted); border-color: var(--border); cursor: not-allowed; opacity: 0.5; }
     .btn-fin { background: var(--green); color: white; border: 1px solid var(--green); }
     .btn-fin:hover { background: #15803d; }
     .btn-absent { background: var(--bg2); color: var(--text-sub); border: 1px solid var(--border); }
@@ -488,16 +489,59 @@
     }).join('');
   }
 
+  let appelEnCours = false; // verrou local anti double-clic
+
   async function appelConsultation(id, position) {
-    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
-    const params = await paramRes.json();
-    const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
-    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours' }) })];
-    if (position > numeroActuel) {
-      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: position }) }));
+    // ── Verrou local : empêche un double-clic rapide ──────────────────────
+    if (appelEnCours) return;
+    appelEnCours = true;
+
+    try {
+      // ── Vérification SERVEUR : y a-t-il déjà un patient en_cours ? ──────
+      // On interroge la BDD en temps réel — indépendamment de l'état affiché
+      const verifRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&statut=eq.en_cours&select=id,nom,prenom`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      const enCoursList = await verifRes.json();
+
+      if (enCoursList.length > 0) {
+        // Un patient est déjà en consultation — bloquer et rafraîchir la liste
+        const p = enCoursList[0];
+        alert(`⛔ Impossible d'appeler : ${p.nom} ${p.prenom} est déjà en consultation.\n\nTerminez d'abord cette consultation.`);
+        loadList(); // rafraîchir pour que l'UI soit à jour
+        return;
+      }
+
+      // ── Aucun conflit : procéder à l'appel ───────────────────────────────
+      const paramRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      const params = await paramRes.json();
+      const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
+
+      const updates = [
+        fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ statut: 'en_cours' })
+        })
+      ];
+      if (position > numeroActuel) {
+        updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, {
+          method: 'PATCH',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ numero_en_cours: position })
+        }));
+      }
+      await Promise.all(updates);
+      loadList();
+
+    } finally {
+      // Toujours libérer le verrou, même en cas d'erreur réseau
+      appelEnCours = false;
     }
-    await Promise.all(updates);
-    loadList();
   }
 
   let pendingAction = null;
