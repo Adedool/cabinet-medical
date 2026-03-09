@@ -388,7 +388,7 @@
     </div>
     <div class="form-group">
       <label class="form-label" id="telLabel">Téléphone</label>
-      <input class="form-input" type="tel" id="telephone" placeholder="0xxxxxxxxx" autocomplete="off"/>
+      <input class="form-input" type="tel" id="telephone" placeholder="05/06/07xxxxxxxx" inputmode="numeric" autocomplete="tel"/>
       <div class="error-msg" id="telErr">Ce champ est requis.</div>
     </div>
     <button class="submit-btn" id="submitBtn" onclick="inscrire()">
@@ -456,7 +456,7 @@
       liveInscritsLabel:"Inscrits aujourd'hui",
       infoBox:"📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.",
       nomLabel:'Nom', prenomLabel:'Prénom', telLabel:'Téléphone',
-      nomPh:'Votre nom', prenomPh:'Votre prénom', telPh:'0xxxxxxxxx',
+      nomPh:'Votre nom', prenomPh:'Votre prénom', telPh:'06 ou 07xxxxxxxx',
       submitText:"S'inscrire",
       successTitle:'Vous êtes inscrit(e) !', successMsg:"Votre numéro dans la file d'attente",
       successInfo:'Présentez-vous au cabinet avec ce numéro.',
@@ -465,6 +465,9 @@
       noticeSub:'Exemple : si votre numéro est 6, soyez au cabinet quand le numéro 3 est appelé.',
       closedText:"Les inscriptions sont fermées pour aujourd'hui.",
       errRequired:'Ce champ est requis.',
+      errTelFormat:'Numéro invalide. Format attendu : 05/06/07 + 8 chiffres.',
+      errDoublon:'Ce numéro est déjà inscrit aujourd\'hui.',
+      dejaInscrit:'Vous étiez déjà inscrit(e) — voici votre numéro.',
       errLimit:"Désolé, la limite de patients est atteinte pour aujourd'hui.",
       errClosed:'Les inscriptions sont fermées.',
       suiviTitle:'Suivi en temps réel',
@@ -477,7 +480,7 @@
       liveInscritsLabel:'المسجّلون اليوم',
       infoBox:'📋 سجّل اسمك للحصول على رقمك في قائمة الانتظار.',
       nomLabel:'اللقب', prenomLabel:'الاسم', telLabel:'رقم الهاتف',
-      nomPh:'لقبك', prenomPh:'اسمك', telPh:'0xxxxxxxxx',
+      nomPh:'لقبك', prenomPh:'اسمك', telPh:'06 أو 07xxxxxxxx',
       submitText:'تسجيل',
       successTitle:'✅ تم تسجيلك بنجاح !', successMsg:'رقمك في قائمة الانتظار',
       successInfo:'احضر إلى العيادة بهذا الرقم.',
@@ -486,6 +489,9 @@
       noticeSub:'مثال : إذا كان رقمك 6، كن في العيادة عند نداء الرقم 3.',
       closedText:'🚫 التسجيل مغلق لهذا اليوم.',
       errRequired:'هذا الحقل إلزامي.',
+      errTelFormat:'رقم غير صالح. الصيغة المطلوبة: 05/06/07 + 8 أرقام.',
+      errDoublon:'هذا الرقم مسجّل بالفعل اليوم.',
+      dejaInscrit:'أنت مسجّل مسبقاً — هذا رقمك.',
       errLimit:'عذراً، اكتمل عدد المرضى لهذا اليوم.',
       errClosed:'التسجيل مغلق حالياً.',
       suiviTitle:'متابعة مباشرة',
@@ -524,6 +530,9 @@
     const ns = document.getElementById('noticeSub');
     if (ns) ns.innerHTML = t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>');
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
+    // Remettre le message par défaut du champ tel (sera mis à jour dynamiquement si format invalide)
+    const telErrEl = document.getElementById('telErr');
+    if (telErrEl && telErrEl.style.display === 'none') telErrEl.textContent = t.errRequired;
     if (myPosition) { const btn = document.getElementById('whatsappBtn'); if (btn) btn.href = generateWhatsAppLink(myPosition); }
     if (parametres.nom_cabinet) {
       const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet) : parametres.nom_cabinet;
@@ -596,47 +605,147 @@
     document.getElementById('soonBanner').style.display = ahead > 2 && ahead <= 5 ? 'block' : 'none';
   }
 
+  // ── COUCHE 1 : Validation format téléphone algérien ──────────────────────
+  function validerTelephone(tel) {
+    const clean = tel.replace(/[\s\-\.]/g, '');
+    // Accepte : 05/06/07 + 8 chiffres (format algérien mobile)
+    return /^0[567][0-9]{8}$/.test(clean);
+  }
+
+  // ── COUCHE 4 : Clé localStorage par cabinet + jour ───────────────────────
+  function lsKey() {
+    return `rendz_${cabinetId}_${new Date().toISOString().split('T')[0]}`;
+  }
+  function sauvegarderLocal(position, telephone) {
+    try { localStorage.setItem(lsKey(), JSON.stringify({ position, telephone })); } catch(e) {}
+  }
+  function restaurerLocal() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(lsKey()) || 'null');
+      if (saved && saved.position) {
+        myPosition = saved.position;
+        afficherSucces(saved.position);
+      }
+    } catch(e) {}
+  }
+
+  function afficherSucces(position) {
+    document.getElementById('myNumber').textContent = position;
+    document.getElementById('whatsappBtn').href = generateWhatsAppLink(position);
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successCard').style.display = 'block';
+    updateSuivi(parametres.numero_en_cours || 0);
+  }
+
   async function inscrire() {
     const t = T[lang];
     const nom = document.getElementById('nom').value.trim();
     const prenom = document.getElementById('prenom').value.trim();
     const telephone = document.getElementById('telephone').value.trim();
     let valid = true;
-    ['nomErr','prenomErr','telErr'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    if (!nom)       { const el = document.getElementById('nomErr');    if (el) el.style.display = 'block'; valid = false; }
-    if (!prenom)    { const el = document.getElementById('prenomErr'); if (el) el.style.display = 'block'; valid = false; }
-    if (!telephone) { const el = document.getElementById('telErr');    if (el) el.style.display = 'block'; valid = false; }
+
+    ['nomErr','prenomErr','telErr'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.display = 'none';
+    });
+
+    if (!nom)    { const el = document.getElementById('nomErr');    if (el) el.style.display = 'block'; valid = false; }
+    if (!prenom) { const el = document.getElementById('prenomErr'); if (el) el.style.display = 'block'; valid = false; }
+
+    // ── COUCHE 1 : Validation format téléphone ────────────────────────────
+    if (!telephone) {
+      const el = document.getElementById('telErr');
+      if (el) { el.textContent = t.errRequired; el.style.display = 'block'; }
+      valid = false;
+    } else if (!validerTelephone(telephone)) {
+      const el = document.getElementById('telErr');
+      if (el) { el.textContent = t.errTelFormat; el.style.display = 'block'; }
+      valid = false;
+    }
+
     if (!valid) return;
     if (!parametres.ouvert) { alert(t.errClosed); return; }
+
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('submitText').textContent = '...';
+
     const today = new Date().toISOString().split('T')[0];
-    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
-    });
+    const telClean = telephone.replace(/[\s\-\.]/g, '');
+
+    // ── COUCHE 2 : Vérification doublon Supabase (même tél, même jour) ────
+    try {
+      const dupRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&telephone=eq.${encodeURIComponent(telClean)}&select=position`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      const dupData = await dupRes.json();
+      if (dupData.length > 0) {
+        // Patient déjà inscrit → on lui restitue son numéro
+        myPosition = dupData[0].position;
+        sauvegarderLocal(myPosition, telClean);
+        afficherSucces(myPosition);
+        // Message discret sous le numéro
+        const sub = document.getElementById('successMsg');
+        if (sub) sub.textContent = t.dejaInscrit;
+        return;
+      }
+    } catch(e) { /* Si la vérif échoue on laisse passer, la contrainte SQL (couche 3) prendra le relais */ }
+
+    // Vérification limite patients
+    const countRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } }
+    );
     const countHeader = countRes.headers.get('content-range');
     const currentCount = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
+
     if (parametres.limite_patients && currentCount >= parametres.limite_patients) {
       alert(t.errLimit);
       document.getElementById('submitBtn').disabled = false;
       document.getElementById('submitText').textContent = t.submitText;
       return;
     }
+
     const position = currentCount + 1;
+
+    // ── INSERT ────────────────────────────────────────────────────────────
     const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-      body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today, cabinet_id: cabinetId })
+      headers: {
+        'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json', 'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({ nom, prenom, telephone: telClean, position, date_inscription: today, cabinet_id: cabinetId })
     });
+
     if (res.ok) {
       myPosition = position;
-      document.getElementById('myNumber').textContent = position;
-      document.getElementById('whatsappBtn').href = generateWhatsAppLink(position);
-      document.getElementById('formSection').style.display = 'none';
-      document.getElementById('successCard').style.display = 'block';
-      updateSuivi(parametres.numero_en_cours || 0);
+      // ── COUCHE 4 : Sauvegarde locale ─────────────────────────────────
+      sauvegarderLocal(position, telClean);
+      afficherSucces(position);
     } else {
-      alert('Erreur. Veuillez réessayer.');
+      const errBody = await res.json().catch(() => ({}));
+      // ── COUCHE 3 : Contrainte SQL UNIQUE (code 23505) ─────────────────
+      if (errBody.code === '23505') {
+        // Récupérer le numéro existant et l'afficher
+        try {
+          const recupRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&telephone=eq.${encodeURIComponent(telClean)}&select=position`,
+            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+          );
+          const recupData = await recupRes.json();
+          if (recupData.length > 0) {
+            myPosition = recupData[0].position;
+            sauvegarderLocal(myPosition, telClean);
+            afficherSucces(myPosition);
+            const sub = document.getElementById('successMsg');
+            if (sub) sub.textContent = t.dejaInscrit;
+            return;
+          }
+        } catch(e2) {}
+        alert(t.errDoublon);
+      } else {
+        alert('Erreur. Veuillez réessayer.');
+      }
       document.getElementById('submitBtn').disabled = false;
       document.getElementById('submitText').textContent = t.submitText;
     }
@@ -652,6 +761,8 @@
   }
 
   fetchLive();
+  // ── COUCHE 4 : Restaurer l'inscription si déjà inscrit aujourd'hui ──────
+  restaurerLocal();
   setInterval(fetchLive, 20000);
 </script>
 </body>
