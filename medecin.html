@@ -386,48 +386,37 @@
       .tabs { padding: 0 14px; overflow-x: auto; }
     }
   
-    /* ── TOAST SYSTEM ────────────────────────────────────────────────────── */
-    #toast-container {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 9999; display: flex; flex-direction: column-reverse; align-items: center;
-      gap: 8px; pointer-events: none; width: 100%; max-width: 380px; padding: 0 16px;
+    /* ── SEARCH & FILTERS ─────────────────────────────────────────────── */
+    .search-bar-wrap {
+      display: flex; gap: 8px; align-items: center;
+      margin-bottom: 10px; flex-wrap: wrap;
     }
-    .toast {
-      display: flex; align-items: center; gap: 10px;
-      background: #1c1917; color: #fff;
-      border-radius: 14px; padding: 12px 16px;
-      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
-      pointer-events: all; cursor: default; width: 100%;
-      border: 1px solid rgba(255,255,255,0.08);
-      position: relative; overflow: hidden;
-      animation: toastIn 0.32s cubic-bezier(0.34,1.4,0.64,1) both;
+    .search-input {
+      flex: 1; min-width: 160px;
+      padding: 9px 12px 9px 34px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: 'Outfit', sans-serif;
+      font-size: 13px; color: var(--text); outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: 10px center;
     }
-    .toast.hide { animation: toastOut 0.22s ease forwards; }
-    .toast-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
-    .toast-msg  { flex: 1; line-height: 1.4; }
-    .toast-close {
-      background: none; border: none; color: rgba(255,255,255,0.4);
-      font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
-      flex-shrink: 0; transition: color 0.15s;
+    .search-input:focus { border-color: var(--blue); background-color: white; }
+    .search-input::placeholder { color: var(--text-muted); }
+    .filter-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+    .chip {
+      padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      border: 1.5px solid var(--border); background: white; color: var(--text-sub);
+      cursor: pointer; transition: all 0.12s; white-space: nowrap;
     }
-    .toast-close:hover { color: rgba(255,255,255,0.85); }
-    .toast-bar {
-      position: absolute; bottom: 0; left: 0; height: 3px;
-      border-radius: 0 0 14px 14px;
-      animation: toastBar var(--dur, 3s) linear forwards;
-    }
-    .toast.success { background: #14532d; border-color: rgba(34,197,94,0.25); }
-    .toast.success .toast-bar { background: #22c55e; }
-    .toast.error   { background: #450a0a; border-color: rgba(239,68,68,0.25); }
-    .toast.error   .toast-bar { background: #ef4444; }
-    .toast.warning { background: #431407; border-color: rgba(249,115,22,0.25); }
-    .toast.warning .toast-bar { background: #f97316; }
-    .toast.info    { background: #1e3a5f; border-color: rgba(59,130,246,0.25); }
-    .toast.info    .toast-bar { background: #3b82f6; }
-    @keyframes toastIn  { from{opacity:0;transform:translateY(16px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);} }
-    @keyframes toastOut { from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(10px) scale(0.96);} }
-    @keyframes toastBar { from{width:100%;}to{width:0%;} }
+    .chip:hover { border-color: var(--blue-border); color: var(--blue-text); }
+    .chip.active { background: var(--blue); color: white; border-color: var(--blue); }
+    .chip.chip-present.active  { background: #16a34a; border-color: #16a34a; }
+    .chip.chip-attente.active  { background: #2563eb; border-color: #2563eb; }
+    .chip.chip-absent.active   { background: #dc2626; border-color: #dc2626; }
+    .chip.chip-termine.active  { background: #78716c; border-color: #78716c; }
+    .search-count { font-size: 11px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
+    .highlight { background: #fef08a; border-radius: 2px; padding: 0 1px; }
   </style>
 </head>
 <body>
@@ -532,7 +521,18 @@
       </div>
     </div>
     <div class="content">
-      <div class="list-wrap">
+              <div class="search-bar-wrap">
+          <input class="search-input" type="text" id="searchInput" placeholder="Rechercher un patient…" oninput="applyFilters()"/>
+          <div class="filter-chips">
+            <span class="chip active" data-filter="all"    onclick="setFilter('all',this)">Tous</span>
+            <span class="chip chip-attente"  data-filter="en_attente" onclick="setFilter('en_attente',this)">Attente</span>
+            <span class="chip chip-present"  data-filter="present"    onclick="setFilter('present',this)">Présents</span>
+            <span class="chip chip-absent"   data-filter="absent"     onclick="setFilter('absent',this)">Absents</span>
+            <span class="chip chip-termine"  data-filter="termine"    onclick="setFilter('termine',this)">Terminés</span>
+          </div>
+          <span class="search-count" id="searchCount"></span>
+        </div>
+<div class="list-wrap">
         <div class="list-header">
           <span>#</span><span>Patient</span><span>Statut</span>
         </div>
@@ -738,6 +738,29 @@
   document.getElementById('tab-securite').style.display = 'none';
 
   /* ── DATA ── */
+  
+  // ── RÉINITIALISATION AUTOMATIQUE CHAQUE MATIN ──────────────────────────────
+  // Compare la date du jour avec la dernière date enregistrée en base.
+  // Si nouveau jour → remet numero_en_cours à 0 et ferme le cabinet.
+  // S'exécute au chargement et à chaque refresh — sans cron, sans backend.
+  async function checkAutoReset(params, HJ_headers) {
+    const today = new Date().toISOString().split('T')[0];
+    const derniereDate = params.derniere_date || '';
+    if (derniereDate === today) return; // même jour → rien à faire
+
+    // Nouveau jour détecté : réinitialisation silencieuse
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, {
+      method: 'PATCH',
+      headers: HJ_headers,
+      body: JSON.stringify({
+        numero_en_cours: 0,
+        ouvert: false,
+        derniere_date: today
+      })
+    });
+    console.log(`[Rendz] Nouveau jour (${today}) — Compteur remis à zéro, cabinet fermé.`);
+  }
+
   async function loadData() {
     const today = new Date().toISOString().split('T')[0];
     const [listRes, paramRes] = await Promise.all([
@@ -746,6 +769,7 @@
     ]);
     const list = await listRes.json();
     const params = (await paramRes.json())[0] || {};
+    await checkAutoReset(params, HJ);
 
     // Toggle
     const ouvert = !!params.ouvert;
@@ -785,17 +809,72 @@
     }
 
     // Liste
+    fullList = list;
+    applyFilters();
+  }
+
+  function renderFilteredList(list, q='') {
     const body = document.getElementById('listBody');
-    if (list.length === 0) { body.innerHTML = `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit aujourd'hui.</p></div>`; return; }
+    if (list.length === 0) {
+      const isEmpty = fullList.length === 0;
+      body.innerHTML = isEmpty
+        ? `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit aujourd'hui.</p></div>`
+        : `<div class="empty-state"><div class="ico">🔍</div><p>Aucun résultat.</p></div>`;
+      return;
+    }
     body.innerHTML = list.map(p => {
       const st = p.statut || 'en_attente';
       const bc = ['present','en_cours','absent','termine'].includes(st) ? st : '';
       return `<div class="list-item ${st}">
         <div><div class="num-badge ${bc}">${p.position}</div></div>
-        <div class="name-col">${p.nom} ${p.prenom}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
+        <div class="name-col">${highlight(p.nom,q)} ${highlight(p.prenom,q)}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
         <div><span class="status-badge ${st}">${SL[st] || st}</span></div>
       </div>`;
     }).join('');
+  }
+
+  // ── RECHERCHE + FILTRES ──────────────────────────────────────────────────
+  let fullList    = [];   // liste complète en mémoire
+  let activeFilter = 'all';
+
+  function setFilter(f, el) {
+    activeFilter = f;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    let filtered = fullList;
+
+    // Filtre statut
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(p => (p.statut || 'en_attente') === activeFilter);
+    }
+    // Filtre texte
+    if (q) {
+      filtered = filtered.filter(p =>
+        (p.nom    || '').toLowerCase().includes(q) ||
+        (p.prenom || '').toLowerCase().includes(q) ||
+        (p.telephone || '').includes(q)
+      );
+    }
+
+    const countEl = document.getElementById('searchCount');
+    if (countEl) {
+      countEl.textContent = q || activeFilter !== 'all'
+        ? `${filtered.length} résultat${filtered.length > 1 ? 's' : ''}`
+        : '';
+    }
+
+    renderFilteredList(filtered, q);
+  }
+
+  function highlight(text, q) {
+    if (!q || !text) return text || '';
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark class="highlight">$1</mark>');
   }
 
   async function appelSuivant(id, position) {
@@ -849,7 +928,9 @@
       message_patients_ar:  document.getElementById('sMessageAr').value.trim()
     };
     await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify(body) });
-    showToast('Paramètres sauvegardés.', 'success');
+    const ok = document.getElementById('saveOk');
+    ok.style.display = 'inline';
+    setTimeout(() => ok.style.display = 'none', 2500);
   }
 
   /* ── MDP ── */
@@ -860,11 +941,12 @@
     const okEl    = document.getElementById(`pwd${suffix}Ok`);
     const errEl   = document.getElementById(`pwd${suffix}Err`);
     okEl.style.display = 'none'; errEl.style.display = 'none';
-    if (!newPwd || newPwd !== confirm) { showToast('Les mots de passe ne correspondent pas.', 'error'); return; }
+    if (!newPwd || newPwd !== confirm) { errEl.style.display = 'inline'; return; }
     await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}&cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ mot_de_passe: newPwd }) });
     document.getElementById(`newPwd${suffix}`).value = '';
     document.getElementById(`confirmPwd${suffix}`).value = '';
-    showToast('Mot de passe mis à jour.', 'success');
+    okEl.style.display = 'inline';
+    setTimeout(() => okEl.style.display = 'none', 2500);
   }
 
   /* ── RESET ── */
@@ -923,36 +1005,6 @@
   document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
   document.getElementById('qrModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('qrModalOverlay')) closeQR(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
-
-  // ── TOAST SYSTEM ────────────────────────────────────────────────────────────
-  // showToast(msg, type, duration)
-  // type : 'success' | 'error' | 'warning' | 'info'   duration : ms (défaut 3500)
-  (function() {
-    const ICONS = { success:'✅', error:'⛔', warning:'⚠️', info:'ℹ️' };
-    function showToast(msg, type = 'info', duration = 3500) {
-      let container = document.getElementById('toast-container');
-      if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        document.body.appendChild(container);
-      }
-      const t = document.createElement('div');
-      t.className = `toast ${type}`;
-      t.style.setProperty('--dur', duration + 'ms');
-      t.innerHTML = `
-        <span class="toast-icon">${ICONS[type] || 'ℹ️'}</span>
-        <span class="toast-msg">${msg}</span>
-        <button class="toast-close" onclick="this.closest('.toast').remove()">✕</button>
-        <div class="toast-bar"></div>`;
-      container.appendChild(t);
-      const timer = setTimeout(() => {
-        t.classList.add('hide');
-        t.addEventListener('animationend', () => t.remove(), { once: true });
-      }, duration);
-      t.querySelector('.toast-close').addEventListener('click', () => clearTimeout(timer));
-    }
-    window.showToast = showToast;
-  })();
 </script>
 </body>
 </html>

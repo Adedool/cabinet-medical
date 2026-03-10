@@ -283,48 +283,37 @@
       .btn-del { flex: 0 0 auto; min-width: unset; padding: 9px 12px !important; }
     }
   
-    /* ── TOAST SYSTEM ────────────────────────────────────────────────────── */
-    #toast-container {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 9999; display: flex; flex-direction: column-reverse; align-items: center;
-      gap: 8px; pointer-events: none; width: 100%; max-width: 380px; padding: 0 16px;
+    /* ── SEARCH & FILTERS ─────────────────────────────────────────────── */
+    .search-bar-wrap {
+      display: flex; gap: 8px; align-items: center;
+      margin-bottom: 10px; flex-wrap: wrap;
     }
-    .toast {
-      display: flex; align-items: center; gap: 10px;
-      background: #1c1917; color: #fff;
-      border-radius: 14px; padding: 12px 16px;
-      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
-      pointer-events: all; cursor: default; width: 100%;
-      border: 1px solid rgba(255,255,255,0.08);
-      position: relative; overflow: hidden;
-      animation: toastIn 0.32s cubic-bezier(0.34,1.4,0.64,1) both;
+    .search-input {
+      flex: 1; min-width: 160px;
+      padding: 9px 12px 9px 34px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: 'Outfit', sans-serif;
+      font-size: 13px; color: var(--text); outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: 10px center;
     }
-    .toast.hide { animation: toastOut 0.22s ease forwards; }
-    .toast-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
-    .toast-msg  { flex: 1; line-height: 1.4; }
-    .toast-close {
-      background: none; border: none; color: rgba(255,255,255,0.4);
-      font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
-      flex-shrink: 0; transition: color 0.15s;
+    .search-input:focus { border-color: var(--blue); background-color: white; }
+    .search-input::placeholder { color: var(--text-muted); }
+    .filter-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+    .chip {
+      padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      border: 1.5px solid var(--border); background: white; color: var(--text-sub);
+      cursor: pointer; transition: all 0.12s; white-space: nowrap;
     }
-    .toast-close:hover { color: rgba(255,255,255,0.85); }
-    .toast-bar {
-      position: absolute; bottom: 0; left: 0; height: 3px;
-      border-radius: 0 0 14px 14px;
-      animation: toastBar var(--dur, 3s) linear forwards;
-    }
-    .toast.success { background: #14532d; border-color: rgba(34,197,94,0.25); }
-    .toast.success .toast-bar { background: #22c55e; }
-    .toast.error   { background: #450a0a; border-color: rgba(239,68,68,0.25); }
-    .toast.error   .toast-bar { background: #ef4444; }
-    .toast.warning { background: #431407; border-color: rgba(249,115,22,0.25); }
-    .toast.warning .toast-bar { background: #f97316; }
-    .toast.info    { background: #1e3a5f; border-color: rgba(59,130,246,0.25); }
-    .toast.info    .toast-bar { background: #3b82f6; }
-    @keyframes toastIn  { from{opacity:0;transform:translateY(16px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);} }
-    @keyframes toastOut { from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(10px) scale(0.96);} }
-    @keyframes toastBar { from{width:100%;}to{width:0%;} }
+    .chip:hover { border-color: var(--blue-border); color: var(--blue-text); }
+    .chip.active { background: var(--blue); color: white; border-color: var(--blue); }
+    .chip.chip-present.active  { background: #16a34a; border-color: #16a34a; }
+    .chip.chip-attente.active  { background: #2563eb; border-color: #2563eb; }
+    .chip.chip-absent.active   { background: #dc2626; border-color: #dc2626; }
+    .chip.chip-termine.active  { background: #78716c; border-color: #78716c; }
+    .search-count { font-size: 11px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
+    .highlight { background: #fef08a; border-radius: 2px; padding: 0 1px; }
   </style>
 </head>
 <body>
@@ -391,7 +380,18 @@
           File d'attente du jour
           <button class="refresh-btn" onclick="loadList()">↻ Actualiser</button>
         </div>
-        <div class="list-wrap">
+                <div class="search-bar-wrap">
+          <input class="search-input" type="text" id="searchInput" placeholder="Rechercher par nom, prénom ou tél…" oninput="applyFilters()"/>
+          <div class="filter-chips">
+            <span class="chip active" data-filter="all"    onclick="setFilter('all',this)">Tous</span>
+            <span class="chip chip-attente"  data-filter="en_attente" onclick="setFilter('en_attente',this)">Attente</span>
+            <span class="chip chip-present"  data-filter="present"    onclick="setFilter('present',this)">Présents</span>
+            <span class="chip chip-absent"   data-filter="absent"     onclick="setFilter('absent',this)">Absents</span>
+            <span class="chip chip-termine"  data-filter="termine"    onclick="setFilter('termine',this)">Terminés</span>
+          </div>
+          <span class="search-count" id="searchCount"></span>
+        </div>
+<div class="list-wrap">
           <div class="list-header">
             <span>#</span><span>Patient</span>
             <span>Statut</span>
@@ -461,16 +461,51 @@
   }
 
   async function inscrireManuel() {
-    const nom = document.getElementById('mNom').value.trim();
-    const prenom = document.getElementById('mPrenom').value.trim();
+    const nom       = document.getElementById('mNom').value.trim();
+    const prenom    = document.getElementById('mPrenom').value.trim();
     const telephone = document.getElementById('mTel').value.trim() || '—';
     if (!nom || !prenom) { showToast('Nom et prénom obligatoires.', 'error'); return; }
+
     document.getElementById('addBtn').disabled = true;
     const today = new Date().toISOString().split('T')[0];
-    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } });
+
+    // ── Anti-doublon : vérif par téléphone (si saisi) puis par nom+prénom ──
+    try {
+      if (telephone !== '—') {
+        const dupTelRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&telephone=eq.${encodeURIComponent(telephone)}&select=position,nom,prenom`,
+          { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+        );
+        const dupTel = await dupTelRes.json();
+        if (dupTel.length > 0) {
+          const d = dupTel[0];
+          showToast(`⚠️ Ce numéro est déjà inscrit — ${d.nom} ${d.prenom} (N°${d.position})`, 'warning', 5000);
+          document.getElementById('addBtn').disabled = false;
+          return;
+        }
+      }
+      // Vérif par nom + prénom (insensible à la casse)
+      const dupNomRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&nom=ilike.${encodeURIComponent(nom)}&prenom=ilike.${encodeURIComponent(prenom)}&select=position`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+      );
+      const dupNom = await dupNomRes.json();
+      if (dupNom.length > 0) {
+        showToast(`⚠️ ${nom} ${prenom} est déjà inscrit(e) — N°${dupNom[0].position}`, 'warning', 5000);
+        document.getElementById('addBtn').disabled = false;
+        return;
+      }
+    } catch(e) { /* Si la vérif échoue, on laisse passer */ }
+
+    // ── Calcul position + insertion ─────────────────────────────────────────
+    const countRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } }
+    );
     const countHeader = countRes.headers.get('content-range');
     const currentCount = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
     const position = currentCount + 1;
+
     const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
       method: 'POST',
       headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
@@ -482,8 +517,38 @@
       document.getElementById('mTel').value = '';
       showToast(`✓ ${nom} ${prenom} ajouté — Numéro ${position}`, 'success');
       loadList();
-    } else { showToast('Erreur réseau. Réessayez.', 'error'); }
+    } else {
+      const err = await res.json().catch(() => ({}));
+      if (err.code === '23505') {
+        showToast(`Ce patient est déjà inscrit aujourd'hui.`, 'warning');
+      } else {
+        showToast('Erreur réseau. Réessayez.', 'error');
+      }
+    }
     document.getElementById('addBtn').disabled = false;
+  }
+
+  
+  // ── RÉINITIALISATION AUTOMATIQUE CHAQUE MATIN ──────────────────────────────
+  // Compare la date du jour avec la dernière date enregistrée en base.
+  // Si nouveau jour → remet numero_en_cours à 0 et ferme le cabinet.
+  // S'exécute au chargement et à chaque refresh — sans cron, sans backend.
+  async function checkAutoReset(params, HJ_headers) {
+    const today = new Date().toISOString().split('T')[0];
+    const derniereDate = params.derniere_date || '';
+    if (derniereDate === today) return; // même jour → rien à faire
+
+    // Nouveau jour détecté : réinitialisation silencieuse
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, {
+      method: 'PATCH',
+      headers: HJ_headers,
+      body: JSON.stringify({
+        numero_en_cours: 0,
+        ouvert: false,
+        derniere_date: today
+      })
+    });
+    console.log(`[Rendz] Nouveau jour (${today}) — Compteur remis à zéro, cabinet fermé.`);
   }
 
   async function loadList() {
@@ -493,6 +558,9 @@
       fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
     ]);
     const list = await listRes.json();
+    const params_data = await paramRes.json();
+    const params_obj = params_data[0] || {};
+    await checkAutoReset(params_obj, { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' });
     const enCours = list.find(p => p.statut === 'en_cours');
     const consultBar = document.getElementById('consultBar');
     if (enCours) {
@@ -505,9 +573,20 @@
     document.getElementById('statAbsent').textContent = list.filter(p => p.statut === 'absent').length;
     document.getElementById('statAttente').textContent = list.filter(p => p.statut === 'en_attente').length;
     document.getElementById('statTermine').textContent = list.filter(p => p.statut === 'termine').length;
+    fullList = list;
+    applyFilters();
+  }
+
+  function renderFilteredList(list, q='') {
     const body = document.getElementById('listBody');
-    if (list.length === 0) { body.innerHTML = `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit pour aujourd'hui.</p></div>`; return; }
-    const dejaEnCours = list.some(x => x.statut === 'en_cours');
+    if (list.length === 0) {
+      const isEmpty = fullList.length === 0;
+      body.innerHTML = isEmpty
+        ? `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit pour aujourd'hui.</p></div>`
+        : `<div class="empty-state"><div class="ico">🔍</div><p>Aucun résultat pour cette recherche.</p></div>`;
+      return;
+    }
+    const dejaEnCours = fullList.some(x => x.statut === 'en_cours');
     body.innerHTML = list.map(p => {
       const st = p.statut || 'en_attente';
       const isM = p.source === 'manuel';
@@ -526,6 +605,50 @@
         <div class="actions-col">${actions}</div>
       </div>`;
     }).join('');
+  }
+
+  // ── RECHERCHE + FILTRES ──────────────────────────────────────────────────
+  let fullList    = [];   // liste complète en mémoire
+  let activeFilter = 'all';
+
+  function setFilter(f, el) {
+    activeFilter = f;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    let filtered = fullList;
+
+    // Filtre statut
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(p => (p.statut || 'en_attente') === activeFilter);
+    }
+    // Filtre texte
+    if (q) {
+      filtered = filtered.filter(p =>
+        (p.nom    || '').toLowerCase().includes(q) ||
+        (p.prenom || '').toLowerCase().includes(q) ||
+        (p.telephone || '').includes(q)
+      );
+    }
+
+    const countEl = document.getElementById('searchCount');
+    if (countEl) {
+      countEl.textContent = q || activeFilter !== 'all'
+        ? `${filtered.length} résultat${filtered.length > 1 ? 's' : ''}`
+        : '';
+    }
+
+    renderFilteredList(filtered, q);
+  }
+
+  function highlight(text, q) {
+    if (!q || !text) return text || '';
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark class="highlight">$1</mark>');
   }
 
   async function appelConsultation(id, position) {
@@ -583,36 +706,6 @@
 
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
-
-  // ── TOAST SYSTEM ────────────────────────────────────────────────────────────
-  // showToast(msg, type, duration)
-  // type : 'success' | 'error' | 'warning' | 'info'   duration : ms (défaut 3500)
-  (function() {
-    const ICONS = { success:'✅', error:'⛔', warning:'⚠️', info:'ℹ️' };
-    function showToast(msg, type = 'info', duration = 3500) {
-      let container = document.getElementById('toast-container');
-      if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        document.body.appendChild(container);
-      }
-      const t = document.createElement('div');
-      t.className = `toast ${type}`;
-      t.style.setProperty('--dur', duration + 'ms');
-      t.innerHTML = `
-        <span class="toast-icon">${ICONS[type] || 'ℹ️'}</span>
-        <span class="toast-msg">${msg}</span>
-        <button class="toast-close" onclick="this.closest('.toast').remove()">✕</button>
-        <div class="toast-bar"></div>`;
-      container.appendChild(t);
-      const timer = setTimeout(() => {
-        t.classList.add('hide');
-        t.addEventListener('animationend', () => t.remove(), { once: true });
-      }, duration);
-      t.querySelector('.toast-close').addEventListener('click', () => clearTimeout(timer));
-    }
-    window.showToast = showToast;
-  })();
 </script>
 </body>
 </html>
