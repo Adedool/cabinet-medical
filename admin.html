@@ -140,7 +140,89 @@
       .main { padding-top: 16px; }
       .cabinet-card { flex-wrap: wrap; }
     }
-  </style>
+  
+    /* ── ONGLET STATISTIQUES ─────────────────────────────────────────────── */
+    .stats-tab { padding: 20px 24px 48px; display: none; }
+    .stats-tab.active { display: block; }
+    .stats-section-title {
+      font-size: 12px; font-weight: 700; color: var(--text-sub);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin: 20px 0 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .stats-section-title:first-child { margin-top: 0; }
+
+    /* Grandes cartes KPI */
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 6px; }
+    .kpi-card {
+      background: white; border: 1px solid var(--border); border-radius: 14px;
+      padding: 16px; box-shadow: var(--shadow); text-align: center;
+    }
+    .kpi-val  { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; }
+    .kpi-lbl  { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+    .kpi-card.blue  { border-top: 3px solid var(--blue);   } .kpi-card.blue  .kpi-val { color: var(--blue); }
+    .kpi-card.green { border-top: 3px solid var(--green);  } .kpi-card.green .kpi-val { color: var(--green); }
+    .kpi-card.orange{ border-top: 3px solid var(--orange); } .kpi-card.orange .kpi-val { color: var(--orange); }
+    .kpi-card.red   { border-top: 3px solid var(--red);    } .kpi-card.red   .kpi-val { color: var(--red); }
+    .kpi-card.full  { grid-column: 1 / -1; }
+
+    /* Cartes info horizontales */
+    .info-card {
+      background: white; border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px 16px; box-shadow: var(--shadow); margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .info-card-left  { font-size: 12px; color: var(--text-sub); font-weight: 500; }
+    .info-card-right { font-size: 15px; font-weight: 800; color: var(--text); text-align: right; }
+
+    /* Barre de progression */
+    .bar-row { margin-bottom: 10px; }
+    .bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; font-weight: 600; color: var(--text-sub); }
+    .bar-track { height: 8px; background: var(--bg2); border-radius: 99px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+    .bar-fill.blue   { background: var(--blue); }
+    .bar-fill.green  { background: var(--green); }
+    .bar-fill.orange { background: var(--orange); }
+    .bar-fill.red    { background: var(--red); }
+
+    /* Estimation temps attente */
+    .wait-estimate {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid var(--blue-border); border-radius: 14px;
+      padding: 14px 16px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .wait-estimate-icon { font-size: 26px; flex-shrink: 0; }
+    .wait-estimate-body { flex: 1; }
+    .wait-estimate-title { font-size: 12px; font-weight: 700; color: var(--blue-text); margin-bottom: 2px; }
+    .wait-estimate-val   { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+
+    /* Tableau cabinets admin */
+    .cab-stats-table { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+    .cab-stats-row {
+      display: grid; grid-template-columns: 1fr 60px 60px 60px 80px;
+      padding: 10px 14px; align-items: center; gap: 8px;
+      border-bottom: 1px solid var(--bg2); font-size: 12px;
+    }
+    .cab-stats-row:last-child { border-bottom: none; }
+    .cab-stats-row.header { background: var(--bg); font-weight: 700; color: var(--text-sub); font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .cab-stats-row .rank { font-weight: 800; color: var(--text-muted); font-size: 13px; }
+    .cab-stats-row .cab-nom { font-weight: 600; color: var(--text); }
+    .cab-stats-row .cab-spec-small { font-size: 10px; color: var(--text-muted); }
+    .cab-stats-row .num { text-align: center; font-weight: 700; color: var(--text); }
+    .activity-pill {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-align: center;
+    }
+    .activity-pill.high   { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+    .activity-pill.medium { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange-border); }
+    .activity-pill.low    { background: var(--red-light);    color: var(--red);    border: 1px solid var(--red-border); }
+
+    /* Loader stats */
+    .stats-loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
+    .stats-empty   { text-align: center; padding: 28px; color: var(--text-muted); font-size: 13px; }
+      .tab-btn { background:none; border:none; border-bottom:2px solid transparent; padding:8px 12px; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; color:var(--text-sub); cursor:pointer; transition:all 0.15s; }
+    .tab-btn.active { color:var(--blue); border-bottom-color:var(--blue); }
+    .tab-btn:hover:not(.active) { color:var(--text); }
+</style>
 </head>
 <body>
 
@@ -184,7 +266,9 @@
       <div class="gstat"><div class="gstat-val" id="totalPatients">—</div><div class="gstat-lbl">Patients aujourd'hui</div></div>
     </div>
 
-    <div class="section-header">
+    <div id="admin-tabs" style="display:flex;gap:8px;padding:0 0 16px;border-bottom:1px solid var(--border);margin-bottom:20px;"><button class="tab-btn active" id="adminTab-cabinets" onclick="switchAdminTab('cabinets',this)">🏥 Cabinets</button><button class="tab-btn" id="adminTab-stats" onclick="switchAdminTab('stats',this)">📊 Statistiques</button></div>
+  <div id="admin-panel-cabinets">
+  <div class="section-header">
       <div class="section-title">🏥 Cabinets enregistrés</div>
       <button class="new-btn" onclick="openNew()">＋ Nouveau cabinet</button>
     </div>
@@ -195,6 +279,9 @@
 </div>
 
 <!-- MODALE NOUVEAU CABINET -->
+  </div><!-- /admin-panel-cabinets -->
+  <div id="admin-panel-stats" style="display:none"><div id="tab-stats-admin" class="stats-tab"></div></div>
+
 <div class="modal-overlay" id="modalNew">
   <div class="adm-modal-box">
     <div class="adm-modal-title">➕ Nouveau cabinet</div>
@@ -257,6 +344,140 @@
     document.getElementById('loginWrap').style.display = 'flex';
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('pwdInput').value = '';
+  }
+
+
+  // ── STATISTIQUES ADMIN ──────────────────────────────────────────────────
+  async function loadStatsAdmin() {
+    const tabEl = document.getElementById('tab-stats-admin');
+    if (!tabEl) return;
+    tabEl.innerHTML = '<div class="stats-loading">⏳ Chargement…</div>';
+
+    const today  = new Date().toISOString().split('T')[0];
+    const m30ago = (() => { const d = new Date(); d.setDate(d.getDate()-30); return d.toISOString().split('T')[0]; })();
+    const m1ago  = (() => { const d = new Date(); d.setMonth(d.getMonth()-1); return d.toISOString().split('T')[0]; })();
+    const monday = (() => {
+      const d = new Date(); const day = d.getDay();
+      d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+      return d.toISOString().split('T')[0];
+    })();
+
+    const [paramRes, todayRes, weekRes, monthRes, m30Res] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=not.is.null`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=cabinet_id,statut`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=gte.${monday}&date_inscription=lte.${today}&select=cabinet_id,statut`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=gte.${m1ago}&date_inscription=lte.${today}&select=cabinet_id,statut`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=gte.${m30ago}&date_inscription=lte.${today}&select=cabinet_id,date_inscription,statut`, { headers: SB_H })
+    ]);
+
+    const cabinets = await paramRes.json();
+    const todayInsc = await todayRes.json();
+    const weekInsc  = await weekRes.json();
+    const monthInsc = await monthRes.json();
+    const m30Insc   = await m30Res.json();
+
+    // ── Totaux globaux ───────────────────────────────────────────────────
+    const totalAuj    = todayInsc.length;
+    const totalSemaine= weekInsc.length;
+    const totalMois   = monthInsc.length;
+    const totalOuverts= cabinets.filter(c => c.ouvert).length;
+
+    // ── Grouper par cabinet ──────────────────────────────────────────────
+    function groupBy(list, key) {
+      return list.reduce((acc, x) => { acc[x[key]] = (acc[x[key]] || 0) + 1; return acc; }, {});
+    }
+    const aujByCab   = groupBy(todayInsc, 'cabinet_id');
+    const moisByCab  = groupBy(monthInsc, 'cabinet_id');
+    const absByCab   = monthInsc.filter(p => p.statut === 'absent').reduce((acc,p) => { acc[p.cabinet_id]=(acc[p.cabinet_id]||0)+1; return acc; }, {});
+
+    // Taux d'activité : nb de jours distincts où le cabinet a eu des patients (30j)
+    const joursByCab = {};
+    m30Insc.forEach(p => {
+      if (!joursByCab[p.cabinet_id]) joursByCab[p.cabinet_id] = new Set();
+      joursByCab[p.cabinet_id].add(p.date_inscription);
+    });
+
+    // ── Jour le plus chargé tous cabinets ───────────────────────────────
+    const joursNoms = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const jourCount = {};
+    m30Insc.forEach(p => {
+      const j = joursNoms[new Date(p.date_inscription).getDay()];
+      jourCount[j] = (jourCount[j] || 0) + 1;
+    });
+    const jourMax = Math.max(...Object.values(jourCount), 1);
+    const joursOrdonnes = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].filter(j => jourCount[j]);
+
+    // ── Classement cabinets ──────────────────────────────────────────────
+    const ranking = cabinets
+      .map(c => ({
+        id:       c.cabinet_id,
+        nom:      c.nom_cabinet || c.cabinet_id,
+        spec:     c.specialite || '—',
+        auj:      aujByCab[c.cabinet_id]  || 0,
+        mois:     moisByCab[c.cabinet_id] || 0,
+        absents:  absByCab[c.cabinet_id]  || 0,
+        jours:    joursByCab[c.cabinet_id] ? joursByCab[c.cabinet_id].size : 0,
+        tauxAbs:  moisByCab[c.cabinet_id] > 0
+                    ? Math.round((absByCab[c.cabinet_id]||0) / moisByCab[c.cabinet_id] * 100)
+                    : 0,
+        ouvert:   c.ouvert
+      }))
+      .sort((a, b) => b.mois - a.mois);
+
+    function activityLabel(jours) {
+      if (jours >= 20) return '<span class="activity-pill high">Très actif</span>';
+      if (jours >= 10) return '<span class="activity-pill medium">Actif</span>';
+      return '<span class="activity-pill low">Peu actif</span>';
+    }
+
+    // ── RENDU ────────────────────────────────────────────────────────────
+    tabEl.innerHTML = `
+      <div class="stats-section-title">🌐 Vue globale</div>
+      <div class="kpi-grid">
+        <div class="kpi-card blue"><div class="kpi-val">${totalAuj}</div><div class="kpi-lbl">Patients aujourd'hui</div></div>
+        <div class="kpi-card green"><div class="kpi-val">${totalOuverts}/${cabinets.length}</div><div class="kpi-lbl">Cabinets ouverts</div></div>
+        <div class="kpi-card"><div class="kpi-val">${totalSemaine}</div><div class="kpi-lbl">Cette semaine</div></div>
+        <div class="kpi-card"><div class="kpi-val">${totalMois}</div><div class="kpi-lbl">Ce mois</div></div>
+      </div>
+
+      ${joursOrdonnes.length > 0 ? `
+      <div class="stats-section-title">📅 Jour le plus chargé (30 jours)</div>
+      ${joursOrdonnes.map(j => `
+        <div class="bar-row">
+          <div class="bar-label"><span>${j}</span><span>${jourCount[j]} patients</span></div>
+          <div class="bar-track"><div class="bar-fill blue" style="width:${Math.round(jourCount[j]/jourMax*100)}%"></div></div>
+        </div>`).join('')}` : ''}
+
+      <div class="stats-section-title">🏆 Classement des cabinets (ce mois)</div>
+      <div class="cab-stats-table">
+        <div class="cab-stats-row header">
+          <span>Cabinet</span>
+          <span style="text-align:center">Auj.</span>
+          <span style="text-align:center">Mois</span>
+          <span style="text-align:center">Abs.%</span>
+          <span style="text-align:center">Activité</span>
+        </div>
+        ${ranking.map((c, i) => `
+        <div class="cab-stats-row">
+          <div>
+            <div class="cab-nom">${i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : ''}${c.nom}</div>
+            <div class="cab-spec-small">${c.spec}</div>
+          </div>
+          <div class="num">${c.auj}</div>
+          <div class="num">${c.mois}</div>
+          <div class="num" style="color:${c.tauxAbs > 20 ? 'var(--red)' : 'var(--text)'}">${c.tauxAbs}%</div>
+          <div>${activityLabel(c.jours)}</div>
+        </div>`).join('')}
+      </div>
+    `;
+  }
+
+  function switchAdminTab(name, btn) {
+    document.querySelectorAll('#admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('admin-panel-cabinets').style.display = name === 'cabinets' ? 'block' : 'none';
+    document.getElementById('admin-panel-stats').style.display = name === 'stats' ? 'block' : 'none';
+    if (name === 'stats') loadStatsAdmin();
   }
 
   if (localStorage.getItem('rendz_admin')) showDashboard();

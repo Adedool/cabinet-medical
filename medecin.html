@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Médecin</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="rendz-common.css"/>
+  <script src="rendz-common.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
@@ -386,51 +388,84 @@
       .tabs { padding: 0 14px; overflow-x: auto; }
     }
   
-    /* ── URGENCES ────────────────────────────────────────────────────────── */
-    .list-item.urgence {
-      border-left: 3px solid #dc2626 !important;
-      background: #fff5f5 !important;
+    /* ── ONGLET STATISTIQUES ─────────────────────────────────────────────── */
+    .stats-tab { padding: 20px 24px 48px; display: none; }
+    .stats-tab.active { display: block; }
+    .stats-section-title {
+      font-size: 12px; font-weight: 700; color: var(--text-sub);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin: 20px 0 10px; display: flex; align-items: center; gap: 6px;
     }
-    .urgence-badge {
-      display: inline-flex; align-items: center; gap: 3px;
-      background: #fef2f2; border: 1px solid #fecaca;
-      color: #dc2626; font-size: 10px; font-weight: 700;
-      border-radius: 6px; padding: 2px 6px; margin-left: 5px;
-      text-transform: uppercase; letter-spacing: 0.3px;
-      animation: urgencePulse 1.5s ease-in-out infinite;
-    }
-    @keyframes urgencePulse { 0%,100%{opacity:1;}50%{opacity:0.6;} }
-    .btn-urgence {
-      background: #fef2f2; color: #dc2626;
-      border: 1px solid #fecaca; border-radius: 7px;
-      padding: 5px 10px; font-size: 11px; font-weight: 600;
-      cursor: pointer; transition: all 0.12s; white-space: nowrap;
-      font-family: 'Outfit', sans-serif;
-    }
-    .btn-urgence:hover  { background: #dc2626; color: white; }
-    .btn-urgence.active { background: #dc2626; color: white; border-color: #dc2626; }
+    .stats-section-title:first-child { margin-top: 0; }
 
-    /* ── HORODATAGE ──────────────────────────────────────────────────────── */
-    .timing-chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 600; color: var(--text-muted);
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 6px; padding: 2px 7px; margin-top: 3px;
+    /* Grandes cartes KPI */
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 6px; }
+    .kpi-card {
+      background: white; border: 1px solid var(--border); border-radius: 14px;
+      padding: 16px; box-shadow: var(--shadow); text-align: center;
     }
-    .timing-chip.en-cours {
-      color: #ea580c; background: #fff7ed; border-color: #fed7aa;
-      animation: urgencePulse 2s ease-in-out infinite;
+    .kpi-val  { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; }
+    .kpi-lbl  { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+    .kpi-card.blue  { border-top: 3px solid var(--blue);   } .kpi-card.blue  .kpi-val { color: var(--blue); }
+    .kpi-card.green { border-top: 3px solid var(--green);  } .kpi-card.green .kpi-val { color: var(--green); }
+    .kpi-card.orange{ border-top: 3px solid var(--orange); } .kpi-card.orange .kpi-val { color: var(--orange); }
+    .kpi-card.red   { border-top: 3px solid var(--red);    } .kpi-card.red   .kpi-val { color: var(--red); }
+    .kpi-card.full  { grid-column: 1 / -1; }
+
+    /* Cartes info horizontales */
+    .info-card {
+      background: white; border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px 16px; box-shadow: var(--shadow); margin-bottom: 8px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
-    .timing-chip.termine { color: var(--green); background: var(--green-light); border-color: var(--green-border); }
-    .timing-chip.long    { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
-    .resume-timing {
-      margin-top: 12px; padding: 12px 14px;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 12px; display: flex; gap: 16px; flex-wrap: wrap;
+    .info-card-left  { font-size: 12px; color: var(--text-sub); font-weight: 500; }
+    .info-card-right { font-size: 15px; font-weight: 800; color: var(--text); text-align: right; }
+
+    /* Barre de progression */
+    .bar-row { margin-bottom: 10px; }
+    .bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; font-weight: 600; color: var(--text-sub); }
+    .bar-track { height: 8px; background: var(--bg2); border-radius: 99px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+    .bar-fill.blue   { background: var(--blue); }
+    .bar-fill.green  { background: var(--green); }
+    .bar-fill.orange { background: var(--orange); }
+    .bar-fill.red    { background: var(--red); }
+
+    /* Estimation temps attente */
+    .wait-estimate {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid var(--blue-border); border-radius: 14px;
+      padding: 14px 16px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 12px;
     }
-    .resume-stat { text-align: center; }
-    .resume-val  { font-size: 20px; font-weight: 800; color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1; }
-    .resume-lbl  { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+    .wait-estimate-icon { font-size: 26px; flex-shrink: 0; }
+    .wait-estimate-body { flex: 1; }
+    .wait-estimate-title { font-size: 12px; font-weight: 700; color: var(--blue-text); margin-bottom: 2px; }
+    .wait-estimate-val   { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+
+    /* Tableau cabinets admin */
+    .cab-stats-table { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+    .cab-stats-row {
+      display: grid; grid-template-columns: 1fr 60px 60px 60px 80px;
+      padding: 10px 14px; align-items: center; gap: 8px;
+      border-bottom: 1px solid var(--bg2); font-size: 12px;
+    }
+    .cab-stats-row:last-child { border-bottom: none; }
+    .cab-stats-row.header { background: var(--bg); font-weight: 700; color: var(--text-sub); font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .cab-stats-row .rank { font-weight: 800; color: var(--text-muted); font-size: 13px; }
+    .cab-stats-row .cab-nom { font-weight: 600; color: var(--text); }
+    .cab-stats-row .cab-spec-small { font-size: 10px; color: var(--text-muted); }
+    .cab-stats-row .num { text-align: center; font-weight: 700; color: var(--text); }
+    .activity-pill {
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-align: center;
+    }
+    .activity-pill.high   { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+    .activity-pill.medium { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange-border); }
+    .activity-pill.low    { background: var(--red-light);    color: var(--red);    border: 1px solid var(--red-border); }
+
+    /* Loader stats */
+    .stats-loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
+    .stats-empty   { text-align: center; padding: 28px; color: var(--text-muted); font-size: 13px; }
   </style>
 </head>
 <body>
@@ -509,6 +544,7 @@
     <button class="tab-btn active" onclick="showTab('file',this)">📋 File d'attente</button>
     <button class="tab-btn" onclick="showTab('cabinet',this)">🏥 Mon Cabinet</button>
     <button class="tab-btn" onclick="showTab('securite',this)">🔐 Sécurité</button>
+    <button class="tab-btn" onclick="showTab('stats',this)">📊 Statistiques</button>
   </div>
 
   <!-- TAB FILE -->
@@ -540,7 +576,6 @@
           <span>#</span><span>Patient</span><span>Statut</span>
         </div>
         <div id="listBody"></div>
-        <div id="resumeTiming"></div>
       </div>
     </div>
   </div>
@@ -676,21 +711,21 @@
     </div>
   </div>
 
+  <!-- TAB STATS -->
+  <div id="tab-stats" class="stats-tab"></div>
+
 </div>
 
 <script>
-  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   let refreshInterval;
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
   const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };
-  const H = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
-  const HJ = { ...H, 'Content-Type': 'application/json' };
+  const H = SB_H` };
 
   /* ── LOGIN ── */
   async function login() {
     const pwd = document.getElementById('pwdInput').value;
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin&cabinet_id=eq.${cabinetId}`, { headers: H });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin&cabinet_id=eq.${cabinetId}`, { headers: SB_H });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
       localStorage.setItem(`rendz_medecin_${cabinetId}`, 'true');
@@ -715,9 +750,164 @@
 
   if (localStorage.getItem(`rendz_medecin_${cabinetId}`)) showDashboard();
 
+
+  // ── STATISTIQUES MÉDECIN ────────────────────────────────────────────────
+  async function loadStats() {
+    const tabEl = document.getElementById('tab-stats');
+    tabEl.innerHTML = '<div class="stats-loading">⏳ Chargement des statistiques…</div>';
+
+    const today  = new Date().toISOString().split('T')[0];
+    const monday = getMondayISO();
+    const m1ago  = getMonthAgoISO();
+    const m30ago = get30DaysAgoISO();
+
+    // Récupérer tout en parallèle
+    const [todayRes, weekRes, monthRes, month30Res, paramsRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=statut,heure_appel,heure_fin,position,created_at`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=gte.${monday}&date_inscription=lte.${today}&select=statut,date_inscription`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=gte.${m1ago}&date_inscription=lte.${today}&select=statut,date_inscription`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=gte.${m30ago}&date_inscription=lte.${today}&select=statut,date_inscription,heure_appel,created_at`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H })
+    ]);
+
+    const todayList = await todayRes.json();
+    const weekList  = await weekRes.json();
+    const monthList = await monthRes.json();
+    const m30List   = await month30Res.json();
+    const params    = (await paramsRes.json())[0] || {};
+
+    // ── KPI journaliers ──────────────────────────────────────────────────
+    const vusAujourd = todayList.filter(p => p.statut === 'termine').length;
+    const absentsAuj = todayList.filter(p => p.statut === 'absent').length;
+    const enAttente  = todayList.filter(p => ['en_attente','present'].includes(p.statut)).length;
+    const enCours    = todayList.find(p => p.statut === 'en_cours');
+
+    // ── Durée moyenne ────────────────────────────────────────────────────
+    const terminesAvecDuree = todayList.filter(p => p.statut === 'termine' && p.heure_appel && p.heure_fin);
+    let dureeAvg = null;
+    if (terminesAvecDuree.length > 0) {
+      const total = terminesAvecDuree.reduce((acc, p) => {
+        return acc + Math.round((new Date(p.heure_fin) - new Date(p.heure_appel)) / 60000);
+      }, 0);
+      dureeAvg = Math.round(total / terminesAvecDuree.length);
+    }
+
+    // ── Estimation temps d'attente ───────────────────────────────────────
+    let waitLines = [];
+    if (dureeAvg !== null && enAttente > 0) {
+      // Si consultation en cours, on soustrait le temps déjà écoulé
+      let tempsRestantCours = dureeAvg;
+      if (enCours && enCours.heure_appel) {
+        const ecoule = Math.round((new Date() - new Date(enCours.heure_appel)) / 60000);
+        tempsRestantCours = Math.max(0, dureeAvg - ecoule);
+      }
+      const attenteTotale = tempsRestantCours + (enAttente - (enCours ? 0 : 0)) * dureeAvg;
+      // Estimation par patient dans la file
+      const patsList = todayList
+        .filter(p => ['en_attente','present'].includes(p.statut))
+        .sort((a,b) => a.position - b.position);
+      waitLines = patsList.slice(0, 3).map((p, i) => {
+        const mins = tempsRestantCours + i * dureeAvg;
+        return `N°${p.position} ${p.nom} ${p.prenom} : ~${formatDuree(mins)}`;
+      });
+      if (patsList.length > 3) waitLines.push(`+ ${patsList.length - 3} patient(s)…`);
+    }
+
+    // ── Heure de pointe (30j) ────────────────────────────────────────────
+    const heureCount = {};
+    m30List.forEach(p => {
+      if (!p.created_at) return;
+      const h = new Date(p.created_at).getHours();
+      heureCount[h] = (heureCount[h] || 0) + 1;
+    });
+    let heurePointe = null;
+    let heureMax = 0;
+    Object.entries(heureCount).forEach(([h, c]) => { if (c > heureMax) { heureMax = c; heurePointe = h; } });
+
+    // ── Jours par semaine (30j) ──────────────────────────────────────────
+    const joursNoms = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const jourCount = {1:0,2:0,3:0,4:0,5:0,6:0,0:0};
+    m30List.forEach(p => {
+      const j = new Date(p.date_inscription).getDay();
+      jourCount[j] = (jourCount[j] || 0) + 1;
+    });
+    const jourMax = Math.max(...Object.values(jourCount), 1);
+    const joursActifs = [1,2,3,4,5,6,0].filter(j => jourCount[j] > 0);
+
+    // ── Semaine / Mois ───────────────────────────────────────────────────
+    const vusSemaine = weekList.filter(p => p.statut === 'termine').length;
+    const vusMois    = monthList.filter(p => p.statut === 'termine').length;
+
+    // ── RENDU ────────────────────────────────────────────────────────────
+    tabEl.innerHTML = `
+      <div class="stats-section-title">📅 Aujourd'hui</div>
+      <div class="kpi-grid">
+        <div class="kpi-card blue"><div class="kpi-val">${vusAujourd}</div><div class="kpi-lbl">Patients vus</div></div>
+        <div class="kpi-card green"><div class="kpi-val">${enAttente}</div><div class="kpi-lbl">En attente</div></div>
+        <div class="kpi-card orange"><div class="kpi-val">${absentsAuj}</div><div class="kpi-lbl">Absents</div></div>
+        <div class="kpi-card ${dureeAvg !== null ? 'blue' : ''}">
+          <div class="kpi-val">${dureeAvg !== null ? formatDuree(dureeAvg) : '—'}</div>
+          <div class="kpi-lbl">Durée moy. consultation</div>
+        </div>
+      </div>
+
+      ${waitLines.length > 0 ? `
+      <div class="stats-section-title">⏱ Estimation des temps d'attente</div>
+      <div class="wait-estimate">
+        <div class="wait-estimate-icon">🕐</div>
+        <div class="wait-estimate-body">
+          <div class="wait-estimate-title">Basé sur ${dureeAvg} min/consultation en moyenne</div>
+          <div class="wait-estimate-val">${waitLines.join('<br>')}</div>
+        </div>
+      </div>` : enAttente === 0 ? `
+      <div class="stats-empty">✅ Plus personne en attente pour l'instant.</div>` : `
+      <div class="stats-empty">⚠️ Pas encore assez de données pour estimer les temps d'attente aujourd'hui.</div>`}
+
+      <div class="stats-section-title">📊 Volume de patients</div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><div class="kpi-val">${vusSemaine}</div><div class="kpi-lbl">Cette semaine</div></div>
+        <div class="kpi-card"><div class="kpi-val">${vusMois}</div><div class="kpi-lbl">Ce mois</div></div>
+      </div>
+
+      ${heurePointe !== null ? `
+      <div class="stats-section-title">🔥 Heure de pointe (30 derniers jours)</div>
+      <div class="info-card">
+        <div class="info-card-left">Créneau le plus chargé</div>
+        <div class="info-card-right">${heurePointe}h00 – ${parseInt(heurePointe)+1}h00</div>
+      </div>` : ''}
+
+      ${joursActifs.length > 0 ? `
+      <div class="stats-section-title">📅 Répartition par jour (30 jours)</div>
+      ${joursActifs.map(j => `
+        <div class="bar-row">
+          <div class="bar-label"><span>${joursNoms[j]}</span><span>${jourCount[j]} patients</span></div>
+          <div class="bar-track"><div class="bar-fill blue" style="width:${Math.round(jourCount[j]/jourMax*100)}%"></div></div>
+        </div>`).join('')}` : ''}
+    `;
+  }
+
+  // ── HELPERS DATE ─────────────────────────────────────────────────────────
+  function getMondayISO() {
+    const d = new Date();
+    const day = d.getDay();
+    const diff = (day === 0 ? -6 : 1 - day);
+    d.setDate(d.getDate() + diff);
+    return d.toISOString().split('T')[0];
+  }
+  function getMonthAgoISO() {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 1);
+    return d.toISOString().split('T')[0];
+  }
+  function get30DaysAgoISO() {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split('T')[0];
+  }
+
   /* ── TABS ── */
   function showTab(name, btn) {
-    ['file','cabinet','securite'].forEach(t => {
+    ['file','cabinet','securite','stats'].forEach(t => {
       const el = document.getElementById('tab-' + t);
       if (el) el.style.display = 'none';
       if (t === 'file') {
@@ -736,17 +926,19 @@
     secEl.style.display  = 'none';
     if (name === 'cabinet') { cabEl.style.display = 'block'; }
     if (name === 'securite') { secEl.style.display = 'block'; }
+    if (name === 'stats') { document.getElementById('tab-stats').style.display = 'block'; loadStats(); }
   }
   // init
   document.getElementById('tab-cabinet').style.display = 'none';
   document.getElementById('tab-securite').style.display = 'none';
+  document.getElementById('tab-stats').style.display = 'none';
 
   /* ── DATA ── */
   async function loadData() {
     const today = new Date().toISOString().split('T')[0];
     const [listRes, paramRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: H }),
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: H })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H })
     ]);
     const list = await listRes.json();
     const params = (await paramRes.json())[0] || {};
@@ -781,7 +973,7 @@
     const suivant = list.find(p => p.statut === 'present');
     const heroBar = document.getElementById('heroBar');
     if (enCours) {
-      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours${enCours.heure_appel ? ' · ' + formatDuree(dureeMinutes(enCours.heure_appel, null)) : ''}</div><div class="hero-number">${enCours.position}</div><div class="hero-name">${enCours.nom} ${enCours.prenom}${enCours.urgence ? ' <span class="urgence-badge">🚨 Urgent</span>' : ''}</div></div><div class="hero-actions">${suivant?`<button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Suivant — N°${suivant.position}</button>`:''}<button class="hero-btn btn-fin" onclick="finConsultation(${enCours.id})">✅ Fin</button></div></div>`;
+      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours</div><div class="hero-number">${enCours.position}</div><div class="hero-name">${enCours.nom} ${enCours.prenom}</div></div><div class="hero-actions">${suivant?`<button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Suivant — N°${suivant.position}</button>`:''}<button class="hero-btn btn-fin" onclick="finConsultation(${enCours.id})">✅ Fin</button></div></div>`;
     } else if (suivant) {
       heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">⏳ Prochain patient</div><div class="hero-number">${suivant.position}</div><div class="hero-name">${suivant.nom} ${suivant.prenom}</div></div><div class="hero-actions"><button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Commencer</button></div></div>`;
     } else {
@@ -792,28 +984,25 @@
     const body = document.getElementById('listBody');
     if (list.length === 0) { body.innerHTML = `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit aujourd'hui.</p></div>`; return; }
     body.innerHTML = list.map(p => {
-      const st    = p.statut || 'en_attente';
-      const bc    = ['present','en_cours','absent','termine'].includes(st) ? st : '';
-      const isUrg = !!p.urgence;
-      return `<div class="list-item ${st} ${isUrg ? 'urgence' : ''}">
+      const st = p.statut || 'en_attente';
+      const bc = ['present','en_cours','absent','termine'].includes(st) ? st : '';
+      return `<div class="list-item ${st}">
         <div><div class="num-badge ${bc}">${p.position}</div></div>
         <div class="name-col">${p.nom} ${p.prenom}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
         <div><span class="status-badge ${st}">${SL[st] || st}</span></div>
       </div>`;
     }).join('');
-    const rt = document.getElementById('resumeTiming');
-    if (rt) rt.innerHTML = resumeTiming(fullList || list);
   }
 
   async function appelSuivant(id, position) {
-    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: H });
+    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H });
     const params = await paramRes.json();
     const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
     const updates = [
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'en_cours', heure_appel: new Date().toISOString() }) })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'en_cours' }) })
     ];
     if (position > numeroActuel) {
-      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: position }) }));
+      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: position }) }));
     }
     await Promise.all(updates);
     loadData();
@@ -822,13 +1011,13 @@
   async function finConsultation(id) {
     showModal('✅', 'Fin de consultation ?', 'Le patient sera marqué comme terminé.', 'success',
       async () => {
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'termine', heure_fin: new Date().toISOString() }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'termine' }) });
         const today = new Date().toISOString().split('T')[0];
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: H });
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: SB_H });
         const tous = await res.json();
         const restants = tous.filter(p => p.statut !== 'termine' && p.statut !== 'absent' && p.id !== id);
         if (restants.length === 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
+          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
         }
         loadData();
       }
@@ -837,7 +1026,7 @@
 
   async function toggleOuvert() {
     const ouvert = document.getElementById('ouvertToggle').checked;
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ ouvert }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ ouvert }) });
     const badge = document.getElementById('ouvertBadge');
     badge.textContent = ouvert ? '✓ Ouvert' : '✗ Fermé';
     badge.className = `ouvert-badge ${ouvert ? 'open' : 'closed'}`;
@@ -855,7 +1044,7 @@
       horaires_ar:          document.getElementById('sHorairesAr').value.trim(),
       message_patients_ar:  document.getElementById('sMessageAr').value.trim()
     };
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify(body) });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify(body) });
     const ok = document.getElementById('saveOk');
     ok.style.display = 'inline';
     setTimeout(() => ok.style.display = 'none', 2500);
@@ -870,7 +1059,7 @@
     const errEl   = document.getElementById(`pwd${suffix}Err`);
     okEl.style.display = 'none'; errEl.style.display = 'none';
     if (!newPwd || newPwd !== confirm) { errEl.style.display = 'inline'; return; }
-    await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}&cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ mot_de_passe: newPwd }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}&cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ mot_de_passe: newPwd }) });
     document.getElementById(`newPwd${suffix}`).value = '';
     document.getElementById(`confirmPwd${suffix}`).value = '';
     okEl.style.display = 'inline';
@@ -882,8 +1071,8 @@
     showModal('🗑', 'Remettre à zéro ?', 'Tous les patients seront supprimés et le compteur remis à 0. Action irréversible.', 'danger',
       async () => {
         const today = new Date().toISOString().split('T')[0];
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}`, { method: 'DELETE', headers: H });
-        await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}`, { method: 'DELETE', headers: SB_H });
+        await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
         loadData();
       }
     );
@@ -933,59 +1122,7 @@
   document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
   document.getElementById('qrModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('qrModalOverlay')) closeQR(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
-
-  // ── HORODATAGE : utilitaires ─────────────────────────────────────────────
-  function formatHeure(isoStr) {
-    if (!isoStr) return null;
-    const d = new Date(isoStr);
-    return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  function dureeMinutes(debut, fin) {
-    if (!debut) return null;
-    const end = fin ? new Date(fin) : new Date();
-    const diff = Math.round((end - new Date(debut)) / 60000);
-    return diff;
-  }
-
-  function formatDuree(minutes) {
-    if (minutes === null || minutes === undefined) return null;
-    if (minutes < 1) return '< 1 min';
-    if (minutes < 60) return `${minutes} min`;
-    return `${Math.floor(minutes/60)}h${String(minutes%60).padStart(2,'0')}`;
-  }
-
-  function timingChip(p) {
-    if (p.statut === 'en_cours' && p.heure_appel) {
-      const duree = dureeMinutes(p.heure_appel, null);
-      const cls   = duree > 20 ? 'long' : 'en-cours';
-      return `<div class="timing-chip ${cls}">⏱ ${formatDuree(duree)}</div>`;
-    }
-    if (p.statut === 'termine' && p.heure_appel && p.heure_fin) {
-      const duree = dureeMinutes(p.heure_appel, p.heure_fin);
-      const cls   = duree > 20 ? 'long' : 'termine';
-      return `<div class="timing-chip ${cls}">✓ ${formatDuree(duree)}</div>`;
-    }
-    if (p.heure_appel && p.statut !== 'termine') {
-      return `<div class="timing-chip en-cours">Appelé à ${formatHeure(p.heure_appel)}</div>`;
-    }
-    return '';
-  }
-
-  function resumeTiming(list) {
-    const termines = list.filter(p => p.statut === 'termine' && p.heure_appel && p.heure_fin);
-    if (termines.length === 0) return '';
-    const durees  = termines.map(p => dureeMinutes(p.heure_appel, p.heure_fin));
-    const moyenne = Math.round(durees.reduce((a,b) => a+b, 0) / durees.length);
-    const max     = Math.max(...durees);
-    const min     = Math.min(...durees);
-    return `<div class="resume-timing">
-      <div class="resume-stat"><div class="resume-val">${formatDuree(moyenne)}</div><div class="resume-lbl">Durée moyenne</div></div>
-      <div class="resume-stat"><div class="resume-val">${formatDuree(min)}</div><div class="resume-lbl">Plus courte</div></div>
-      <div class="resume-stat"><div class="resume-val">${formatDuree(max)}</div><div class="resume-lbl">Plus longue</div></div>
-      <div class="resume-stat"><div class="resume-val">${termines.length}</div><div class="resume-lbl">Terminées</div></div>
-    </div>`;
-  }
 </script>
+<div id="toast-container"></div>
 </body>
 </html>
