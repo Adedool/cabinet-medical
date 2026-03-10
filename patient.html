@@ -4,12 +4,47 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Inscription</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="rendz-common.css"/>
-  <script src="rendz-common.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
+    :root {
+      --bg:         #f7f3ee;
+      --bg2:        #f0ebe3;
+      --cream:      #ede8e0;
+      --blue:       #2563eb;
+      --blue-mid:   #3b82f6;
+      --blue-dim:   rgba(37,99,235,0.08);
+      --blue-border:rgba(37,99,235,0.18);
+      --blue-text:  #1d4ed8;
+      --white:      #ffffff;
+      --text:       #1c1917;
+      --text-sub:   #78716c;
+      --text-muted: #a8a29e;
+      --border:     rgba(0,0,0,0.07);
+      --shadow:     0 2px 12px rgba(0,0,0,0.06);
+      --shadow-lg:  0 8px 28px rgba(0,0,0,0.10);
+      --green:      #16a34a;
+      --green-dim:  rgba(22,163,74,0.08);
+      --orange:     #ea580c;
+      --orange-dim: rgba(234,88,12,0.08);
+      --red:        #dc2626;
+      --red-dim:    rgba(220,38,38,0.07);
+      --font-ar:    'Cairo', sans-serif;
+    }
 
-    html[lang=ar]
+    html[lang=ar] body { font-family: var(--font-ar); }
+    html[lang=ar] .form-input { font-family: var(--font-ar); font-size: 15px; text-align: right; }
+    html[lang=ar] .submit-btn { font-family: var(--font-ar); font-size: 16px; }
+    html[lang=ar] .topbar-right { flex-direction: row-reverse; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding-bottom: 48px;
+    }
 
     body::before {
       content: '';
@@ -17,9 +52,36 @@
       background:
         radial-gradient(ellipse 80% 35% at 50% -5%, rgba(37,99,235,0.07) 0%, transparent 60%),
         radial-gradient(ellipse 40% 30% at 90% 95%, rgba(37,99,235,0.04) 0%, transparent 50%);
-    }to{opacity:1;transform:translateY(0);} }to{opacity:1;} }50%{opacity:0.35;} }100%{background-position:-200% 0} }70%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;} }50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+    }
+
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeIn   { from{opacity:0;}to{opacity:1;} }
+    @keyframes pulse    { 0%,100%{opacity:1;}50%{opacity:0.35;} }
+    @keyframes shimmer  { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+    @keyframes popIn    { 0%{transform:scale(0.75);opacity:0;}70%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;} }
+    @keyframes glow     { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
 
     /* ── TOPBAR ── */
+    .topbar {
+      width: 100%; position: relative; z-index: 10;
+      background: rgba(247,243,238,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 8px; }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      animation: glow 3s ease-in-out infinite;
+    }
+    .logo-text { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .logo-text span { color: var(--blue); }
+
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
     .staff-icons { display: flex; gap: 4px; }
     .staff-icon {
       width: 30px; height: 30px; border-radius: 8px;
@@ -240,6 +302,11 @@
       cursor: pointer; transition: all 0.15s;
     }
     .reset-btn:hover { border-color: var(--blue-border); color: var(--blue); }
+
+    .footer { margin-top: 28px; color: var(--text-muted); font-size: 11px; position: relative; z-index: 1; }
+    .footer span { color: var(--blue); font-weight: 600; }
+
+    .skeleton { background: linear-gradient(90deg, var(--cream) 25%, var(--bg2) 50%, var(--cream) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
   </style>
 </head>
 <body>
@@ -376,6 +443,8 @@
 <div class="footer">© 2026 <span>Rendz</span></div>
 
 <script>
+  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
   const base = window.location.href.replace(/patient\.html.*/, '');
   document.getElementById('staffAss').href = `${base}assistante.html?id=${cabinetId}`;
@@ -427,6 +496,28 @@
   };
 
   let lang = 'fr', parametres = {}, myPosition = null;
+  const LS_CAB = `rendz_cab_info_${cabinetId}`;
+
+  // Charger immédiatement depuis le cache (nom, spec, message, horaires)
+  (function applyCachedCabinet() {
+    try {
+      const cached = localStorage.getItem(LS_CAB);
+      if (!cached) return;
+      const p = JSON.parse(cached);
+      parametres = { ...parametres, ...p };
+      const nom  = lang === 'ar' ? (p.nom_cabinet_ar  || p.nom_cabinet  || '') : (p.nom_cabinet  || '');
+      const spec = lang === 'ar' ? (p.specialite_ar   || p.specialite   || '') : (p.specialite   || '');
+      const msg  = lang === 'ar' ? (p.message_patients_ar || p.message_patients || '') : (p.message_patients || '');
+      if (nom) {
+        document.getElementById('cabinetNom').textContent  = nom;
+        document.getElementById('cabinetSpec').textContent = spec;
+        document.getElementById('cabinetStrip').style.display = 'flex';
+        document.title = `Rendz — ${nom}`;
+      }
+      const msgEl = document.getElementById('messagePatients');
+      if (msg) { msgEl.textContent = '📢 ' + msg; msgEl.style.display = 'block'; }
+    } catch(e) {}
+  })();
 
   function setLang(l, btn) {
     lang = l;
@@ -479,8 +570,8 @@
   async function fetchLive() {
     const today = new Date().toISOString().split('T')[0];
     const [paramRes, countRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H }),
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { ...SB_H, 'Prefer': 'count=exact' } })
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } })
     ]);
     const params = await paramRes.json();
     if (params.length > 0) parametres = params[0];
@@ -504,6 +595,22 @@
     const msgEl = document.getElementById('messagePatients');
     if (msg) { msgEl.textContent = '📢 ' + msg; msgEl.style.display = 'block'; } else { msgEl.style.display = 'none'; }
     if (myPosition !== null) updateSuivi(numEnCours);
+
+    // Sauvegarder les infos statiques du cabinet (nom, spec, message) en cache
+    if (parametres.nom_cabinet) {
+      try {
+        localStorage.setItem(LS_CAB, JSON.stringify({
+          nom_cabinet:          parametres.nom_cabinet,
+          nom_cabinet_ar:       parametres.nom_cabinet_ar,
+          specialite:           parametres.specialite,
+          specialite_ar:        parametres.specialite_ar,
+          message_patients:     parametres.message_patients,
+          message_patients_ar:  parametres.message_patients_ar,
+          horaires:             parametres.horaires,
+          horaires_ar:          parametres.horaires_ar,
+        }));
+      } catch(e) {}
+    }
   }
 
   function updateSuivi(numEnCours) {
@@ -543,7 +650,7 @@
     document.getElementById('submitText').textContent = '...';
     const today = new Date().toISOString().split('T')[0];
     const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, {
-      headers: { ...SB_H, 'Prefer': 'count=exact' }
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
     });
     const countHeader = countRes.headers.get('content-range');
     const currentCount = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
@@ -556,7 +663,7 @@
     const position = currentCount + 1;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
       method: 'POST',
-      headers: { ...SB_HJ, 'Prefer': 'return=representation' },
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
       body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today, cabinet_id: cabinetId })
     });
     if (res.ok) {
@@ -583,8 +690,7 @@
   }
 
   fetchLive();
-  setInterval(fetchLive, 20000);
+  setInterval(fetchLive, 12000);
 </script>
-<div id="toast-container"></div>
 </body>
 </html>

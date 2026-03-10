@@ -336,6 +336,7 @@
   function showDashboard() {
     document.getElementById('loginWrap').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
+    applyCachedCabinets();
     loadAll();
   }
 
@@ -482,6 +483,21 @@
 
   if (localStorage.getItem('rendz_admin')) showDashboard();
 
+  const LS_ADMIN = 'rendz_admin_cabinets';
+
+  // Afficher la liste immédiatement depuis le cache si disponible
+  function applyCachedCabinets() {
+    try {
+      const cached = localStorage.getItem(LS_ADMIN);
+      if (!cached) return false;
+      const { cabinets } = JSON.parse(cached);
+      if (!cabinets || cabinets.length === 0) return false;
+      renderCabinetList(cabinets, {});   // compteurs à 0 — mis à jour par loadAll
+      document.getElementById('totalCabinets').textContent = cabinets.length;
+      return true;
+    } catch(e) { return false; }
+  }
+
   async function loadAll() {
     const today = new Date().toISOString().split('T')[0];
     const [paramRes, inscRes] = await Promise.all([
@@ -496,11 +512,22 @@
     document.getElementById('totalOuverts').textContent = cabinets.filter(c => c.ouvert).length;
     document.getElementById('totalPatients').textContent = inscriptions.length;
 
+    // Sauvegarder structure cabinets en cache (sans les compteurs patients)
+    try {
+      localStorage.setItem(LS_ADMIN, JSON.stringify({ cabinets }));
+    } catch(e) {}
+
     const list = document.getElementById('cabinetsList');
     if (cabinets.length === 0) {
       list.innerHTML = '<div class="empty-state">Aucun cabinet enregistré.<br>Cliquez sur "Nouveau cabinet" pour commencer.</div>';
       return;
     }
+    renderCabinetList(cabinets, countByCabinet);
+  }
+
+  function renderCabinetList(cabinets, countByCabinet) {
+    const list = document.getElementById('cabinetsList');
+    if (!list) return;
     list.innerHTML = cabinets.map(c => {
       const count = countByCabinet[c.cabinet_id] || 0;
       const isOpen = c.ouvert;
@@ -597,7 +624,7 @@
   document.getElementById('modalNew').addEventListener('click', function(e) { if (e.target === this) closeNew(); });
   document.getElementById('modalConfirm').addEventListener('click', function(e) { if (e.target === this) closeConfirm(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
-  setInterval(loadAll, 30000);
+  setInterval(loadAll, 20000);
 </script>
 <div id="toast-container"></div>
 </body>
