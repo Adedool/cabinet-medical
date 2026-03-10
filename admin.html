@@ -4,101 +4,17 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg:          #f7f3ee;
-      --bg2:         #f0ebe3;
-      --cream:       #ede8e0;
-      --blue:        #2563eb;
-      --blue-dim:    rgba(37,99,235,0.08);
-      --blue-border: rgba(37,99,235,0.18);
-      --blue-text:   #1d4ed8;
-      --white:       #ffffff;
-      --text:        #1c1917;
-      --text-sub:    #78716c;
-      --text-muted:  #a8a29e;
-      --border:      rgba(0,0,0,0.07);
-      --shadow:      0 2px 12px rgba(0,0,0,0.06);
-      --shadow-lg:   0 8px 28px rgba(0,0,0,0.10);
-      --green:       #16a34a;
-      --green-light: #f0fdf4;
-      --green-border:#bbf7d0;
-      --red:         #dc2626;
-      --red-light:   #fef2f2;
-      --red-border:  #fecaca;
-      --orange:      #ea580c;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); min-height: 100vh; }
-
-    @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
-    @keyframes glow   { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="rendz-common.css"/>
+  <script src="rendz-common.js" defer></script>
+  <style>to{opacity:1;transform:translateY(0);} }50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
 
     /* ── LOGIN ── */
-    .login-wrap {
-      min-height: 100vh; display: flex; align-items: center;
-      justify-content: center; padding: 20px; background: var(--bg);
-    }
-    .login-card {
-      background: white; border-radius: 22px; padding: 40px 36px;
-      width: 100%; max-width: 380px;
-      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-      text-align: center; animation: fadeUp 0.5s ease both;
-    }
-    .login-logo-wrap { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .login-logo-icon {
-      width: 34px; height: 34px;
-      background: linear-gradient(140deg, #2563eb, #1d4ed8);
-      border-radius: 10px; display: flex; align-items: center; justify-content: center;
-      animation: glow 3s ease-in-out infinite;
-    }
-    .login-logo-text { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
     .login-logo-text span { color: var(--blue); }
-    .login-role-icon { font-size: 36px; margin: 16px 0 8px; }
-    .login-role { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; font-weight: 500; }
-    .login-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; text-align: left; }
-    .login-input {
-      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
-      border-radius: 11px; font-family: 'Outfit', sans-serif; font-size: 15px;
-      color: var(--text); background: var(--bg); margin-bottom: 12px; outline: none;
-    }
-    .login-input:focus { border-color: var(--blue); background: white; }
-    .login-btn {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: white; border: none; border-radius: 11px;
-      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
-      cursor: pointer; box-shadow: 0 4px 16px rgba(29,78,216,0.3); transition: all 0.15s;
-    }
-    .login-btn:hover { transform: translateY(-1px); }
-    .login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; font-weight: 500; }
 
     /* ── DASHBOARD ── */
     .dashboard { display: none; }
-
-    .topbar {
-      background: white; border-bottom: 1px solid var(--border);
-      padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 10;
-      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
-    }
-    .topbar-logo-wrap { display: flex; align-items: center; gap: 7px; }
-    .topbar-logo-icon {
-      width: 28px; height: 28px; background: linear-gradient(140deg, #2563eb, #1d4ed8);
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    }
-    .topbar-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-    .topbar-logo-text span { color: var(--blue); }
-    .topbar-right { display: flex; align-items: center; gap: 12px; }
     .admin-badge { background: var(--blue-dim); color: var(--blue-text); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--blue-border); }
-    .logout-btn {
-      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
-      background: white; color: var(--text-sub);
-      font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
     /* MAIN */
     .main { max-width: 1100px; margin: 0 auto; padding: 24px; }
@@ -168,17 +84,6 @@
     .empty-state { text-align: center; padding: 48px; color: var(--text-muted); font-size: 14px; }
 
     /* MODALS */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(28,25,23,0.45); z-index: 100;
-      align-items: center; justify-content: center; padding: 24px;
-    }
-    .modal-overlay.show { display: flex; }
-    .modal-box {
-      background: white; border-radius: 20px; padding: 30px 26px;
-      width: 100%; max-width: 460px; box-shadow: var(--shadow-lg);
-    }
-    .modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 18px; }
     .field-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
     .field-input {
       width: 100%; padding: 10px 13px; border: 1.5px solid var(--border);
@@ -186,23 +91,6 @@
       color: var(--text); background: var(--bg); outline: none; margin-bottom: 12px;
     }
     .field-input:focus { border-color: var(--blue); background: white; }
-    .modal-footer { display: flex; gap: 10px; margin-top: 6px; }
-    .modal-confirm-btn {
-      flex: 1; padding: 12px; background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: white; border: none; border-radius: 10px;
-      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
-      box-shadow: 0 3px 12px rgba(29,78,216,0.3); transition: all 0.15s;
-    }
-    .modal-confirm-btn:hover { transform: translateY(-1px); }
-    .modal-confirm-btn.red { background: var(--red); box-shadow: 0 3px 12px rgba(220,38,38,0.3); }
-    .modal-confirm-btn.red:hover { background: #b91c1c; }
-    .modal-cancel-btn {
-      flex: 1; padding: 12px; background: var(--bg); color: var(--text-sub);
-      border: 1px solid var(--border); border-radius: 10px;
-      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
-    }
-    .modal-cancel-btn:hover { background: var(--cream); }
-    .modal-err { display: none; color: var(--red); font-size: 12px; margin-top: 6px; font-weight: 600; }
 
     .link-box {
       background: var(--blue-dim); border-radius: 10px; padding: 12px 14px;
@@ -217,49 +105,6 @@
       .main { padding-top: 16px; }
       .cabinet-card { flex-wrap: wrap; }
     }
-  
-    /* ── TOAST SYSTEM ────────────────────────────────────────────────────── */
-    #toast-container {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      z-index: 9999; display: flex; flex-direction: column-reverse; align-items: center;
-      gap: 8px; pointer-events: none; width: 100%; max-width: 380px; padding: 0 16px;
-    }
-    .toast {
-      display: flex; align-items: center; gap: 10px;
-      background: #1c1917; color: #fff;
-      border-radius: 14px; padding: 12px 16px;
-      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
-      pointer-events: all; cursor: default; width: 100%;
-      border: 1px solid rgba(255,255,255,0.08);
-      position: relative; overflow: hidden;
-      animation: toastIn 0.32s cubic-bezier(0.34,1.4,0.64,1) both;
-    }
-    .toast.hide { animation: toastOut 0.22s ease forwards; }
-    .toast-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
-    .toast-msg  { flex: 1; line-height: 1.4; }
-    .toast-close {
-      background: none; border: none; color: rgba(255,255,255,0.4);
-      font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
-      flex-shrink: 0; transition: color 0.15s;
-    }
-    .toast-close:hover { color: rgba(255,255,255,0.85); }
-    .toast-bar {
-      position: absolute; bottom: 0; left: 0; height: 3px;
-      border-radius: 0 0 14px 14px;
-      animation: toastBar var(--dur, 3s) linear forwards;
-    }
-    .toast.success { background: #14532d; border-color: rgba(34,197,94,0.25); }
-    .toast.success .toast-bar { background: #22c55e; }
-    .toast.error   { background: #450a0a; border-color: rgba(239,68,68,0.25); }
-    .toast.error   .toast-bar { background: #ef4444; }
-    .toast.warning { background: #431407; border-color: rgba(249,115,22,0.25); }
-    .toast.warning .toast-bar { background: #f97316; }
-    .toast.info    { background: #1e3a5f; border-color: rgba(59,130,246,0.25); }
-    .toast.info    .toast-bar { background: #3b82f6; }
-    @keyframes toastIn  { from{opacity:0;transform:translateY(16px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);} }
-    @keyframes toastOut { from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(10px) scale(0.96);} }
-    @keyframes toastBar { from{width:100%;}to{width:0%;} }
   </style>
 </head>
 <body>
@@ -351,13 +196,8 @@
 </div>
 
 <script>
-  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   const ADMIN_PWD = 'rendz-admin-2025';
-  const BASE_URL = window.location.origin + window.location.pathname.replace('admin.html', '');
-  let pendingAction = null;
-
-  function login() {
+  const BASE_URL = window.location.origin + window.location.pathname.replace('admin.html', '');  function login() {
     const pwd = document.getElementById('pwdInput').value;
     if (pwd === ADMIN_PWD) {
       localStorage.setItem('rendz_admin', 'true');
@@ -385,8 +225,8 @@
   async function loadAll() {
     const today = new Date().toISOString().split('T')[0];
     const [paramRes, inscRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=not.is.null&order=id.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=cabinet_id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=not.is.null&order=id.asc`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?date_inscription=eq.${today}&select=cabinet_id`, { headers: SB_H })
     ]);
     const cabinets = await paramRes.json();
     const inscriptions = await inscRes.json();
@@ -428,7 +268,7 @@
 
   function copyLink(cabinetId) {
     const url = `${BASE_URL}cabinet.html?id=${cabinetId}`;
-    navigator.clipboard.writeText(url).then(() => { showToast('Lien copié dans le presse-papier !', 'success'); });
+    navigator.clipboard.writeText(url).then(() => { alert('✓ Lien copié !\n\n' + url); });
   }
 
   function openNew() {
@@ -456,12 +296,12 @@
 
     await fetch(`${SUPABASE_URL}/rest/v1/parametres`, {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+      headers: SB_HJ,
       body: JSON.stringify({ cabinet_id: id, nom_cabinet: nom, specialite: spec, ouvert: false, numero_en_cours: 0, limite_patients: 0 })
     });
     await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs`, {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+      headers: SB_HJ,
       body: JSON.stringify([
         { cabinet_id: id, role: 'medecin', mot_de_passe: pwdMed },
         { cabinet_id: id, role: 'assistante', mot_de_passe: pwdAss }
@@ -487,9 +327,9 @@
 
   async function deleteCabinet(cabinetId) {
     await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-      fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}`, { method: 'DELETE', headers: SB_H }),
     ]);
     loadAll();
   }
@@ -498,36 +338,7 @@
   document.getElementById('modalConfirm').addEventListener('click', function(e) { if (e.target === this) closeConfirm(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
   setInterval(loadAll, 30000);
-
-  // ── TOAST SYSTEM ────────────────────────────────────────────────────────────
-  // showToast(msg, type, duration)
-  // type : 'success' | 'error' | 'warning' | 'info'   duration : ms (défaut 3500)
-  (function() {
-    const ICONS = { success:'✅', error:'⛔', warning:'⚠️', info:'ℹ️' };
-    function showToast(msg, type = 'info', duration = 3500) {
-      let container = document.getElementById('toast-container');
-      if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        document.body.appendChild(container);
-      }
-      const t = document.createElement('div');
-      t.className = `toast ${type}`;
-      t.style.setProperty('--dur', duration + 'ms');
-      t.innerHTML = `
-        <span class="toast-icon">${ICONS[type] || 'ℹ️'}</span>
-        <span class="toast-msg">${msg}</span>
-        <button class="toast-close" onclick="this.closest('.toast').remove()">✕</button>
-        <div class="toast-bar"></div>`;
-      container.appendChild(t);
-      const timer = setTimeout(() => {
-        t.classList.add('hide');
-        t.addEventListener('animationend', () => t.remove(), { once: true });
-      }, duration);
-      t.querySelector('.toast-close').addEventListener('click', () => clearTimeout(timer));
-    }
-    window.showToast = showToast;
-  })();
 </script>
+<div id="toast-container"></div>
 </body>
 </html>

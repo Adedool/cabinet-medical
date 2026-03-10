@@ -4,104 +4,18 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Assistante</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg:          #f7f3ee;
-      --bg2:         #f0ebe3;
-      --cream:       #ede8e0;
-      --blue:        #2563eb;
-      --blue-dim:    rgba(37,99,235,0.08);
-      --blue-border: rgba(37,99,235,0.18);
-      --blue-text:   #1d4ed8;
-      --white:       #ffffff;
-      --text:        #1c1917;
-      --text-sub:    #78716c;
-      --text-muted:  #a8a29e;
-      --border:      rgba(0,0,0,0.07);
-      --shadow:      0 2px 12px rgba(0,0,0,0.06);
-      --shadow-lg:   0 8px 28px rgba(0,0,0,0.10);
-      --green:       #16a34a;
-      --green-light: #f0fdf4;
-      --green-border:#bbf7d0;
-      --orange:      #ea580c;
-      --orange-light:#fff7ed;
-      --orange-border:#fed7aa;
-      --red:         #dc2626;
-      --red-light:   #fef2f2;
-      --red-border:  #fecaca;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Outfit', sans-serif; background: var(--bg); min-height: 100vh; }
-
-    @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
-    @keyframes pulse  { 0%,100%{opacity:1;}50%{opacity:0.3;} }
-    @keyframes glow   { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="rendz-common.css"/>
+  <script src="rendz-common.js" defer></script>
+  <style>to{opacity:1;transform:translateY(0);} }50%{opacity:0.3;} }50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
 
     /* ── LOGIN ── */
-    .login-wrap {
-      min-height: 100vh; display: flex; align-items: center;
-      justify-content: center; padding: 20px; background: var(--bg);
-    }
-    .login-card {
-      background: white; border-radius: 22px; padding: 40px 36px;
-      width: 100%; max-width: 380px;
-      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
-      text-align: center;
-      animation: fadeUp 0.5s ease both;
-    }
-    .login-logo-wrap { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .login-logo-icon {
-      width: 34px; height: 34px;
-      background: linear-gradient(140deg, #2563eb, #1d4ed8);
-      border-radius: 10px; display: flex; align-items: center; justify-content: center;
-      animation: glow 3s ease-in-out infinite;
-    }
-    .login-logo-text { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
     .login-logo-text span { color: var(--blue); }
-    .login-role-icon { font-size: 36px; margin: 16px 0 8px; }
-    .login-role { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; font-weight: 500; }
-    .login-input {
-      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
-      border-radius: 11px; font-family: 'Outfit', sans-serif; font-size: 15px;
-      color: var(--text); background: var(--bg); margin-bottom: 12px; outline: none;
-    }
-    .login-input:focus { border-color: var(--blue); background: white; }
-    .login-btn {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: white; border: none; border-radius: 11px;
-      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
-      cursor: pointer; box-shadow: 0 4px 16px rgba(29,78,216,0.3);
-    }
-    .login-btn:hover { transform: translateY(-1px); }
-    .login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; font-weight: 500; }
 
     /* ── DASHBOARD ── */
     .dashboard { display: none; }
-
-    .topbar {
-      background: white; border-bottom: 1px solid var(--border);
-      padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 10;
-      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
-    }
-    .topbar-logo-wrap { display: flex; align-items: center; gap: 7px; }
-    .topbar-logo-icon {
-      width: 28px; height: 28px; background: linear-gradient(140deg, #2563eb, #1d4ed8);
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    }
-    .topbar-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-    .topbar-logo-text span { color: var(--blue); }
-    .topbar-right { display: flex; align-items: center; gap: 12px; }
     .topbar-date { font-size: 12px; color: var(--text-sub); font-weight: 500; }
     .live-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-    .logout-btn {
-      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
-      background: white; color: var(--text-sub);
-      font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer;
-    }
-    .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
     /* CONSULT BAR */
     .consult-bar {
@@ -236,37 +150,11 @@
     }
 
     /* MODAL */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(28,25,23,0.4);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
-    }
-    .modal-overlay.show { opacity: 1; pointer-events: all; }
-    .modal {
-      background: white; border-radius: 18px; padding: 28px 24px;
-      max-width: 340px; width: 100%; box-shadow: var(--shadow-lg);
-      transform: scale(0.95); transition: transform 0.2s;
-    }
-    .modal-overlay.show .modal { transform: scale(1); }
-    .modal-icon { font-size: 32px; text-align: center; margin-bottom: 10px; }
-    .modal-title { font-size: 16px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 7px; }
-    .modal-msg { font-size: 13px; color: var(--text-sub); text-align: center; line-height: 1.5; margin-bottom: 20px; }
-    .modal-actions { display: flex; gap: 10px; }
-    .modal-cancel {
-      flex: 1; padding: 11px; background: var(--bg); color: var(--text-sub);
-      border: 1px solid var(--border); border-radius: 10px;
-      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
-    }
-    .modal-cancel:hover { background: var(--cream); }
-    .modal-confirm { flex: 1; padding: 11px; border: none; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; color: white; }
-    .modal-confirm.danger  { background: var(--red); }
-    .modal-confirm.danger:hover { background: #b91c1c; }
-    .modal-confirm.success { background: var(--green); }
-    .modal-confirm.success:hover { background: #15803d; }
+    .modal-overlay.show
 
     @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .manual-form { position: static; } }
     @media (max-width: 640px) {
-      .content, .topbar { padding-left: 14px; padding-right: 14px; }
+      .content,
       .stats-row { gap: 7px; padding: 12px 14px 0; }
       .stat-card { padding: 10px 8px; }
       .stat-val { font-size: 20px; }
@@ -282,38 +170,6 @@
       .action-btn { padding: 9px 14px !important; font-size: 12px !important; flex: 1; min-width: 80px; text-align: center; }
       .btn-del { flex: 0 0 auto; min-width: unset; padding: 9px 12px !important; }
     }
-  
-    /* ── SEARCH & FILTERS ─────────────────────────────────────────────── */
-    .search-bar-wrap {
-      display: flex; gap: 8px; align-items: center;
-      margin-bottom: 10px; flex-wrap: wrap;
-    }
-    .search-input {
-      flex: 1; min-width: 160px;
-      padding: 9px 12px 9px 34px;
-      background: var(--bg); border: 1.5px solid var(--border);
-      border-radius: 10px; font-family: 'Outfit', sans-serif;
-      font-size: 13px; color: var(--text); outline: none;
-      transition: border-color 0.15s, background 0.15s;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2.5'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: 10px center;
-    }
-    .search-input:focus { border-color: var(--blue); background-color: white; }
-    .search-input::placeholder { color: var(--text-muted); }
-    .filter-chips { display: flex; gap: 5px; flex-wrap: wrap; }
-    .chip {
-      padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
-      border: 1.5px solid var(--border); background: white; color: var(--text-sub);
-      cursor: pointer; transition: all 0.12s; white-space: nowrap;
-    }
-    .chip:hover { border-color: var(--blue-border); color: var(--blue-text); }
-    .chip.active { background: var(--blue); color: white; border-color: var(--blue); }
-    .chip.chip-present.active  { background: #16a34a; border-color: #16a34a; }
-    .chip.chip-attente.active  { background: #2563eb; border-color: #2563eb; }
-    .chip.chip-absent.active   { background: #dc2626; border-color: #dc2626; }
-    .chip.chip-termine.active  { background: #78716c; border-color: #78716c; }
-    .search-count { font-size: 11px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
-    .highlight { background: #fef08a; border-radius: 2px; padding: 0 1px; }
   </style>
 </head>
 <body>
@@ -380,18 +236,7 @@
           File d'attente du jour
           <button class="refresh-btn" onclick="loadList()">↻ Actualiser</button>
         </div>
-                <div class="search-bar-wrap">
-          <input class="search-input" type="text" id="searchInput" placeholder="Rechercher par nom, prénom ou tél…" oninput="applyFilters()"/>
-          <div class="filter-chips">
-            <span class="chip active" data-filter="all"    onclick="setFilter('all',this)">Tous</span>
-            <span class="chip chip-attente"  data-filter="en_attente" onclick="setFilter('en_attente',this)">Attente</span>
-            <span class="chip chip-present"  data-filter="present"    onclick="setFilter('present',this)">Présents</span>
-            <span class="chip chip-absent"   data-filter="absent"     onclick="setFilter('absent',this)">Absents</span>
-            <span class="chip chip-termine"  data-filter="termine"    onclick="setFilter('termine',this)">Terminés</span>
-          </div>
-          <span class="search-count" id="searchCount"></span>
-        </div>
-<div class="list-wrap">
+        <div class="list-wrap">
           <div class="list-header">
             <span>#</span><span>Patient</span>
             <span>Statut</span>
@@ -422,15 +267,13 @@
 </div>
 
 <script>
-  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   let refreshInterval;
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
   const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };
 
   async function login() {
     const pwd = document.getElementById('pwdInput').value;
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante&cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante&cabinet_id=eq.${cabinetId}`, { headers: SB_H });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
       localStorage.setItem(`rendz_assistante_${cabinetId}`, 'true');
@@ -461,106 +304,41 @@
   }
 
   async function inscrireManuel() {
-    const nom       = document.getElementById('mNom').value.trim();
-    const prenom    = document.getElementById('mPrenom').value.trim();
+    const nom = document.getElementById('mNom').value.trim();
+    const prenom = document.getElementById('mPrenom').value.trim();
     const telephone = document.getElementById('mTel').value.trim() || '—';
-    if (!nom || !prenom) { showToast('Nom et prénom obligatoires.', 'error'); return; }
-
+    if (!nom || !prenom) { alert('Nom et prénom obligatoires.'); return; }
     document.getElementById('addBtn').disabled = true;
     const today = new Date().toISOString().split('T')[0];
-
-    // ── Anti-doublon : vérif par téléphone (si saisi) puis par nom+prénom ──
-    try {
-      if (telephone !== '—') {
-        const dupTelRes = await fetch(
-          `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&telephone=eq.${encodeURIComponent(telephone)}&select=position,nom,prenom`,
-          { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-        );
-        const dupTel = await dupTelRes.json();
-        if (dupTel.length > 0) {
-          const d = dupTel[0];
-          showToast(`⚠️ Ce numéro est déjà inscrit — ${d.nom} ${d.prenom} (N°${d.position})`, 'warning', 5000);
-          document.getElementById('addBtn').disabled = false;
-          return;
-        }
-      }
-      // Vérif par nom + prénom (insensible à la casse)
-      const dupNomRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&nom=ilike.${encodeURIComponent(nom)}&prenom=ilike.${encodeURIComponent(prenom)}&select=position`,
-        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-      );
-      const dupNom = await dupNomRes.json();
-      if (dupNom.length > 0) {
-        showToast(`⚠️ ${nom} ${prenom} est déjà inscrit(e) — N°${dupNom[0].position}`, 'warning', 5000);
-        document.getElementById('addBtn').disabled = false;
-        return;
-      }
-    } catch(e) { /* Si la vérif échoue, on laisse passer */ }
-
-    // ── Calcul position + insertion ─────────────────────────────────────────
-    const countRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } }
-    );
+    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { ...SB_H, 'Prefer': 'count=exact' } });
     const countHeader = countRes.headers.get('content-range');
     const currentCount = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
     const position = currentCount + 1;
-
     const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+      headers: { ...SB_HJ, 'Prefer': 'return=representation' },
       body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today, statut: 'present', source: 'manuel', cabinet_id: cabinetId })
     });
     if (res.ok) {
       document.getElementById('mNom').value = '';
       document.getElementById('mPrenom').value = '';
       document.getElementById('mTel').value = '';
-      showToast(`✓ ${nom} ${prenom} ajouté — Numéro ${position}`, 'success');
+      const s = document.getElementById('addSuccess');
+      s.textContent = `✓ ${nom} ${prenom} — Numéro ${position}`;
+      s.style.display = 'block';
+      setTimeout(() => s.style.display = 'none', 3000);
       loadList();
-    } else {
-      const err = await res.json().catch(() => ({}));
-      if (err.code === '23505') {
-        showToast(`Ce patient est déjà inscrit aujourd'hui.`, 'warning');
-      } else {
-        showToast('Erreur réseau. Réessayez.', 'error');
-      }
-    }
+    } else { alert('Erreur. Réessayez.'); }
     document.getElementById('addBtn').disabled = false;
-  }
-
-  
-  // ── RÉINITIALISATION AUTOMATIQUE CHAQUE MATIN ──────────────────────────────
-  // Compare la date du jour avec la dernière date enregistrée en base.
-  // Si nouveau jour → remet numero_en_cours à 0 et ferme le cabinet.
-  // S'exécute au chargement et à chaque refresh — sans cron, sans backend.
-  async function checkAutoReset(params, HJ_headers) {
-    const today = new Date().toISOString().split('T')[0];
-    const derniereDate = params.derniere_date || '';
-    if (derniereDate === today) return; // même jour → rien à faire
-
-    // Nouveau jour détecté : réinitialisation silencieuse
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, {
-      method: 'PATCH',
-      headers: HJ_headers,
-      body: JSON.stringify({
-        numero_en_cours: 0,
-        ouvert: false,
-        derniere_date: today
-      })
-    });
-    console.log(`[Rendz] Nouveau jour (${today}) — Compteur remis à zéro, cabinet fermé.`);
   }
 
   async function loadList() {
     const today = new Date().toISOString().split('T')[0];
     const [listRes, paramRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: SB_H }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H })
     ]);
     const list = await listRes.json();
-    const params_data = await paramRes.json();
-    const params_obj = params_data[0] || {};
-    await checkAutoReset(params_obj, { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' });
     const enCours = list.find(p => p.statut === 'en_cours');
     const consultBar = document.getElementById('consultBar');
     if (enCours) {
@@ -573,20 +351,9 @@
     document.getElementById('statAbsent').textContent = list.filter(p => p.statut === 'absent').length;
     document.getElementById('statAttente').textContent = list.filter(p => p.statut === 'en_attente').length;
     document.getElementById('statTermine').textContent = list.filter(p => p.statut === 'termine').length;
-    fullList = list;
-    applyFilters();
-  }
-
-  function renderFilteredList(list, q='') {
     const body = document.getElementById('listBody');
-    if (list.length === 0) {
-      const isEmpty = fullList.length === 0;
-      body.innerHTML = isEmpty
-        ? `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit pour aujourd'hui.</p></div>`
-        : `<div class="empty-state"><div class="ico">🔍</div><p>Aucun résultat pour cette recherche.</p></div>`;
-      return;
-    }
-    const dejaEnCours = fullList.some(x => x.statut === 'en_cours');
+    if (list.length === 0) { body.innerHTML = `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit pour aujourd'hui.</p></div>`; return; }
+    const dejaEnCours = list.some(x => x.statut === 'en_cours');
     body.innerHTML = list.map(p => {
       const st = p.statut || 'en_attente';
       const isM = p.source === 'manuel';
@@ -607,92 +374,34 @@
     }).join('');
   }
 
-  // ── RECHERCHE + FILTRES ──────────────────────────────────────────────────
-  let fullList    = [];   // liste complète en mémoire
-  let activeFilter = 'all';
-
-  function setFilter(f, el) {
-    activeFilter = f;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    applyFilters();
-  }
-
-  function applyFilters() {
-    const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-    let filtered = fullList;
-
-    // Filtre statut
-    if (activeFilter !== 'all') {
-      filtered = filtered.filter(p => (p.statut || 'en_attente') === activeFilter);
-    }
-    // Filtre texte
-    if (q) {
-      filtered = filtered.filter(p =>
-        (p.nom    || '').toLowerCase().includes(q) ||
-        (p.prenom || '').toLowerCase().includes(q) ||
-        (p.telephone || '').includes(q)
-      );
-    }
-
-    const countEl = document.getElementById('searchCount');
-    if (countEl) {
-      countEl.textContent = q || activeFilter !== 'all'
-        ? `${filtered.length} résultat${filtered.length > 1 ? 's' : ''}`
-        : '';
-    }
-
-    renderFilteredList(filtered, q);
-  }
-
-  function highlight(text, q) {
-    if (!q || !text) return text || '';
-    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark class="highlight">$1</mark>');
-  }
-
   async function appelConsultation(id, position) {
-    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H });
     const params = await paramRes.json();
     const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
-    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours' }) })];
+    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'en_cours' }) })];
     if (position > numeroActuel) {
-      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: position }) }));
+      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: position }) }));
     }
     await Promise.all(updates);
     loadList();
   }
 
-  let pendingAction = null;
-
-  function showModal(icon, title, msg, confirmClass, action) {
-    document.getElementById('modalIcon').textContent = icon;
-    document.getElementById('modalTitle').textContent = title;
-    document.getElementById('modalMsg').textContent = msg;
-    document.getElementById('modalConfirm').className = `modal-confirm ${confirmClass}`;
-    document.getElementById('modalConfirm').textContent = confirmClass === 'danger' ? 'Confirmer' : 'Valider';
-    pendingAction = action;
-    document.getElementById('modalOverlay').classList.add('show');
-  }
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); pendingAction = null; }
-  async function confirmAction() { const action = pendingAction; closeModal(); if (action) await action(); }
-
   async function supprimer(id) {
     showModal('🗑️', 'Supprimer ce patient ?', 'Cette action est irréversible.', 'danger',
-      async () => { await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }); loadList(); }
+      async () => { await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'DELETE', headers: SB_H }); loadList(); }
     );
   }
 
   async function finConsultation(id) {
     showModal('✅', 'Fin de consultation ?', 'Le patient sera marqué comme terminé.', 'success',
       async () => {
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'termine' }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'termine' }) });
         const today = new Date().toISOString().split('T')[0];
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: SB_H });
         const tous = await res.json();
         const restants = tous.filter(p => p.statut !== 'termine' && p.statut !== 'absent' && p.id !== id);
         if (restants.length === 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: 0 }) });
+          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
         }
         loadList();
       }
@@ -700,12 +409,13 @@
   }
 
   async function setStatut(id, statut) {
-    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut }) });
     loadList();
   }
 
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
 </script>
+<div id="toast-container"></div>
 </body>
 </html>
