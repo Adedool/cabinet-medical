@@ -460,9 +460,6 @@
 <body>
 
 <!-- CONFIRM MODAL -->
-  <!-- TAB STATS -->
-  <div id="tab-stats" class="stats-tab" style="display:none"></div>
-
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-icon" id="modalIcon">⚠️</div>
@@ -703,6 +700,9 @@
     </div>
   </div>
 
+  <!-- TAB STATS -->
+  <div id="tab-stats" class="stats-tab" style="display:none"></div>
+
 </div>
 
 <script>
@@ -797,6 +797,18 @@
     if (avecDuree.length > 0) {
       dureeAvg = Math.round(avecDuree.reduce((acc, p) => acc + Math.round((new Date(p.heure_fin) - new Date(p.heure_appel)) / 60000), 0) / avecDuree.length);
     }
+
+    // ── Heure de pointe + répartition jours ────────────────────────────
+    const heureCount = {};
+    m30List.forEach(p => { if (p.created_at) { const hh = new Date(p.created_at).getHours(); heureCount[hh] = (heureCount[hh]||0)+1; }});
+    let hPointe = null, hMax = 0;
+    Object.entries(heureCount).forEach(([hh,c]) => { if (c > hMax) { hMax = c; hPointe = hh; }});
+
+    const joursNoms = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const jourCount = {};
+    m30List.forEach(p => { const j = joursNoms[new Date(p.date_inscription).getDay()]; jourCount[j] = (jourCount[j]||0)+1; });
+    const jourMax = Math.max(...Object.values(jourCount), 1);
+    const joursOrd = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].filter(j => jourCount[j]);
 
     // ── Estimation attente HTML ──────────────────────────────────────────
     let waitBlock = '';
