@@ -4,16 +4,23 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="rendz-common.css"/>
   <script src="rendz-common.js" defer></script>
-  <style>to{opacity:1;transform:translateY(0);} }50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }to{opacity:1;transform:translateY(0);} }50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
 
     /* ── LOGIN ── */
-    .login-logo-text span { color: var(--blue); }
 
     /* ── DASHBOARD ── */
     .dashboard { display: none; }
+    .topbar-logo-wrap { display: flex; align-items: center; gap: 7px; }
+    .topbar-logo-icon {
+      width: 28px; height: 28px; background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .topbar-logo-text span { color: var(--blue); }
     .admin-badge { background: var(--blue-dim); color: var(--blue-text); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--blue-border); }
 
     /* MAIN */
@@ -84,6 +91,17 @@
     .empty-state { text-align: center; padding: 48px; color: var(--text-muted); font-size: 14px; }
 
     /* MODALS */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(28,25,23,0.45); z-index: 100;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.show { display: flex; }
+    .adm-modal-box {
+      background: white; border-radius: 20px; padding: 30px 26px;
+      width: 100%; max-width: 460px; box-shadow: var(--shadow-lg);
+    }
+    .adm-modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 18px; }
     .field-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px; }
     .field-input {
       width: 100%; padding: 10px 13px; border: 1.5px solid var(--border);
@@ -91,6 +109,23 @@
       color: var(--text); background: var(--bg); outline: none; margin-bottom: 12px;
     }
     .field-input:focus { border-color: var(--blue); background: white; }
+    .adm-modal-footer { display: flex; gap: 10px; margin-top: 6px; }
+    .adm-confirm-btn {
+      flex: 1; padding: 12px; background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white; border: none; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 3px 12px rgba(29,78,216,0.3); transition: all 0.15s;
+    }
+    .adm-confirm-btn:hover { transform: translateY(-1px); }
+    .adm-confirm-btn.red { background: var(--red); box-shadow: 0 3px 12px rgba(220,38,38,0.3); }
+    .adm-confirm-btn.red:hover { background: #b91c1c; }
+    .adm-cancel-btn {
+      flex: 1; padding: 12px; background: var(--bg); color: var(--text-sub);
+      border: 1px solid var(--border); border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .adm-cancel-btn:hover { background: var(--cream); }
+    .adm-modal-err { display: none; color: var(--red); font-size: 12px; margin-top: 6px; font-weight: 600; }
 
     .link-box {
       background: var(--blue-dim); border-radius: 10px; padding: 12px 14px;
@@ -161,8 +196,8 @@
 
 <!-- MODALE NOUVEAU CABINET -->
 <div class="modal-overlay" id="modalNew">
-  <div class="modal-box">
-    <div class="modal-title">➕ Nouveau cabinet</div>
+  <div class="adm-modal-box">
+    <div class="adm-modal-title">➕ Nouveau cabinet</div>
     <div class="field-label">Nom du médecin</div>
     <input class="field-input" type="text" id="newNom" placeholder="Ex: Dr. Benali Mohamed"/>
     <div class="field-label">Spécialité</div>
@@ -173,33 +208,37 @@
     <input class="field-input" type="text" id="newPwdMed" placeholder="Ex: medecin2025"/>
     <div class="field-label">Mot de passe assistante</div>
     <input class="field-input" type="text" id="newPwdAss" placeholder="Ex: assistante2025"/>
-    <div class="modal-err" id="newErr">Veuillez remplir tous les champs.</div>
+    <div class="adm-modal-err" id="newErr">Veuillez remplir tous les champs.</div>
     <div class="link-box" id="newLinkBox"></div>
-    <div class="modal-footer">
-      <button class="modal-confirm-btn" id="newConfirmBtn" onclick="createCabinet()">✓ Créer</button>
-      <button class="modal-cancel-btn" onclick="closeNew()">Annuler</button>
+    <div class="adm-modal-footer">
+      <button class="adm-confirm-btn" id="newConfirmBtn" onclick="createCabinet()">✓ Créer</button>
+      <button class="adm-cancel-btn" onclick="closeNew()">Annuler</button>
     </div>
   </div>
 </div>
 
 <!-- MODALE CONFIRMATION SUPPRESSION -->
 <div class="modal-overlay" id="modalConfirm">
-  <div class="modal-box" style="max-width:380px;text-align:center">
+  <div class="adm-modal-box" style="max-width:380px;text-align:center">
     <div style="font-size:36px;margin-bottom:12px" id="confirmIcon">⚠️</div>
-    <div class="modal-title" style="text-align:center" id="confirmTitle"></div>
+    <div class="adm-modal-title" style="text-align:center" id="confirmTitle"></div>
     <div style="font-size:13px;color:var(--text-sub);margin-bottom:22px;line-height:1.5" id="confirmMsg"></div>
-    <div class="modal-footer">
-      <button class="modal-confirm-btn red" onclick="confirmAction()">Supprimer</button>
-      <button class="modal-cancel-btn" onclick="closeConfirm()">Annuler</button>
+    <div class="adm-modal-footer">
+      <button class="adm-confirm-btn red" onclick="confirmAction()">Supprimer</button>
+      <button class="adm-cancel-btn" onclick="closeConfirm()">Annuler</button>
     </div>
   </div>
 </div>
 
 <script>
-  const ADMIN_PWD = 'rendz-admin-2025';
-  const BASE_URL = window.location.origin + window.location.pathname.replace('admin.html', '');  function login() {
-    const pwd = document.getElementById('pwdInput').value;
-    if (pwd === ADMIN_PWD) {
+  const ADMIN_PWD_HASH = '51d8592338dd8ed8bf6f42dc02e157541718e94b3bbbda0f27cb62a48dfbc70e'; // sha256('rendz-admin-2025')
+  const BASE_URL = window.location.origin + window.location.pathname.replace('admin.html', '');
+  let pendingAction = null;
+
+  async function login() {
+    const pwd  = document.getElementById('pwdInput').value;
+    const hash = await sha256(pwd);
+    if (hash === ADMIN_PWD_HASH) {
       localStorage.setItem('rendz_admin', 'true');
       showDashboard();
     } else {
