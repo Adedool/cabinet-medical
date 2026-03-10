@@ -385,11 +385,39 @@
       .sfield-grid { grid-template-columns: 1fr; }
       .tabs { padding: 0 14px; overflow-x: auto; }
     }
+
+    /* ── STATISTIQUES ── */
+    .stats-tab { padding: 20px 24px 48px; }
+    .stats-section-title { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 10px; display: flex; align-items: center; gap: 6px; }
+    .stats-section-title:first-child { margin-top: 0; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 6px; }
+    .kpi-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); text-align: center; }
+    .kpi-val { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1; font-family: 'Outfit', sans-serif; }
+    .kpi-lbl { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+    .kpi-card.blue  { border-top: 3px solid var(--blue);   } .kpi-card.blue  .kpi-val { color: var(--blue); }
+    .kpi-card.green { border-top: 3px solid var(--green);  } .kpi-card.green .kpi-val { color: var(--green); }
+    .kpi-card.orange{ border-top: 3px solid var(--orange); } .kpi-card.orange .kpi-val { color: var(--orange); }
+    .bar-row { margin-bottom: 10px; }
+    .bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 11px; font-weight: 600; color: var(--text-sub); }
+    .bar-track { height: 8px; background: var(--bg2); border-radius: 99px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 99px; background: var(--blue); transition: width 0.6s ease; }
+    .info-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .info-card-left  { font-size: 12px; color: var(--text-sub); font-weight: 500; }
+    .info-card-right { font-size: 15px; font-weight: 800; color: var(--text); }
+    .wait-estimate { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid var(--blue-border); border-radius: 14px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+    .wait-estimate-icon { font-size: 26px; flex-shrink: 0; }
+    .wait-estimate-title { font-size: 12px; font-weight: 700; color: var(--blue-text); margin-bottom: 2px; }
+    .wait-estimate-val   { font-size: 11px; color: var(--text-sub); line-height: 1.6; }
+    .stats-empty { text-align: center; padding: 28px; color: var(--text-muted); font-size: 13px; }
+    .stats-loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
   </style>
 </head>
 <body>
 
 <!-- CONFIRM MODAL -->
+  <!-- TAB STATS -->
+  <div id="tab-stats" class="stats-tab" style="display:none"></div>
+
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <div class="modal-icon" id="modalIcon">⚠️</div>
@@ -463,6 +491,7 @@
     <button class="tab-btn active" onclick="showTab('file',this)">📋 File d'attente</button>
     <button class="tab-btn" onclick="showTab('cabinet',this)">🏥 Mon Cabinet</button>
     <button class="tab-btn" onclick="showTab('securite',this)">🔐 Sécurité</button>
+    <button class="tab-btn" onclick="showTab('stats',this)">📊 Statistiques</button>
   </div>
 
   <!-- TAB FILE -->
@@ -676,9 +705,108 @@
 
   if (localStorage.getItem(`rendz_medecin_${cabinetId}`)) showDashboard();
 
+
+  // ── STATISTIQUES ─────────────────────────────────────────────────────────
+  function getMondayISO() {
+    const d = new Date(), day = d.getDay();
+    d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+    return d.toISOString().split('T')[0];
+  }
+  function getMonthAgoISO() { const d = new Date(); d.setMonth(d.getMonth()-1); return d.toISOString().split('T')[0]; }
+  function get30DaysAgoISO(){ const d = new Date(); d.setDate(d.getDate()-30);  return d.toISOString().split('T')[0]; }
+  function formatDuree(m) {
+    if (m === null || m === undefined) return '—';
+    if (m < 1) return '< 1 min';
+    if (m < 60) return m + ' min';
+    return Math.floor(m/60) + 'h' + String(m%60).padStart(2,'0');
+  }
+
+  async function loadStats() {
+    const tabEl = document.getElementById('tab-stats');
+    tabEl.innerHTML = '<div class="stats-loading">⏳ Chargement…</div>';
+    const today  = new Date().toISOString().split('T')[0];
+    const monday = getMondayISO(), m1ago = getMonthAgoISO(), m30ago = get30DaysAgoISO();
+
+    const [todayRes, weekRes, monthRes, m30Res] = await Promise.all([
+      fetch(SUPABASE_URL + '/rest/v1/inscriptions?cabinet_id=eq.' + cabinetId + '&date_inscription=eq.' + today + '&select=statut,heure_appel,heure_fin,position,nom,prenom,created_at', { headers: H }),
+      fetch(SUPABASE_URL + '/rest/v1/inscriptions?cabinet_id=eq.' + cabinetId + '&date_inscription=gte.' + monday + '&date_inscription=lte.' + today + '&select=statut', { headers: H }),
+      fetch(SUPABASE_URL + '/rest/v1/inscriptions?cabinet_id=eq.' + cabinetId + '&date_inscription=gte.' + m1ago  + '&date_inscription=lte.' + today + '&select=statut', { headers: H }),
+      fetch(SUPABASE_URL + '/rest/v1/inscriptions?cabinet_id=eq.' + cabinetId + '&date_inscription=gte.' + m30ago + '&date_inscription=lte.' + today + '&select=statut,date_inscription,created_at', { headers: H })
+    ]);
+
+    const todayList = await todayRes.json();
+    const weekList  = await weekRes.json();
+    const monthList = await monthRes.json();
+    const m30List   = await m30Res.json();
+
+    const vusAuj    = todayList.filter(p => p.statut === 'termine').length;
+    const absentsAuj= todayList.filter(p => p.statut === 'absent').length;
+    const enAttente = todayList.filter(p => ['en_attente','present'].includes(p.statut)).length;
+    const enCours   = todayList.find(p => p.statut === 'en_cours');
+    const vusSem    = weekList.filter(p => p.statut === 'termine').length;
+    const vusMois   = monthList.filter(p => p.statut === 'termine').length;
+
+    // Durée moyenne
+    const avecDuree = todayList.filter(p => p.statut === 'termine' && p.heure_appel && p.heure_fin);
+    let dureeAvg = null;
+    if (avecDuree.length > 0) {
+      dureeAvg = Math.round(avecDuree.reduce((acc, p) => acc + Math.round((new Date(p.heure_fin) - new Date(p.heure_appel)) / 60000), 0) / avecDuree.length);
+    }
+
+    // Estimation attente
+    let waitHtml = '';
+    if (dureeAvg !== null && enAttente > 0) {
+      let tempsRestant = dureeAvg;
+      if (enCours && enCours.heure_appel) {
+        tempsRestant = Math.max(0, dureeAvg - Math.round((new Date() - new Date(enCours.heure_appel)) / 60000));
+      }
+      const patsList = todayList.filter(p => ['en_attente','present'].includes(p.statut)).sort((a,b) => a.position - b.position);
+      const lignes = patsList.slice(0, 4).map((p, i) => 'N°' + p.position + ' ' + p.nom + ' ' + p.prenom + ' : ~' + formatDuree(tempsRestant + i * dureeAvg)).join('<br>');
+      const plus = patsList.length > 4 ? '<br>+ ' + (patsList.length - 4) + ' patient(s)…' : '';
+      waitHtml = '<div class="stats-section-title">⏱ Estimation temps d\'attente</div>'
+        + '<div class="wait-estimate"><div class="wait-estimate-icon">🕐</div><div><div class="wait-estimate-title">Basé sur ' + dureeAvg + ' min/consultation en moyenne</div><div class="wait-estimate-val">' + lignes + plus + '</div></div></div>';
+    } else if (enAttente > 0) {
+      waitHtml = '<div class="stats-empty">⚠️ Pas encore assez de données pour estimer les temps d\'attente.</div>';
+    }
+
+    // Heure de pointe
+    const heureCount = {};
+    m30List.forEach(p => { if (p.created_at) { const hh = new Date(p.created_at).getHours(); heureCount[hh] = (heureCount[hh]||0)+1; }});
+    let hPointe = null, hMax = 0;
+    Object.entries(heureCount).forEach(([h,c]) => { if (c > hMax) { hMax = c; hPointe = h; }});
+
+    // Répartition jours
+    const joursNoms = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const jourCount = {};
+    m30List.forEach(p => { const j = joursNoms[new Date(p.date_inscription).getDay()]; jourCount[j] = (jourCount[j]||0)+1; });
+    const jourMax = Math.max(...Object.values(jourCount), 1);
+    const joursOrd = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'].filter(j => jourCount[j]);
+    const joursHtml = joursOrd.length > 0
+      ? '<div class="stats-section-title">📅 Répartition par jour (30 jours)</div>'
+        + joursOrd.map(j => '<div class="bar-row"><div class="bar-label"><span>' + j + '</span><span>' + jourCount[j] + ' patients</span></div><div class="bar-track"><div class="bar-fill" style="width:' + Math.round(jourCount[j]/jourMax*100) + '%"></div></div></div>').join('')
+      : '';
+
+    tabEl.innerHTML =
+      '<div class="stats-section-title">📅 Aujourd\'hui</div>'
+      + '<div class="kpi-grid">'
+      + '<div class="kpi-card blue"><div class="kpi-val">' + vusAuj + '</div><div class="kpi-lbl">Patients vus</div></div>'
+      + '<div class="kpi-card green"><div class="kpi-val">' + enAttente + '</div><div class="kpi-lbl">En attente</div></div>'
+      + '<div class="kpi-card orange"><div class="kpi-val">' + absentsAuj + '</div><div class="kpi-lbl">Absents</div></div>'
+      + '<div class="kpi-card"><div class="kpi-val">' + (dureeAvg !== null ? formatDuree(dureeAvg) : '—') + '</div><div class="kpi-lbl">Durée moy. consultation</div></div>'
+      + '</div>'
+      + waitHtml
+      + '<div class="stats-section-title">📊 Volume</div>'
+      + '<div class="kpi-grid">'
+      + '<div class="kpi-card"><div class="kpi-val">' + vusSem + '</div><div class="kpi-lbl">Cette semaine</div></div>'
+      + '<div class="kpi-card"><div class="kpi-val">' + vusMois + '</div><div class="kpi-lbl">Ce mois</div></div>'
+      + '</div>'
+      + (hPointe !== null ? '<div class="stats-section-title">🔥 Heure de pointe (30 jours)</div><div class="info-card"><div class="info-card-left">Créneau le plus chargé</div><div class="info-card-right">' + hPointe + 'h00 – ' + (parseInt(hPointe)+1) + 'h00</div></div>' : '')
+      + joursHtml;
+  }
+
   /* ── TABS ── */
   function showTab(name, btn) {
-    ['file','cabinet','securite'].forEach(t => {
+    ['file','cabinet','securite','stats'].forEach(t => {
       const el = document.getElementById('tab-' + t);
       if (el) el.style.display = 'none';
       if (t === 'file') {
@@ -697,10 +825,12 @@
     secEl.style.display  = 'none';
     if (name === 'cabinet') { cabEl.style.display = 'block'; }
     if (name === 'securite') { secEl.style.display = 'block'; }
+    if (name === 'stats') { document.getElementById('tab-stats').style.display = 'block'; loadStats(); }
   }
   // init
   document.getElementById('tab-cabinet').style.display = 'none';
   document.getElementById('tab-securite').style.display = 'none';
+  document.getElementById('tab-stats').style.display = 'none';
 
   /* ── DATA ── */
   async function loadData() {
