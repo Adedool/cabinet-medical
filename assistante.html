@@ -193,7 +193,6 @@
     .btn-present:hover { background: var(--green); color: white; }
     .btn-encours { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange-border); }
     .btn-encours:hover { background: var(--orange); color: white; }
-    .btn-encours:disabled { background: var(--cream); color: var(--text-muted); border-color: var(--border); cursor: not-allowed; opacity: 0.5; }
     .btn-fin { background: var(--green); color: white; border: 1px solid var(--green); }
     .btn-fin:hover { background: #15803d; }
     .btn-absent { background: var(--bg2); color: var(--text-sub); border: 1px solid var(--border); }
@@ -283,6 +282,49 @@
       .action-btn { padding: 9px 14px !important; font-size: 12px !important; flex: 1; min-width: 80px; text-align: center; }
       .btn-del { flex: 0 0 auto; min-width: unset; padding: 9px 12px !important; }
     }
+  
+    /* ── TOAST SYSTEM ────────────────────────────────────────────────────── */
+    #toast-container {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 9999; display: flex; flex-direction: column-reverse; align-items: center;
+      gap: 8px; pointer-events: none; width: 100%; max-width: 380px; padding: 0 16px;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      background: #1c1917; color: #fff;
+      border-radius: 14px; padding: 12px 16px;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
+      pointer-events: all; cursor: default; width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative; overflow: hidden;
+      animation: toastIn 0.32s cubic-bezier(0.34,1.4,0.64,1) both;
+    }
+    .toast.hide { animation: toastOut 0.22s ease forwards; }
+    .toast-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
+    .toast-msg  { flex: 1; line-height: 1.4; }
+    .toast-close {
+      background: none; border: none; color: rgba(255,255,255,0.4);
+      font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
+      flex-shrink: 0; transition: color 0.15s;
+    }
+    .toast-close:hover { color: rgba(255,255,255,0.85); }
+    .toast-bar {
+      position: absolute; bottom: 0; left: 0; height: 3px;
+      border-radius: 0 0 14px 14px;
+      animation: toastBar var(--dur, 3s) linear forwards;
+    }
+    .toast.success { background: #14532d; border-color: rgba(34,197,94,0.25); }
+    .toast.success .toast-bar { background: #22c55e; }
+    .toast.error   { background: #450a0a; border-color: rgba(239,68,68,0.25); }
+    .toast.error   .toast-bar { background: #ef4444; }
+    .toast.warning { background: #431407; border-color: rgba(249,115,22,0.25); }
+    .toast.warning .toast-bar { background: #f97316; }
+    .toast.info    { background: #1e3a5f; border-color: rgba(59,130,246,0.25); }
+    .toast.info    .toast-bar { background: #3b82f6; }
+    @keyframes toastIn  { from{opacity:0;transform:translateY(16px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);} }
+    @keyframes toastOut { from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(10px) scale(0.96);} }
+    @keyframes toastBar { from{width:100%;}to{width:0%;} }
   </style>
 </head>
 <body>
@@ -422,7 +464,7 @@
     const nom = document.getElementById('mNom').value.trim();
     const prenom = document.getElementById('mPrenom').value.trim();
     const telephone = document.getElementById('mTel').value.trim() || '—';
-    if (!nom || !prenom) { alert('Nom et prénom obligatoires.'); return; }
+    if (!nom || !prenom) { showToast('Nom et prénom obligatoires.', 'error'); return; }
     document.getElementById('addBtn').disabled = true;
     const today = new Date().toISOString().split('T')[0];
     const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } });
@@ -438,12 +480,9 @@
       document.getElementById('mNom').value = '';
       document.getElementById('mPrenom').value = '';
       document.getElementById('mTel').value = '';
-      const s = document.getElementById('addSuccess');
-      s.textContent = `✓ ${nom} ${prenom} — Numéro ${position}`;
-      s.style.display = 'block';
-      setTimeout(() => s.style.display = 'none', 3000);
+      showToast(`✓ ${nom} ${prenom} ajouté — Numéro ${position}`, 'success');
       loadList();
-    } else { alert('Erreur. Réessayez.'); }
+    } else { showToast('Erreur réseau. Réessayez.', 'error'); }
     document.getElementById('addBtn').disabled = false;
   }
 
@@ -489,59 +528,16 @@
     }).join('');
   }
 
-  let appelEnCours = false; // verrou local anti double-clic
-
   async function appelConsultation(id, position) {
-    // ── Verrou local : empêche un double-clic rapide ──────────────────────
-    if (appelEnCours) return;
-    appelEnCours = true;
-
-    try {
-      // ── Vérification SERVEUR : y a-t-il déjà un patient en_cours ? ──────
-      // On interroge la BDD en temps réel — indépendamment de l'état affiché
-      const verifRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&statut=eq.en_cours&select=id,nom,prenom`,
-        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-      );
-      const enCoursList = await verifRes.json();
-
-      if (enCoursList.length > 0) {
-        // Un patient est déjà en consultation — bloquer et rafraîchir la liste
-        const p = enCoursList[0];
-        alert(`⛔ Impossible d'appeler : ${p.nom} ${p.prenom} est déjà en consultation.\n\nTerminez d'abord cette consultation.`);
-        loadList(); // rafraîchir pour que l'UI soit à jour
-        return;
-      }
-
-      // ── Aucun conflit : procéder à l'appel ───────────────────────────────
-      const paramRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`,
-        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-      );
-      const params = await paramRes.json();
-      const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
-
-      const updates = [
-        fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, {
-          method: 'PATCH',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ statut: 'en_cours' })
-        })
-      ];
-      if (position > numeroActuel) {
-        updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, {
-          method: 'PATCH',
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ numero_en_cours: position })
-        }));
-      }
-      await Promise.all(updates);
-      loadList();
-
-    } finally {
-      // Toujours libérer le verrou, même en cas d'erreur réseau
-      appelEnCours = false;
+    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const params = await paramRes.json();
+    const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
+    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours' }) })];
+    if (position > numeroActuel) {
+      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: position }) }));
     }
+    await Promise.all(updates);
+    loadList();
   }
 
   let pendingAction = null;
@@ -587,6 +583,36 @@
 
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+
+  // ── TOAST SYSTEM ────────────────────────────────────────────────────────────
+  // showToast(msg, type, duration)
+  // type : 'success' | 'error' | 'warning' | 'info'   duration : ms (défaut 3500)
+  (function() {
+    const ICONS = { success:'✅', error:'⛔', warning:'⚠️', info:'ℹ️' };
+    function showToast(msg, type = 'info', duration = 3500) {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+      }
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.style.setProperty('--dur', duration + 'ms');
+      t.innerHTML = `
+        <span class="toast-icon">${ICONS[type] || 'ℹ️'}</span>
+        <span class="toast-msg">${msg}</span>
+        <button class="toast-close" onclick="this.closest('.toast').remove()">✕</button>
+        <div class="toast-bar"></div>`;
+      container.appendChild(t);
+      const timer = setTimeout(() => {
+        t.classList.add('hide');
+        t.addEventListener('animationend', () => t.remove(), { once: true });
+      }, duration);
+      t.querySelector('.toast-close').addEventListener('click', () => clearTimeout(timer));
+    }
+    window.showToast = showToast;
+  })();
 </script>
 </body>
 </html>

@@ -307,6 +307,49 @@
     .footer span { color: var(--blue); font-weight: 600; }
 
     .skeleton { background: linear-gradient(90deg, var(--cream) 25%, var(--bg2) 50%, var(--cream) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+  
+    /* ── TOAST SYSTEM ────────────────────────────────────────────────────── */
+    #toast-container {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 9999; display: flex; flex-direction: column-reverse; align-items: center;
+      gap: 8px; pointer-events: none; width: 100%; max-width: 380px; padding: 0 16px;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      background: #1c1917; color: #fff;
+      border-radius: 14px; padding: 12px 16px;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
+      pointer-events: all; cursor: default; width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative; overflow: hidden;
+      animation: toastIn 0.32s cubic-bezier(0.34,1.4,0.64,1) both;
+    }
+    .toast.hide { animation: toastOut 0.22s ease forwards; }
+    .toast-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
+    .toast-msg  { flex: 1; line-height: 1.4; }
+    .toast-close {
+      background: none; border: none; color: rgba(255,255,255,0.4);
+      font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
+      flex-shrink: 0; transition: color 0.15s;
+    }
+    .toast-close:hover { color: rgba(255,255,255,0.85); }
+    .toast-bar {
+      position: absolute; bottom: 0; left: 0; height: 3px;
+      border-radius: 0 0 14px 14px;
+      animation: toastBar var(--dur, 3s) linear forwards;
+    }
+    .toast.success { background: #14532d; border-color: rgba(34,197,94,0.25); }
+    .toast.success .toast-bar { background: #22c55e; }
+    .toast.error   { background: #450a0a; border-color: rgba(239,68,68,0.25); }
+    .toast.error   .toast-bar { background: #ef4444; }
+    .toast.warning { background: #431407; border-color: rgba(249,115,22,0.25); }
+    .toast.warning .toast-bar { background: #f97316; }
+    .toast.info    { background: #1e3a5f; border-color: rgba(59,130,246,0.25); }
+    .toast.info    .toast-bar { background: #3b82f6; }
+    @keyframes toastIn  { from{opacity:0;transform:translateY(16px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);} }
+    @keyframes toastOut { from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(10px) scale(0.96);} }
+    @keyframes toastBar { from{width:100%;}to{width:0%;} }
   </style>
 </head>
 <body>
@@ -388,7 +431,7 @@
     </div>
     <div class="form-group">
       <label class="form-label" id="telLabel">Téléphone</label>
-      <input class="form-input" type="tel" id="telephone" placeholder="05/06/07xxxxxxxx" inputmode="numeric" autocomplete="tel"/>
+      <input class="form-input" type="tel" id="telephone" placeholder="0xxxxxxxxx" autocomplete="off"/>
       <div class="error-msg" id="telErr">Ce champ est requis.</div>
     </div>
     <button class="submit-btn" id="submitBtn" onclick="inscrire()">
@@ -456,7 +499,7 @@
       liveInscritsLabel:"Inscrits aujourd'hui",
       infoBox:"📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.",
       nomLabel:'Nom', prenomLabel:'Prénom', telLabel:'Téléphone',
-      nomPh:'Votre nom', prenomPh:'Votre prénom', telPh:'06 ou 07xxxxxxxx',
+      nomPh:'Votre nom', prenomPh:'Votre prénom', telPh:'0xxxxxxxxx',
       submitText:"S'inscrire",
       successTitle:'Vous êtes inscrit(e) !', successMsg:"Votre numéro dans la file d'attente",
       successInfo:'Présentez-vous au cabinet avec ce numéro.',
@@ -465,9 +508,6 @@
       noticeSub:'Exemple : si votre numéro est 6, soyez au cabinet quand le numéro 3 est appelé.',
       closedText:"Les inscriptions sont fermées pour aujourd'hui.",
       errRequired:'Ce champ est requis.',
-      errTelFormat:'Numéro invalide. Format attendu : 05/06/07 + 8 chiffres.',
-      errDoublon:'Ce numéro est déjà inscrit aujourd\'hui.',
-      dejaInscrit:'Vous étiez déjà inscrit(e) — voici votre numéro.',
       errLimit:"Désolé, la limite de patients est atteinte pour aujourd'hui.",
       errClosed:'Les inscriptions sont fermées.',
       suiviTitle:'Suivi en temps réel',
@@ -480,7 +520,7 @@
       liveInscritsLabel:'المسجّلون اليوم',
       infoBox:'📋 سجّل اسمك للحصول على رقمك في قائمة الانتظار.',
       nomLabel:'اللقب', prenomLabel:'الاسم', telLabel:'رقم الهاتف',
-      nomPh:'لقبك', prenomPh:'اسمك', telPh:'06 أو 07xxxxxxxx',
+      nomPh:'لقبك', prenomPh:'اسمك', telPh:'0xxxxxxxxx',
       submitText:'تسجيل',
       successTitle:'✅ تم تسجيلك بنجاح !', successMsg:'رقمك في قائمة الانتظار',
       successInfo:'احضر إلى العيادة بهذا الرقم.',
@@ -489,9 +529,6 @@
       noticeSub:'مثال : إذا كان رقمك 6، كن في العيادة عند نداء الرقم 3.',
       closedText:'🚫 التسجيل مغلق لهذا اليوم.',
       errRequired:'هذا الحقل إلزامي.',
-      errTelFormat:'رقم غير صالح. الصيغة المطلوبة: 05/06/07 + 8 أرقام.',
-      errDoublon:'هذا الرقم مسجّل بالفعل اليوم.',
-      dejaInscrit:'أنت مسجّل مسبقاً — هذا رقمك.',
       errLimit:'عذراً، اكتمل عدد المرضى لهذا اليوم.',
       errClosed:'التسجيل مغلق حالياً.',
       suiviTitle:'متابعة مباشرة',
@@ -530,9 +567,6 @@
     const ns = document.getElementById('noticeSub');
     if (ns) ns.innerHTML = t.noticeSub.replace(/(\d+)/g, '<strong>$1</strong>');
     document.querySelectorAll('.error-msg').forEach(e => e.textContent = t.errRequired);
-    // Remettre le message par défaut du champ tel (sera mis à jour dynamiquement si format invalide)
-    const telErrEl = document.getElementById('telErr');
-    if (telErrEl && telErrEl.style.display === 'none') telErrEl.textContent = t.errRequired;
     if (myPosition) { const btn = document.getElementById('whatsappBtn'); if (btn) btn.href = generateWhatsAppLink(myPosition); }
     if (parametres.nom_cabinet) {
       const nom = lang === 'ar' ? (parametres.nom_cabinet_ar || parametres.nom_cabinet) : parametres.nom_cabinet;
@@ -605,147 +639,47 @@
     document.getElementById('soonBanner').style.display = ahead > 2 && ahead <= 5 ? 'block' : 'none';
   }
 
-  // ── COUCHE 1 : Validation format téléphone algérien ──────────────────────
-  function validerTelephone(tel) {
-    const clean = tel.replace(/[\s\-\.]/g, '');
-    // Accepte : 05/06/07 + 8 chiffres (format algérien mobile)
-    return /^0[567][0-9]{8}$/.test(clean);
-  }
-
-  // ── COUCHE 4 : Clé localStorage par cabinet + jour ───────────────────────
-  function lsKey() {
-    return `rendz_${cabinetId}_${new Date().toISOString().split('T')[0]}`;
-  }
-  function sauvegarderLocal(position, telephone) {
-    try { localStorage.setItem(lsKey(), JSON.stringify({ position, telephone })); } catch(e) {}
-  }
-  function restaurerLocal() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(lsKey()) || 'null');
-      if (saved && saved.position) {
-        myPosition = saved.position;
-        afficherSucces(saved.position);
-      }
-    } catch(e) {}
-  }
-
-  function afficherSucces(position) {
-    document.getElementById('myNumber').textContent = position;
-    document.getElementById('whatsappBtn').href = generateWhatsAppLink(position);
-    document.getElementById('formSection').style.display = 'none';
-    document.getElementById('successCard').style.display = 'block';
-    updateSuivi(parametres.numero_en_cours || 0);
-  }
-
   async function inscrire() {
     const t = T[lang];
     const nom = document.getElementById('nom').value.trim();
     const prenom = document.getElementById('prenom').value.trim();
     const telephone = document.getElementById('telephone').value.trim();
     let valid = true;
-
-    ['nomErr','prenomErr','telErr'].forEach(id => {
-      const el = document.getElementById(id); if (el) el.style.display = 'none';
-    });
-
-    if (!nom)    { const el = document.getElementById('nomErr');    if (el) el.style.display = 'block'; valid = false; }
-    if (!prenom) { const el = document.getElementById('prenomErr'); if (el) el.style.display = 'block'; valid = false; }
-
-    // ── COUCHE 1 : Validation format téléphone ────────────────────────────
-    if (!telephone) {
-      const el = document.getElementById('telErr');
-      if (el) { el.textContent = t.errRequired; el.style.display = 'block'; }
-      valid = false;
-    } else if (!validerTelephone(telephone)) {
-      const el = document.getElementById('telErr');
-      if (el) { el.textContent = t.errTelFormat; el.style.display = 'block'; }
-      valid = false;
-    }
-
+    ['nomErr','prenomErr','telErr'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    if (!nom)       { const el = document.getElementById('nomErr');    if (el) el.style.display = 'block'; valid = false; }
+    if (!prenom)    { const el = document.getElementById('prenomErr'); if (el) el.style.display = 'block'; valid = false; }
+    if (!telephone) { const el = document.getElementById('telErr');    if (el) el.style.display = 'block'; valid = false; }
     if (!valid) return;
-    if (!parametres.ouvert) { alert(t.errClosed); return; }
-
+    if (!parametres.ouvert) { showToast(t.errClosed, 'error'); return; }
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('submitText').textContent = '...';
-
     const today = new Date().toISOString().split('T')[0];
-    const telClean = telephone.replace(/[\s\-\.]/g, '');
-
-    // ── COUCHE 2 : Vérification doublon Supabase (même tél, même jour) ────
-    try {
-      const dupRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&telephone=eq.${encodeURIComponent(telClean)}&select=position`,
-        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-      );
-      const dupData = await dupRes.json();
-      if (dupData.length > 0) {
-        // Patient déjà inscrit → on lui restitue son numéro
-        myPosition = dupData[0].position;
-        sauvegarderLocal(myPosition, telClean);
-        afficherSucces(myPosition);
-        // Message discret sous le numéro
-        const sub = document.getElementById('successMsg');
-        if (sub) sub.textContent = t.dejaInscrit;
-        return;
-      }
-    } catch(e) { /* Si la vérif échoue on laisse passer, la contrainte SQL (couche 3) prendra le relais */ }
-
-    // Vérification limite patients
-    const countRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`,
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } }
-    );
+    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' }
+    });
     const countHeader = countRes.headers.get('content-range');
     const currentCount = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
-
     if (parametres.limite_patients && currentCount >= parametres.limite_patients) {
-      alert(t.errLimit);
+      showToast(t.errLimit, 'warning');
       document.getElementById('submitBtn').disabled = false;
       document.getElementById('submitText').textContent = t.submitText;
       return;
     }
-
     const position = currentCount + 1;
-
-    // ── INSERT ────────────────────────────────────────────────────────────
     const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
       method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json', 'Prefer': 'return=representation'
-      },
-      body: JSON.stringify({ nom, prenom, telephone: telClean, position, date_inscription: today, cabinet_id: cabinetId })
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+      body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today, cabinet_id: cabinetId })
     });
-
     if (res.ok) {
       myPosition = position;
-      // ── COUCHE 4 : Sauvegarde locale ─────────────────────────────────
-      sauvegarderLocal(position, telClean);
-      afficherSucces(position);
+      document.getElementById('myNumber').textContent = position;
+      document.getElementById('whatsappBtn').href = generateWhatsAppLink(position);
+      document.getElementById('formSection').style.display = 'none';
+      document.getElementById('successCard').style.display = 'block';
+      updateSuivi(parametres.numero_en_cours || 0);
     } else {
-      const errBody = await res.json().catch(() => ({}));
-      // ── COUCHE 3 : Contrainte SQL UNIQUE (code 23505) ─────────────────
-      if (errBody.code === '23505') {
-        // Récupérer le numéro existant et l'afficher
-        try {
-          const recupRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&telephone=eq.${encodeURIComponent(telClean)}&select=position`,
-            { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
-          );
-          const recupData = await recupRes.json();
-          if (recupData.length > 0) {
-            myPosition = recupData[0].position;
-            sauvegarderLocal(myPosition, telClean);
-            afficherSucces(myPosition);
-            const sub = document.getElementById('successMsg');
-            if (sub) sub.textContent = t.dejaInscrit;
-            return;
-          }
-        } catch(e2) {}
-        alert(t.errDoublon);
-      } else {
-        alert('Erreur. Veuillez réessayer.');
-      }
+      showToast('Erreur réseau. Veuillez réessayer.', 'error');
       document.getElementById('submitBtn').disabled = false;
       document.getElementById('submitText').textContent = t.submitText;
     }
@@ -761,9 +695,37 @@
   }
 
   fetchLive();
-  // ── COUCHE 4 : Restaurer l'inscription si déjà inscrit aujourd'hui ──────
-  restaurerLocal();
   setInterval(fetchLive, 20000);
+
+  // ── TOAST SYSTEM ────────────────────────────────────────────────────────────
+  // showToast(msg, type, duration)
+  // type : 'success' | 'error' | 'warning' | 'info'   duration : ms (défaut 3500)
+  (function() {
+    const ICONS = { success:'✅', error:'⛔', warning:'⚠️', info:'ℹ️' };
+    function showToast(msg, type = 'info', duration = 3500) {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+      }
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.style.setProperty('--dur', duration + 'ms');
+      t.innerHTML = `
+        <span class="toast-icon">${ICONS[type] || 'ℹ️'}</span>
+        <span class="toast-msg">${msg}</span>
+        <button class="toast-close" onclick="this.closest('.toast').remove()">✕</button>
+        <div class="toast-bar"></div>`;
+      container.appendChild(t);
+      const timer = setTimeout(() => {
+        t.classList.add('hide');
+        t.addEventListener('animationend', () => t.remove(), { once: true });
+      }, duration);
+      t.querySelector('.toast-close').addEventListener('click', () => clearTimeout(timer));
+    }
+    window.showToast = showToast;
+  })();
 </script>
 </body>
 </html>
