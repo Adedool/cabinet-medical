@@ -742,9 +742,12 @@
     const suivant = list.find(p => p.statut === 'present');
     const heroBar = document.getElementById('heroBar');
     if (enCours) {
-      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours</div><div class="hero-number">${enCours.position}</div><div class="hero-name">${enCours.nom} ${enCours.prenom}</div></div><div class="hero-actions">${suivant?`<button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Suivant — N°${suivant.position}</button>`:''}<button class="hero-btn btn-fin" onclick="finConsultation(${enCours.id})">✅ Fin</button></div></div>`;
+      const btnSuivant = suivant
+        ? '<button class="hero-btn btn-suivant" onclick="appelSuivant(' + suivant.id + ',' + suivant.position + ')">▶ Suivant — N°' + suivant.position + '</button>'
+        : '';
+      heroBar.innerHTML = '<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours</div><div class="hero-number">' + enCours.position + '</div><div class="hero-name">' + enCours.nom + ' ' + enCours.prenom + '</div></div><div class="hero-actions">' + btnSuivant + '<button class="hero-btn btn-fin" onclick="finConsultation(' + enCours.id + ')">✅ Fin</button></div></div>';
     } else if (suivant) {
-      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">⏳ Prochain patient</div><div class="hero-number">${suivant.position}</div><div class="hero-name">${suivant.nom} ${suivant.prenom}</div></div><div class="hero-actions"><button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Commencer</button></div></div>`;
+      heroBar.innerHTML = '<div class="hero-bar"><div class="hero-left"><div class="hero-label">⏳ Prochain patient</div><div class="hero-number">' + suivant.position + '</div><div class="hero-name">' + suivant.nom + ' ' + suivant.prenom + '</div></div><div class="hero-actions"><button class="hero-btn btn-suivant" onclick="appelSuivant(' + suivant.id + ',' + suivant.position + ')">▶ Commencer</button></div></div>';
     } else {
       heroBar.innerHTML = `<div class="no-consult">⏳ Aucun patient présent pour l'instant</div>`;
     }
