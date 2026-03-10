@@ -4,18 +4,104 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Assistante</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="rendz-common.css"/>
-  <script src="rendz-common.js" defer></script>
-  <style>to{opacity:1;transform:translateY(0);} }50%{opacity:0.3;} }50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:          #f7f3ee;
+      --bg2:         #f0ebe3;
+      --cream:       #ede8e0;
+      --blue:        #2563eb;
+      --blue-dim:    rgba(37,99,235,0.08);
+      --blue-border: rgba(37,99,235,0.18);
+      --blue-text:   #1d4ed8;
+      --white:       #ffffff;
+      --text:        #1c1917;
+      --text-sub:    #78716c;
+      --text-muted:  #a8a29e;
+      --border:      rgba(0,0,0,0.07);
+      --shadow:      0 2px 12px rgba(0,0,0,0.06);
+      --shadow-lg:   0 8px 28px rgba(0,0,0,0.10);
+      --green:       #16a34a;
+      --green-light: #f0fdf4;
+      --green-border:#bbf7d0;
+      --orange:      #ea580c;
+      --orange-light:#fff7ed;
+      --orange-border:#fed7aa;
+      --red:         #dc2626;
+      --red-light:   #fef2f2;
+      --red-border:  #fecaca;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); min-height: 100vh; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes pulse  { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+    @keyframes glow   { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
 
     /* ── LOGIN ── */
+    .login-wrap {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 20px; background: var(--bg);
+    }
+    .login-card {
+      background: white; border-radius: 22px; padding: 40px 36px;
+      width: 100%; max-width: 380px;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      text-align: center;
+      animation: fadeUp 0.5s ease both;
+    }
+    .login-logo-wrap { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .login-logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      animation: glow 3s ease-in-out infinite;
+    }
+    .login-logo-text { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
     .login-logo-text span { color: var(--blue); }
+    .login-role-icon { font-size: 36px; margin: 16px 0 8px; }
+    .login-role { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; font-weight: 500; }
+    .login-input {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 11px; font-family: 'Outfit', sans-serif; font-size: 15px;
+      color: var(--text); background: var(--bg); margin-bottom: 12px; outline: none;
+    }
+    .login-input:focus { border-color: var(--blue); background: white; }
+    .login-btn {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white; border: none; border-radius: 11px;
+      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(29,78,216,0.3);
+    }
+    .login-btn:hover { transform: translateY(-1px); }
+    .login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; font-weight: 500; }
 
     /* ── DASHBOARD ── */
     .dashboard { display: none; }
+
+    .topbar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+    }
+    .topbar-logo-wrap { display: flex; align-items: center; gap: 7px; }
+    .topbar-logo-icon {
+      width: 28px; height: 28px; background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .topbar-logo-text span { color: var(--blue); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
     .topbar-date { font-size: 12px; color: var(--text-sub); font-weight: 500; }
     .live-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+    .logout-btn {
+      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: white; color: var(--text-sub);
+      font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer;
+    }
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
     /* CONSULT BAR */
     .consult-bar {
@@ -150,11 +236,37 @@
     }
 
     /* MODAL */
-    .modal-overlay.show
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(28,25,23,0.4);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 18px; padding: 28px 24px;
+      max-width: 340px; width: 100%; box-shadow: var(--shadow-lg);
+      transform: scale(0.95); transition: transform 0.2s;
+    }
+    .modal-overlay.show .modal { transform: scale(1); }
+    .modal-icon { font-size: 32px; text-align: center; margin-bottom: 10px; }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 7px; }
+    .modal-msg { font-size: 13px; color: var(--text-sub); text-align: center; line-height: 1.5; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-cancel {
+      flex: 1; padding: 11px; background: var(--bg); color: var(--text-sub);
+      border: 1px solid var(--border); border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .modal-cancel:hover { background: var(--cream); }
+    .modal-confirm { flex: 1; padding: 11px; border: none; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; color: white; }
+    .modal-confirm.danger  { background: var(--red); }
+    .modal-confirm.danger:hover { background: #b91c1c; }
+    .modal-confirm.success { background: var(--green); }
+    .modal-confirm.success:hover { background: #15803d; }
 
     @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .manual-form { position: static; } }
     @media (max-width: 640px) {
-      .content,
+      .content, .topbar { padding-left: 14px; padding-right: 14px; }
       .stats-row { gap: 7px; padding: 12px 14px 0; }
       .stat-card { padding: 10px 8px; }
       .stat-val { font-size: 20px; }
@@ -170,6 +282,52 @@
       .action-btn { padding: 9px 14px !important; font-size: 12px !important; flex: 1; min-width: 80px; text-align: center; }
       .btn-del { flex: 0 0 auto; min-width: unset; padding: 9px 12px !important; }
     }
+  
+    /* ── URGENCES ────────────────────────────────────────────────────────── */
+    .list-item.urgence {
+      border-left: 3px solid #dc2626 !important;
+      background: #fff5f5 !important;
+    }
+    .urgence-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      background: #fef2f2; border: 1px solid #fecaca;
+      color: #dc2626; font-size: 10px; font-weight: 700;
+      border-radius: 6px; padding: 2px 6px; margin-left: 5px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      animation: urgencePulse 1.5s ease-in-out infinite;
+    }
+    @keyframes urgencePulse { 0%,100%{opacity:1;}50%{opacity:0.6;} }
+    .btn-urgence {
+      background: #fef2f2; color: #dc2626;
+      border: 1px solid #fecaca; border-radius: 7px;
+      padding: 5px 10px; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.12s; white-space: nowrap;
+      font-family: 'Outfit', sans-serif;
+    }
+    .btn-urgence:hover  { background: #dc2626; color: white; }
+    .btn-urgence.active { background: #dc2626; color: white; border-color: #dc2626; }
+
+    /* ── HORODATAGE ──────────────────────────────────────────────────────── */
+    .timing-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600; color: var(--text-muted);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 2px 7px; margin-top: 3px;
+    }
+    .timing-chip.en-cours {
+      color: #ea580c; background: #fff7ed; border-color: #fed7aa;
+      animation: urgencePulse 2s ease-in-out infinite;
+    }
+    .timing-chip.termine { color: var(--green); background: var(--green-light); border-color: var(--green-border); }
+    .timing-chip.long    { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
+    .resume-timing {
+      margin-top: 12px; padding: 12px 14px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .resume-stat { text-align: center; }
+    .resume-val  { font-size: 20px; font-weight: 800; color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1; }
+    .resume-lbl  { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -243,6 +401,7 @@
             <span style="text-align:right">Actions</span>
           </div>
           <div id="listBody"></div>
+          <div id="resumeTiming"></div>
         </div>
       </div>
       <div class="manual-form">
@@ -267,13 +426,15 @@
 </div>
 
 <script>
+  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   let refreshInterval;
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
   const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };
 
   async function login() {
     const pwd = document.getElementById('pwdInput').value;
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante&cabinet_id=eq.${cabinetId}`, { headers: SB_H });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante&cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
       localStorage.setItem(`rendz_assistante_${cabinetId}`, 'true');
@@ -307,16 +468,16 @@
     const nom = document.getElementById('mNom').value.trim();
     const prenom = document.getElementById('mPrenom').value.trim();
     const telephone = document.getElementById('mTel').value.trim() || '—';
-    if (!nom || !prenom) { alert('Nom et prénom obligatoires.'); return; }
+    if (!nom || !prenom) { showToast('Nom et prénom obligatoires.', 'error'); return; }
     document.getElementById('addBtn').disabled = true;
     const today = new Date().toISOString().split('T')[0];
-    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { ...SB_H, 'Prefer': 'count=exact' } });
+    const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } });
     const countHeader = countRes.headers.get('content-range');
     const currentCount = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
     const position = currentCount + 1;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions`, {
       method: 'POST',
-      headers: { ...SB_HJ, 'Prefer': 'return=representation' },
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
       body: JSON.stringify({ nom, prenom, telephone, position, date_inscription: today, statut: 'present', source: 'manuel', cabinet_id: cabinetId })
     });
     if (res.ok) {
@@ -328,17 +489,21 @@
       s.style.display = 'block';
       setTimeout(() => s.style.display = 'none', 3000);
       loadList();
-    } else { alert('Erreur. Réessayez.'); }
+    } else { showToast('Erreur réseau. Réessayez.', 'error'); }
     document.getElementById('addBtn').disabled = false;
   }
 
   async function loadList() {
     const today = new Date().toISOString().split('T')[0];
     const [listRes, paramRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: SB_H }),
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
     ]);
-    const list = await listRes.json();
+    const list = (await listRes.json()).sort((a,b) => {
+      if (a.urgence && !b.urgence) return -1;
+      if (!a.urgence && b.urgence) return 1;
+      return a.position - b.position;
+    });
     const enCours = list.find(p => p.statut === 'en_cours');
     const consultBar = document.getElementById('consultBar');
     if (enCours) {
@@ -356,7 +521,8 @@
     const dejaEnCours = list.some(x => x.statut === 'en_cours');
     body.innerHTML = list.map(p => {
       const st = p.statut || 'en_attente';
-      const isM = p.source === 'manuel';
+      const isM    = p.source === 'manuel';
+      const isUrg  = !!p.urgence;
       const bc = st === 'present' ? 'present' : st === 'en_cours' ? 'en_cours' : st === 'absent' ? 'absent' : st === 'termine' ? 'termine' : '';
       const actions = `
         ${st === 'en_attente' ? `<button class="action-btn btn-present" onclick="setStatut(${p.id},'present')">✓ Présent</button>` : ''}
@@ -364,44 +530,61 @@
         ${st === 'en_cours' ? `<button class="action-btn btn-fin" onclick="finConsultation(${p.id})">✅ Fin</button>` : ''}
         ${st !== 'absent' && st !== 'termine' ? `<button class="action-btn btn-absent" onclick="setStatut(${p.id},'absent')">✗ Absent</button>` : ''}
         ${st === 'absent' ? `<button class="action-btn btn-restore" onclick="setStatut(${p.id},'en_attente')">↩ Restaurer</button>` : ''}
+        ${st !== 'termine' && st !== 'absent' ? `<button class="btn-urgence ${isUrg ? 'active' : ''}" onclick="toggleUrgence(${p.id},${isUrg})">🚨</button>` : ''}
         <button class="action-btn btn-del" onclick="supprimer(${p.id})">🗑</button>`;
-      return `<div class="list-item ${st} ${isM ? 'manuel' : ''}">
+      return `<div class="list-item ${st} ${isM ? 'manuel' : ''} ${isUrg ? 'urgence' : ''}">
         <div><div class="num-badge ${bc}">${p.position}</div></div>
         <div class="name-col">${p.nom} ${p.prenom}${isM ? '<span class="tag-manuel">Sur place</span>' : ''}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
         <div class="status-col"><span class="status-badge ${st}">${SL[st] || st}</span></div>
         <div class="actions-col">${actions}</div>
       </div>`;
     }).join('');
+    const rt = document.getElementById('resumeTiming');
+    if (rt) rt.innerHTML = resumeTiming(fullList);
   }
 
   async function appelConsultation(id, position) {
-    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H });
+    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const params = await paramRes.json();
     const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
-    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'en_cours' }) })];
+    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours', heure_appel: new Date().toISOString() }) })];
     if (position > numeroActuel) {
-      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: position }) }));
+      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: position }) }));
     }
     await Promise.all(updates);
     loadList();
   }
 
+  let pendingAction = null;
+
+  function showModal(icon, title, msg, confirmClass, action) {
+    document.getElementById('modalIcon').textContent = icon;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMsg').textContent = msg;
+    document.getElementById('modalConfirm').className = `modal-confirm ${confirmClass}`;
+    document.getElementById('modalConfirm').textContent = confirmClass === 'danger' ? 'Confirmer' : 'Valider';
+    pendingAction = action;
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); pendingAction = null; }
+  async function confirmAction() { const action = pendingAction; closeModal(); if (action) await action(); }
+
   async function supprimer(id) {
     showModal('🗑️', 'Supprimer ce patient ?', 'Cette action est irréversible.', 'danger',
-      async () => { await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'DELETE', headers: SB_H }); loadList(); }
+      async () => { await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'DELETE', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }); loadList(); }
     );
   }
 
   async function finConsultation(id) {
     showModal('✅', 'Fin de consultation ?', 'Le patient sera marqué comme terminé.', 'success',
       async () => {
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'termine' }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'termine', heure_fin: new Date().toISOString() }) });
         const today = new Date().toISOString().split('T')[0];
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: SB_H });
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
         const tous = await res.json();
         const restants = tous.filter(p => p.statut !== 'termine' && p.statut !== 'absent' && p.id !== id);
         if (restants.length === 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
+          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: 0 }) });
         }
         loadList();
       }
@@ -409,13 +592,76 @@
   }
 
   async function setStatut(id, statut) {
-    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut }) });
     loadList();
   }
 
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+
+  // ── HORODATAGE : utilitaires ─────────────────────────────────────────────
+  function formatHeure(isoStr) {
+    if (!isoStr) return null;
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function dureeMinutes(debut, fin) {
+    if (!debut) return null;
+    const end = fin ? new Date(fin) : new Date();
+    const diff = Math.round((end - new Date(debut)) / 60000);
+    return diff;
+  }
+
+  function formatDuree(minutes) {
+    if (minutes === null || minutes === undefined) return null;
+    if (minutes < 1) return '< 1 min';
+    if (minutes < 60) return `${minutes} min`;
+    return `${Math.floor(minutes/60)}h${String(minutes%60).padStart(2,'0')}`;
+  }
+
+  function timingChip(p) {
+    if (p.statut === 'en_cours' && p.heure_appel) {
+      const duree = dureeMinutes(p.heure_appel, null);
+      const cls   = duree > 20 ? 'long' : 'en-cours';
+      return `<div class="timing-chip ${cls}">⏱ ${formatDuree(duree)}</div>`;
+    }
+    if (p.statut === 'termine' && p.heure_appel && p.heure_fin) {
+      const duree = dureeMinutes(p.heure_appel, p.heure_fin);
+      const cls   = duree > 20 ? 'long' : 'termine';
+      return `<div class="timing-chip ${cls}">✓ ${formatDuree(duree)}</div>`;
+    }
+    if (p.heure_appel && p.statut !== 'termine') {
+      return `<div class="timing-chip en-cours">Appelé à ${formatHeure(p.heure_appel)}</div>`;
+    }
+    return '';
+  }
+
+  function resumeTiming(list) {
+    const termines = list.filter(p => p.statut === 'termine' && p.heure_appel && p.heure_fin);
+    if (termines.length === 0) return '';
+    const durees  = termines.map(p => dureeMinutes(p.heure_appel, p.heure_fin));
+    const moyenne = Math.round(durees.reduce((a,b) => a+b, 0) / durees.length);
+    const max     = Math.max(...durees);
+    const min     = Math.min(...durees);
+    return `<div class="resume-timing">
+      <div class="resume-stat"><div class="resume-val">${formatDuree(moyenne)}</div><div class="resume-lbl">Durée moyenne</div></div>
+      <div class="resume-stat"><div class="resume-val">${formatDuree(min)}</div><div class="resume-lbl">Plus courte</div></div>
+      <div class="resume-stat"><div class="resume-val">${formatDuree(max)}</div><div class="resume-lbl">Plus longue</div></div>
+      <div class="resume-stat"><div class="resume-val">${termines.length}</div><div class="resume-lbl">Terminées</div></div>
+    </div>`;
+  }
+
+  async function toggleUrgence(id, estUrgent) {
+    const nouvelEtat = !estUrgent;
+    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...SB_HJ },
+      body: JSON.stringify({ urgence: nouvelEtat })
+    });
+    loadList();
+    showToast(nouvelEtat ? '🚨 Patient marqué urgent' : 'Urgence retirée', nouvelEtat ? 'warning' : 'info', 2500);
+  }
 </script>
-<div id="toast-container"></div>
 </body>
 </html>

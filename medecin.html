@@ -4,18 +4,106 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rendz — Médecin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="rendz-common.css"/>
-  <script src="rendz-common.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>to{opacity:1;transform:translateY(0);} }50%{opacity:0.3;} }50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
+  <style>
+    :root {
+      --bg:          #f7f3ee;
+      --bg2:         #f0ebe3;
+      --cream:       #ede8e0;
+      --blue:        #2563eb;
+      --blue-mid:    #3b82f6;
+      --blue-dim:    rgba(37,99,235,0.08);
+      --blue-border: rgba(37,99,235,0.18);
+      --blue-text:   #1d4ed8;
+      --white:       #ffffff;
+      --text:        #1c1917;
+      --text-sub:    #78716c;
+      --text-muted:  #a8a29e;
+      --border:      rgba(0,0,0,0.07);
+      --shadow:      0 2px 12px rgba(0,0,0,0.06);
+      --shadow-lg:   0 8px 28px rgba(0,0,0,0.10);
+      --green:       #16a34a;
+      --green-light: #f0fdf4;
+      --green-border:#bbf7d0;
+      --orange:      #ea580c;
+      --orange-light:#fff7ed;
+      --orange-border:#fed7aa;
+      --red:         #dc2626;
+      --red-light:   #fef2f2;
+      --red-border:  #fecaca;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); min-height: 100vh; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes pulse  { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+    @keyframes glow   { 0%,100%{box-shadow:0 0 16px rgba(37,99,235,0.25);}50%{box-shadow:0 0 28px rgba(37,99,235,0.4);} }
 
     /* ── LOGIN ── */
+    .login-wrap {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 20px; background: var(--bg);
+    }
+    .login-card {
+      background: white; border-radius: 22px; padding: 40px 36px;
+      width: 100%; max-width: 380px;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      text-align: center; animation: fadeUp 0.5s ease both;
+    }
+    .login-logo-wrap { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .login-logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      animation: glow 3s ease-in-out infinite;
+    }
+    .login-logo-text { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
     .login-logo-text span { color: var(--blue); }
+    .login-role-icon { font-size: 36px; margin: 16px 0 8px; }
+    .login-role { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; font-weight: 500; }
+    .login-input {
+      width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+      border-radius: 11px; font-family: 'Outfit', sans-serif; font-size: 15px;
+      color: var(--text); background: var(--bg); margin-bottom: 12px; outline: none;
+    }
+    .login-input:focus { border-color: var(--blue); background: white; }
+    .login-btn {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      color: white; border: none; border-radius: 11px;
+      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(29,78,216,0.3); transition: all 0.15s;
+    }
+    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(29,78,216,0.4); }
+    .login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; font-weight: 500; }
 
     /* ── DASHBOARD ── */
     .dashboard { display: none; }
+
+    .topbar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+    }
+    .topbar-logo-wrap { display: flex; align-items: center; gap: 7px; }
+    .topbar-logo-icon {
+      width: 28px; height: 28px; background: linear-gradient(140deg, #2563eb, #1d4ed8);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .topbar-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .topbar-logo-text span { color: var(--blue); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .role-badge { background: var(--blue-dim); color: var(--blue-text); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--blue-border); }
     .live-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+    .logout-btn {
+      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: white; color: var(--text-sub);
+      font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
     /* TABS */
     .tabs {
@@ -228,7 +316,33 @@
     .danger-btn:hover { background: #b91c1c; }
 
     /* MODAL */
-    .modal-overlay.show
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(28,25,23,0.4);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 18px; padding: 28px 24px;
+      max-width: 340px; width: 100%; box-shadow: var(--shadow-lg);
+      transform: scale(0.95); transition: transform 0.2s;
+    }
+    .modal-overlay.show .modal { transform: scale(1); }
+    .modal-icon { font-size: 32px; text-align: center; margin-bottom: 10px; }
+    .modal-title { font-size: 16px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 7px; }
+    .modal-msg { font-size: 13px; color: var(--text-sub); text-align: center; line-height: 1.5; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-cancel {
+      flex: 1; padding: 11px; background: var(--bg); color: var(--text-sub);
+      border: 1px solid var(--border); border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .modal-cancel:hover { background: var(--cream); }
+    .modal-confirm { flex: 1; padding: 11px; border: none; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; color: white; }
+    .modal-confirm.danger  { background: var(--red); }
+    .modal-confirm.danger:hover  { background: #b91c1c; }
+    .modal-confirm.success { background: var(--green); }
+    .modal-confirm.primary { background: var(--blue); }
 
     /* QR MODAL */
     .qr-modal-overlay {
@@ -271,6 +385,52 @@
       .sfield-grid { grid-template-columns: 1fr; }
       .tabs { padding: 0 14px; overflow-x: auto; }
     }
+  
+    /* ── URGENCES ────────────────────────────────────────────────────────── */
+    .list-item.urgence {
+      border-left: 3px solid #dc2626 !important;
+      background: #fff5f5 !important;
+    }
+    .urgence-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      background: #fef2f2; border: 1px solid #fecaca;
+      color: #dc2626; font-size: 10px; font-weight: 700;
+      border-radius: 6px; padding: 2px 6px; margin-left: 5px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      animation: urgencePulse 1.5s ease-in-out infinite;
+    }
+    @keyframes urgencePulse { 0%,100%{opacity:1;}50%{opacity:0.6;} }
+    .btn-urgence {
+      background: #fef2f2; color: #dc2626;
+      border: 1px solid #fecaca; border-radius: 7px;
+      padding: 5px 10px; font-size: 11px; font-weight: 600;
+      cursor: pointer; transition: all 0.12s; white-space: nowrap;
+      font-family: 'Outfit', sans-serif;
+    }
+    .btn-urgence:hover  { background: #dc2626; color: white; }
+    .btn-urgence.active { background: #dc2626; color: white; border-color: #dc2626; }
+
+    /* ── HORODATAGE ──────────────────────────────────────────────────────── */
+    .timing-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600; color: var(--text-muted);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 2px 7px; margin-top: 3px;
+    }
+    .timing-chip.en-cours {
+      color: #ea580c; background: #fff7ed; border-color: #fed7aa;
+      animation: urgencePulse 2s ease-in-out infinite;
+    }
+    .timing-chip.termine { color: var(--green); background: var(--green-light); border-color: var(--green-border); }
+    .timing-chip.long    { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
+    .resume-timing {
+      margin-top: 12px; padding: 12px 14px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .resume-stat { text-align: center; }
+    .resume-val  { font-size: 20px; font-weight: 800; color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1; }
+    .resume-lbl  { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -380,6 +540,7 @@
           <span>#</span><span>Patient</span><span>Statut</span>
         </div>
         <div id="listBody"></div>
+        <div id="resumeTiming"></div>
       </div>
     </div>
   </div>
@@ -518,14 +679,18 @@
 </div>
 
 <script>
+  const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   let refreshInterval;
   const cabinetId = new URLSearchParams(window.location.search).get('id') || 'cabinet-001';
-  const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };` };
+  const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };
+  const H = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+  const HJ = { ...H, 'Content-Type': 'application/json' };
 
   /* ── LOGIN ── */
   async function login() {
     const pwd = document.getElementById('pwdInput').value;
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin&cabinet_id=eq.${cabinetId}`, { headers: SB_H });
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.medecin&cabinet_id=eq.${cabinetId}`, { headers: H });
     const data = await res.json();
     if (data.length > 0 && data[0].mot_de_passe === pwd) {
       localStorage.setItem(`rendz_medecin_${cabinetId}`, 'true');
@@ -580,8 +745,8 @@
   async function loadData() {
     const today = new Date().toISOString().split('T')[0];
     const [listRes, paramRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: SB_H }),
-      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: H }),
+      fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: H })
     ]);
     const list = await listRes.json();
     const params = (await paramRes.json())[0] || {};
@@ -616,7 +781,7 @@
     const suivant = list.find(p => p.statut === 'present');
     const heroBar = document.getElementById('heroBar');
     if (enCours) {
-      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours</div><div class="hero-number">${enCours.position}</div><div class="hero-name">${enCours.nom} ${enCours.prenom}</div></div><div class="hero-actions">${suivant?`<button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Suivant — N°${suivant.position}</button>`:''}<button class="hero-btn btn-fin" onclick="finConsultation(${enCours.id})">✅ Fin</button></div></div>`;
+      heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">🔵 Consultation en cours${enCours.heure_appel ? ' · ' + formatDuree(dureeMinutes(enCours.heure_appel, null)) : ''}</div><div class="hero-number">${enCours.position}</div><div class="hero-name">${enCours.nom} ${enCours.prenom}${enCours.urgence ? ' <span class="urgence-badge">🚨 Urgent</span>' : ''}</div></div><div class="hero-actions">${suivant?`<button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Suivant — N°${suivant.position}</button>`:''}<button class="hero-btn btn-fin" onclick="finConsultation(${enCours.id})">✅ Fin</button></div></div>`;
     } else if (suivant) {
       heroBar.innerHTML = `<div class="hero-bar"><div class="hero-left"><div class="hero-label">⏳ Prochain patient</div><div class="hero-number">${suivant.position}</div><div class="hero-name">${suivant.nom} ${suivant.prenom}</div></div><div class="hero-actions"><button class="hero-btn btn-suivant" onclick="appelSuivant(${suivant.id},${suivant.position})">▶ Commencer</button></div></div>`;
     } else {
@@ -627,25 +792,28 @@
     const body = document.getElementById('listBody');
     if (list.length === 0) { body.innerHTML = `<div class="empty-state"><div class="ico">📭</div><p>Aucun patient inscrit aujourd'hui.</p></div>`; return; }
     body.innerHTML = list.map(p => {
-      const st = p.statut || 'en_attente';
-      const bc = ['present','en_cours','absent','termine'].includes(st) ? st : '';
-      return `<div class="list-item ${st}">
+      const st    = p.statut || 'en_attente';
+      const bc    = ['present','en_cours','absent','termine'].includes(st) ? st : '';
+      const isUrg = !!p.urgence;
+      return `<div class="list-item ${st} ${isUrg ? 'urgence' : ''}">
         <div><div class="num-badge ${bc}">${p.position}</div></div>
         <div class="name-col">${p.nom} ${p.prenom}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
         <div><span class="status-badge ${st}">${SL[st] || st}</span></div>
       </div>`;
     }).join('');
+    const rt = document.getElementById('resumeTiming');
+    if (rt) rt.innerHTML = resumeTiming(fullList || list);
   }
 
   async function appelSuivant(id, position) {
-    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: SB_H });
+    const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: H });
     const params = await paramRes.json();
     const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
     const updates = [
-      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'en_cours' }) })
+      fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'en_cours', heure_appel: new Date().toISOString() }) })
     ];
     if (position > numeroActuel) {
-      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: position }) }));
+      updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: position }) }));
     }
     await Promise.all(updates);
     loadData();
@@ -654,13 +822,13 @@
   async function finConsultation(id) {
     showModal('✅', 'Fin de consultation ?', 'Le patient sera marqué comme terminé.', 'success',
       async () => {
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'termine' }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ statut: 'termine', heure_fin: new Date().toISOString() }) });
         const today = new Date().toISOString().split('T')[0];
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: SB_H });
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: H });
         const tous = await res.json();
         const restants = tous.filter(p => p.statut !== 'termine' && p.statut !== 'absent' && p.id !== id);
         if (restants.length === 0) {
-          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
+          await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
         }
         loadData();
       }
@@ -669,7 +837,7 @@
 
   async function toggleOuvert() {
     const ouvert = document.getElementById('ouvertToggle').checked;
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ ouvert }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ ouvert }) });
     const badge = document.getElementById('ouvertBadge');
     badge.textContent = ouvert ? '✓ Ouvert' : '✗ Fermé';
     badge.className = `ouvert-badge ${ouvert ? 'open' : 'closed'}`;
@@ -687,7 +855,7 @@
       horaires_ar:          document.getElementById('sHorairesAr').value.trim(),
       message_patients_ar:  document.getElementById('sMessageAr').value.trim()
     };
-    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify(body) });
+    await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify(body) });
     const ok = document.getElementById('saveOk');
     ok.style.display = 'inline';
     setTimeout(() => ok.style.display = 'none', 2500);
@@ -702,7 +870,7 @@
     const errEl   = document.getElementById(`pwd${suffix}Err`);
     okEl.style.display = 'none'; errEl.style.display = 'none';
     if (!newPwd || newPwd !== confirm) { errEl.style.display = 'inline'; return; }
-    await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}&cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ mot_de_passe: newPwd }) });
+    await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.${role}&cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ mot_de_passe: newPwd }) });
     document.getElementById(`newPwd${suffix}`).value = '';
     document.getElementById(`confirmPwd${suffix}`).value = '';
     okEl.style.display = 'inline';
@@ -714,8 +882,8 @@
     showModal('🗑', 'Remettre à zéro ?', 'Tous les patients seront supprimés et le compteur remis à 0. Action irréversible.', 'danger',
       async () => {
         const today = new Date().toISOString().split('T')[0];
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}`, { method: 'DELETE', headers: SB_H });
-        await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: SB_HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}`, { method: 'DELETE', headers: H });
+        await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: HJ, body: JSON.stringify({ numero_en_cours: 0 }) });
         loadData();
       }
     );
@@ -748,11 +916,76 @@
   }
 
   /* ── MODAL ── */
+  let pendingAction = null;
+  function showModal(icon, title, msg, confirmClass, action) {
+    document.getElementById('modalIcon').textContent = icon;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMsg').textContent = msg;
+    const btn = document.getElementById('modalConfirm');
+    btn.className = `modal-confirm ${confirmClass}`;
+    btn.textContent = 'Confirmer';
+    pendingAction = action;
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+  function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); pendingAction = null; }
+  async function confirmAction() { closeModal(); if (pendingAction) await pendingAction(); }
 
   document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('modalOverlay')) closeModal(); });
   document.getElementById('qrModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('qrModalOverlay')) closeQR(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+
+  // ── HORODATAGE : utilitaires ─────────────────────────────────────────────
+  function formatHeure(isoStr) {
+    if (!isoStr) return null;
+    const d = new Date(isoStr);
+    return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function dureeMinutes(debut, fin) {
+    if (!debut) return null;
+    const end = fin ? new Date(fin) : new Date();
+    const diff = Math.round((end - new Date(debut)) / 60000);
+    return diff;
+  }
+
+  function formatDuree(minutes) {
+    if (minutes === null || minutes === undefined) return null;
+    if (minutes < 1) return '< 1 min';
+    if (minutes < 60) return `${minutes} min`;
+    return `${Math.floor(minutes/60)}h${String(minutes%60).padStart(2,'0')}`;
+  }
+
+  function timingChip(p) {
+    if (p.statut === 'en_cours' && p.heure_appel) {
+      const duree = dureeMinutes(p.heure_appel, null);
+      const cls   = duree > 20 ? 'long' : 'en-cours';
+      return `<div class="timing-chip ${cls}">⏱ ${formatDuree(duree)}</div>`;
+    }
+    if (p.statut === 'termine' && p.heure_appel && p.heure_fin) {
+      const duree = dureeMinutes(p.heure_appel, p.heure_fin);
+      const cls   = duree > 20 ? 'long' : 'termine';
+      return `<div class="timing-chip ${cls}">✓ ${formatDuree(duree)}</div>`;
+    }
+    if (p.heure_appel && p.statut !== 'termine') {
+      return `<div class="timing-chip en-cours">Appelé à ${formatHeure(p.heure_appel)}</div>`;
+    }
+    return '';
+  }
+
+  function resumeTiming(list) {
+    const termines = list.filter(p => p.statut === 'termine' && p.heure_appel && p.heure_fin);
+    if (termines.length === 0) return '';
+    const durees  = termines.map(p => dureeMinutes(p.heure_appel, p.heure_fin));
+    const moyenne = Math.round(durees.reduce((a,b) => a+b, 0) / durees.length);
+    const max     = Math.max(...durees);
+    const min     = Math.min(...durees);
+    return `<div class="resume-timing">
+      <div class="resume-stat"><div class="resume-val">${formatDuree(moyenne)}</div><div class="resume-lbl">Durée moyenne</div></div>
+      <div class="resume-stat"><div class="resume-val">${formatDuree(min)}</div><div class="resume-lbl">Plus courte</div></div>
+      <div class="resume-stat"><div class="resume-val">${formatDuree(max)}</div><div class="resume-lbl">Plus longue</div></div>
+      <div class="resume-stat"><div class="resume-val">${termines.length}</div><div class="resume-lbl">Terminées</div></div>
+    </div>`;
+  }
 </script>
-<div id="toast-container"></div>
 </body>
 </html>
