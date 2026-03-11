@@ -777,7 +777,6 @@
     if (res.ok) {
       myPosition = position;
       document.getElementById('myNumber').textContent = position;
-      document.getElementById('whatsappBtn').href = generateWhatsAppLink(position);
       document.getElementById('formSection').style.display = 'none';
       document.getElementById('successCard').style.display = 'block';
       updateSuivi(parametres.numero_en_cours || 0);
