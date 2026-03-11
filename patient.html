@@ -143,20 +143,9 @@
 
     /* Grand numéro */
     .number-hero {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 22px 20px;
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 10px;
-      box-shadow: var(--shadow);
+      text-align: center;
+      padding: 20px 0 16px;
     }
-    .number-left .num-label { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
-    .number-left .num-value { font-family: 'Outfit', sans-serif; font-size: 60px; font-weight: 900; color: var(--blue); line-height: 1; letter-spacing: -2px; }
-    .number-left .num-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
-    .number-right { text-align: right; }
-    .inscrits-val { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: var(--text-sub); line-height: 1; }
-    .inscrits-lbl { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 
     .closed-banner {
       background: #fef2f2; border: 1px solid #fecaca;
@@ -366,15 +355,9 @@
   </div>
 
   <div class="number-hero">
-    <div class="number-left">
-      <div class="num-label" id="liveLabel">Numéro en cours</div>
-      <div class="num-value" id="liveNumber">—</div>
-      <div class="num-sub" id="liveSub">Mis à jour en temps réel</div>
-    </div>
-    <div class="number-right">
-      <div class="inscrits-val" id="liveInscrits">0</div>
-      <div class="inscrits-lbl" id="liveInscritsLabel">Inscrits aujourd'hui</div>
-    </div>
+    <div class="num-label" id="liveLabel">Numéro en cours</div>
+    <div class="num-value" id="liveNumber">—</div>
+    <div class="num-sub" id="liveSub">Mis à jour en temps réel</div>
   </div>
 
   <div class="closed-banner" id="closedBanner">🚫 <span id="closedText">Les inscriptions sont fermées pour aujourd'hui.</span></div>
@@ -462,7 +445,7 @@
   const T = {
     fr: {
       liveLabel:'Numéro en cours', liveSub:'Mis à jour en temps réel',
-      liveInscritsLabel:"Inscrits aujourd'hui",
+     
       infoBox:"📋 Inscrivez-vous pour obtenir votre numéro dans la file d'attente.",
       nomLabel:'Nom', prenomLabel:'Prénom', telLabel:'Téléphone',
       nomPh:'Votre nom', prenomPh:'Votre prénom', telPh:'0xxxxxxxxx',
@@ -483,7 +466,7 @@
     },
     ar: {
       liveLabel:'الرقم الحالي', liveSub:'يتجدد تلقائياً',
-      liveInscritsLabel:'المسجّلون اليوم',
+     
       infoBox:'📋 سجّل اسمك للحصول على رقمك في قائمة الانتظار.',
       nomLabel:'اللقب', prenomLabel:'الاسم', telLabel:'رقم الهاتف',
       nomPh:'لقبك', prenomPh:'اسمك', telPh:'0xxxxxxxxx',
@@ -542,7 +525,7 @@
     const t = T[lang];
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     const setPH = (id, val) => { const el = document.getElementById(id); if (el) el.placeholder = val; };
-    set('liveLabel', t.liveLabel); set('liveSub', t.liveSub); set('liveInscritsLabel', t.liveInscritsLabel);
+    set('liveLabel', t.liveLabel); set('liveSub', t.liveSub);
     set('infoBox', t.infoBox);
     set('nomLabel', t.nomLabel); set('prenomLabel', t.prenomLabel); set('telLabel', t.telLabel);
     setPH('nom', t.nomPh); setPH('prenom', t.prenomPh); setPH('telephone', t.telPh);
@@ -687,7 +670,6 @@
     document.getElementById('liveNumber').textContent = numEnCours || '—';
     const countHeader = countRes.headers.get('content-range');
     const totalToday = countHeader ? parseInt(countHeader.split('/')[1]) || 0 : 0;
-    document.getElementById('liveInscrits').textContent = totalToday;
     const closed = !parametres.ouvert || (parametres.limite_patients && totalToday >= parametres.limite_patients);
     document.getElementById('closedBanner').style.display = closed ? 'block' : 'none';
     document.getElementById('submitBtn').disabled = !!closed;
