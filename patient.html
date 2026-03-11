@@ -144,7 +144,24 @@
     /* Grand numéro */
     .number-hero {
       text-align: center;
-      padding: 20px 0 16px;
+      padding: 24px 0 20px;
+    }
+    .num-label {
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px;
+    }
+    .num-value {
+      font-family: 'Outfit', sans-serif; font-size: 88px; font-weight: 900;
+      color: var(--blue); line-height: 1; letter-spacing: -3px;
+    }
+    .num-sub {
+      font-size: 11px; color: var(--text-muted); margin-top: 6px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .num-sub::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); display: inline-block;
+      animation: pulse 1.8s infinite;
     }
 
     .closed-banner {
