@@ -469,7 +469,7 @@
       submitText:"S'inscrire",
       successTitle:'Vous êtes inscrit(e) !', successMsg:"Votre numéro dans la file d'attente",
       successInfo:'Présentez-vous au cabinet avec ce numéro.',
-      newRegText:'Nouvelle inscription', ticketText:'Télécharger mon ticket',
+      newRegText:'Nouvelle inscription', ticketText:'🎫 Partager mon ticket',
       noticeTitle:'⚠️ Présentez-vous 3 numéros avant le vôtre !',
       noticeSub:'Exemple : si votre numéro est 6, soyez au cabinet quand le numéro 3 est appelé.',
       closedText:"Les inscriptions sont fermées pour aujourd'hui.",
@@ -490,7 +490,7 @@
       submitText:'تسجيل',
       successTitle:'✅ تم تسجيلك بنجاح !', successMsg:'رقمك في قائمة الانتظار',
       successInfo:'احضر إلى العيادة بهذا الرقم.',
-      newRegText:'تسجيل جديد', ticketText:'تحميل تذكرتي',
+      newRegText:'تسجيل جديد', ticketText:'🎫 مشاركة تذكرتي',
       noticeTitle:'⚠️ احضر قبل 3 أرقام من رقمك !',
       noticeSub:'مثال : إذا كان رقمك 6، كن في العيادة عند نداء الرقم 3.',
       closedText:'🚫 التسجيل مغلق لهذا اليوم.',
@@ -659,11 +659,28 @@
     ctx.textAlign = 'center';
     ctx.fillText('Ce ticket est généré par Rendz — rendz.vercel.app', cx, H-16);
 
-    // Téléchargement
-    const link = document.createElement('a');
-    link.download = 'ticket-rendz-' + position + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    // Partage ou téléchargement
+    canvas.toBlob(async function(blob) {
+      const file = new File([blob], 'ticket-rendz-' + position + '.png', { type: 'image/png' });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        // Mobile — menu de partage natif
+        try {
+          await navigator.share({
+            title: 'Mon ticket Rendz — N°' + position,
+            text: 'Mon numéro dans la file : ' + position,
+            files: [file]
+          });
+        } catch(e) {
+          // Annulé par l'utilisateur — pas d'erreur
+        }
+      } else {
+        // Desktop — téléchargement classique
+        const link = document.createElement('a');
+        link.download = 'ticket-rendz-' + position + '.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      }
+    }, 'image/png');
   }
 
   function generateWhatsAppLink(position) {
