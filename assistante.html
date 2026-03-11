@@ -282,52 +282,6 @@
       .action-btn { padding: 9px 14px !important; font-size: 12px !important; flex: 1; min-width: 80px; text-align: center; }
       .btn-del { flex: 0 0 auto; min-width: unset; padding: 9px 12px !important; }
     }
-  
-    /* ── URGENCES ────────────────────────────────────────────────────────── */
-    .list-item.urgence {
-      border-left: 3px solid #dc2626 !important;
-      background: #fff5f5 !important;
-    }
-    .urgence-badge {
-      display: inline-flex; align-items: center; gap: 3px;
-      background: #fef2f2; border: 1px solid #fecaca;
-      color: #dc2626; font-size: 10px; font-weight: 700;
-      border-radius: 6px; padding: 2px 6px; margin-left: 5px;
-      text-transform: uppercase; letter-spacing: 0.3px;
-      animation: urgencePulse 1.5s ease-in-out infinite;
-    }
-    @keyframes urgencePulse { 0%,100%{opacity:1;}50%{opacity:0.6;} }
-    .btn-urgence {
-      background: #fef2f2; color: #dc2626;
-      border: 1px solid #fecaca; border-radius: 7px;
-      padding: 5px 10px; font-size: 11px; font-weight: 600;
-      cursor: pointer; transition: all 0.12s; white-space: nowrap;
-      font-family: 'Outfit', sans-serif;
-    }
-    .btn-urgence:hover  { background: #dc2626; color: white; }
-    .btn-urgence.active { background: #dc2626; color: white; border-color: #dc2626; }
-
-    /* ── HORODATAGE ──────────────────────────────────────────────────────── */
-    .timing-chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 10px; font-weight: 600; color: var(--text-muted);
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 6px; padding: 2px 7px; margin-top: 3px;
-    }
-    .timing-chip.en-cours {
-      color: #ea580c; background: #fff7ed; border-color: #fed7aa;
-      animation: urgencePulse 2s ease-in-out infinite;
-    }
-    .timing-chip.termine { color: var(--green); background: var(--green-light); border-color: var(--green-border); }
-    .timing-chip.long    { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
-    .resume-timing {
-      margin-top: 12px; padding: 12px 14px;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 12px; display: flex; gap: 16px; flex-wrap: wrap;
-    }
-    .resume-stat { text-align: center; }
-    .resume-val  { font-size: 20px; font-weight: 800; color: var(--text); font-family: 'Outfit', sans-serif; line-height: 1; }
-    .resume-lbl  { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -401,7 +355,6 @@
             <span style="text-align:right">Actions</span>
           </div>
           <div id="listBody"></div>
-          <div id="resumeTiming"></div>
         </div>
       </div>
       <div class="manual-form">
@@ -426,6 +379,11 @@
 </div>
 
 <script>
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+  }
+
   const SUPABASE_URL = 'https://rynxvdqjplqccekulcfe.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5bnh2ZHFqcGxxY2Nla3VsY2ZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxNDY5ODQsImV4cCI6MjA4NzcyMjk4NH0.Ab-HQgVhGzxdyXbY8xeFF0HveQGxstNgEIUeELVPWk8';
   let refreshInterval;
@@ -433,10 +391,11 @@
   const SL = { en_attente: 'En attente', present: 'Présent', en_cours: 'En consultation', absent: 'Absent', termine: 'Terminé' };
 
   async function login() {
-    const pwd = document.getElementById('pwdInput').value;
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante&cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
+    const pwd  = document.getElementById('pwdInput').value;
+    const hash = await sha256(pwd);
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/utilisateurs?role=eq.assistante&cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const data = await res.json();
-    if (data.length > 0 && data[0].mot_de_passe === pwd) {
+    if (data.length > 0 && data[0].mot_de_passe === hash) {
       localStorage.setItem(`rendz_assistante_${cabinetId}`, 'true');
       showDashboard();
     } else { document.getElementById('loginErr').style.display = 'block'; }
@@ -468,7 +427,7 @@
     const nom = document.getElementById('mNom').value.trim();
     const prenom = document.getElementById('mPrenom').value.trim();
     const telephone = document.getElementById('mTel').value.trim() || '—';
-    if (!nom || !prenom) { showToast('Nom et prénom obligatoires.', 'error'); return; }
+    if (!nom || !prenom) { alert('Nom et prénom obligatoires.'); return; }
     document.getElementById('addBtn').disabled = true;
     const today = new Date().toISOString().split('T')[0];
     const countRes = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Prefer': 'count=exact' } });
@@ -489,7 +448,7 @@
       s.style.display = 'block';
       setTimeout(() => s.style.display = 'none', 3000);
       loadList();
-    } else { showToast('Erreur réseau. Réessayez.', 'error'); }
+    } else { alert('Erreur. Réessayez.'); }
     document.getElementById('addBtn').disabled = false;
   }
 
@@ -499,11 +458,7 @@
       fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&order=position.asc`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }),
       fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } })
     ]);
-    const list = (await listRes.json()).sort((a,b) => {
-      if (a.urgence && !b.urgence) return -1;
-      if (!a.urgence && b.urgence) return 1;
-      return a.position - b.position;
-    });
+    const list = await listRes.json();
     const enCours = list.find(p => p.statut === 'en_cours');
     const consultBar = document.getElementById('consultBar');
     if (enCours) {
@@ -521,8 +476,7 @@
     const dejaEnCours = list.some(x => x.statut === 'en_cours');
     body.innerHTML = list.map(p => {
       const st = p.statut || 'en_attente';
-      const isM    = p.source === 'manuel';
-      const isUrg  = !!p.urgence;
+      const isM = p.source === 'manuel';
       const bc = st === 'present' ? 'present' : st === 'en_cours' ? 'en_cours' : st === 'absent' ? 'absent' : st === 'termine' ? 'termine' : '';
       const actions = `
         ${st === 'en_attente' ? `<button class="action-btn btn-present" onclick="setStatut(${p.id},'present')">✓ Présent</button>` : ''}
@@ -530,24 +484,21 @@
         ${st === 'en_cours' ? `<button class="action-btn btn-fin" onclick="finConsultation(${p.id})">✅ Fin</button>` : ''}
         ${st !== 'absent' && st !== 'termine' ? `<button class="action-btn btn-absent" onclick="setStatut(${p.id},'absent')">✗ Absent</button>` : ''}
         ${st === 'absent' ? `<button class="action-btn btn-restore" onclick="setStatut(${p.id},'en_attente')">↩ Restaurer</button>` : ''}
-        ${st !== 'termine' && st !== 'absent' ? `<button class="btn-urgence ${isUrg ? 'active' : ''}" onclick="toggleUrgence(${p.id},${isUrg})">🚨</button>` : ''}
         <button class="action-btn btn-del" onclick="supprimer(${p.id})">🗑</button>`;
-      return `<div class="list-item ${st} ${isM ? 'manuel' : ''} ${isUrg ? 'urgence' : ''}">
+      return `<div class="list-item ${st} ${isM ? 'manuel' : ''}">
         <div><div class="num-badge ${bc}">${p.position}</div></div>
         <div class="name-col">${p.nom} ${p.prenom}${isM ? '<span class="tag-manuel">Sur place</span>' : ''}<div class="tel">${p.telephone !== '—' ? p.telephone : ''}</div></div>
         <div class="status-col"><span class="status-badge ${st}">${SL[st] || st}</span></div>
         <div class="actions-col">${actions}</div>
       </div>`;
     }).join('');
-    const rt = document.getElementById('resumeTiming');
-    if (rt) rt.innerHTML = resumeTiming(fullList);
   }
 
   async function appelConsultation(id, position) {
     const paramRes = await fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
     const params = await paramRes.json();
     const numeroActuel = (params[0] && params[0].numero_en_cours) || 0;
-    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours', heure_appel: new Date().toISOString() }) })];
+    const updates = [fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'en_cours' }) })];
     if (position > numeroActuel) {
       updates.push(fetch(`${SUPABASE_URL}/rest/v1/parametres?cabinet_id=eq.${cabinetId}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ numero_en_cours: position }) }));
     }
@@ -578,7 +529,7 @@
   async function finConsultation(id) {
     showModal('✅', 'Fin de consultation ?', 'Le patient sera marqué comme terminé.', 'success',
       async () => {
-        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'termine', heure_fin: new Date().toISOString() }) });
+        await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, { method: 'PATCH', headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ statut: 'termine' }) });
         const today = new Date().toISOString().split('T')[0];
         const res = await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?cabinet_id=eq.${cabinetId}&date_inscription=eq.${today}&select=id,statut`, { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } });
         const tous = await res.json();
@@ -598,70 +549,6 @@
 
   document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
   document.getElementById('pwdInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
-
-  // ── HORODATAGE : utilitaires ─────────────────────────────────────────────
-  function formatHeure(isoStr) {
-    if (!isoStr) return null;
-    const d = new Date(isoStr);
-    return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  function dureeMinutes(debut, fin) {
-    if (!debut) return null;
-    const end = fin ? new Date(fin) : new Date();
-    const diff = Math.round((end - new Date(debut)) / 60000);
-    return diff;
-  }
-
-  function formatDuree(minutes) {
-    if (minutes === null || minutes === undefined) return null;
-    if (minutes < 1) return '< 1 min';
-    if (minutes < 60) return `${minutes} min`;
-    return `${Math.floor(minutes/60)}h${String(minutes%60).padStart(2,'0')}`;
-  }
-
-  function timingChip(p) {
-    if (p.statut === 'en_cours' && p.heure_appel) {
-      const duree = dureeMinutes(p.heure_appel, null);
-      const cls   = duree > 20 ? 'long' : 'en-cours';
-      return `<div class="timing-chip ${cls}">⏱ ${formatDuree(duree)}</div>`;
-    }
-    if (p.statut === 'termine' && p.heure_appel && p.heure_fin) {
-      const duree = dureeMinutes(p.heure_appel, p.heure_fin);
-      const cls   = duree > 20 ? 'long' : 'termine';
-      return `<div class="timing-chip ${cls}">✓ ${formatDuree(duree)}</div>`;
-    }
-    if (p.heure_appel && p.statut !== 'termine') {
-      return `<div class="timing-chip en-cours">Appelé à ${formatHeure(p.heure_appel)}</div>`;
-    }
-    return '';
-  }
-
-  function resumeTiming(list) {
-    const termines = list.filter(p => p.statut === 'termine' && p.heure_appel && p.heure_fin);
-    if (termines.length === 0) return '';
-    const durees  = termines.map(p => dureeMinutes(p.heure_appel, p.heure_fin));
-    const moyenne = Math.round(durees.reduce((a,b) => a+b, 0) / durees.length);
-    const max     = Math.max(...durees);
-    const min     = Math.min(...durees);
-    return `<div class="resume-timing">
-      <div class="resume-stat"><div class="resume-val">${formatDuree(moyenne)}</div><div class="resume-lbl">Durée moyenne</div></div>
-      <div class="resume-stat"><div class="resume-val">${formatDuree(min)}</div><div class="resume-lbl">Plus courte</div></div>
-      <div class="resume-stat"><div class="resume-val">${formatDuree(max)}</div><div class="resume-lbl">Plus longue</div></div>
-      <div class="resume-stat"><div class="resume-val">${termines.length}</div><div class="resume-lbl">Terminées</div></div>
-    </div>`;
-  }
-
-  async function toggleUrgence(id, estUrgent) {
-    const nouvelEtat = !estUrgent;
-    await fetch(`${SUPABASE_URL}/rest/v1/inscriptions?id=eq.${id}`, {
-      method: 'PATCH',
-      headers: { ...SB_HJ },
-      body: JSON.stringify({ urgence: nouvelEtat })
-    });
-    loadList();
-    showToast(nouvelEtat ? '🚨 Patient marqué urgent' : 'Urgence retirée', nouvelEtat ? 'warning' : 'info', 2500);
-  }
 </script>
 </body>
 </html>
